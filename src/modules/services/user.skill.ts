@@ -1,34 +1,39 @@
 import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
-import _ from "lodash";
-import { stringifyBigInts } from "../../middlewares";
+import { Prisma } from "@prisma/client";
 import { IUserSkills } from "../model/user.skills.model";
 
 export class UserSkills {
   public async assignUserSkill(data: IUserSkills): Promise<ApiResult> {
     try {
-      const {
-        user_id,
-        skill_id,
-        organization_id,
-        proficiency_level,
-        created_at,
-      } = data;
+      const { user_id, skill_id, organization_id, proficiency_level } = data;
 
-      await prisma.$transaction(async (trx: any) => {
-        return await trx.user_skills.createMany({
+      // Check if the skill assignment already exists
+    
+
+      await prisma.$transaction(async (trx) => {
+        await trx.user_skills.create({
           data: {
-            user_id,
-            skill_id,
-            organization_id,
+            user_id: Number(user_id),
+            skill_id: Number(skill_id),
+            organization_id: Number(organization_id),
             proficiency_level,
-            created_at,
+            // Let database handle timestamps
           },
         });
       });
-      return ApiResult.success({}, "Skill created successful", 201);
+
+      return ApiResult.success({}, "Skill assigned successfully", 201);
     } catch (error: any) {
-      return ApiResult.error("Failed to add skill", 500);
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          return ApiResult.error("This skill is already assigned to the user", 400);
+        }
+        if (error.code === 'P2003') {
+          return ApiResult.error("Invalid user, skill, or organization reference", 400);
+        }
+      }
+      return ApiResult.error("Failed to assign skill: " + error.message, 500);
     }
   }
 }
