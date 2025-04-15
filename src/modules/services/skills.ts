@@ -37,14 +37,12 @@ export class Skills {
   public async getSkillByID(data: { id: SkillsParams }): Promise<ApiResult> {
     const { id } = data;
     try {
-      console.log("iddd", id);
 
       const skills = await prisma.skills.findFirst({
         where: {
           id: Number(id),
         },
       });
-      console.log("skills", skills);
       const result = await stringifyBigInts(skills); // Optional, if you're handling BigInts
 
       if (_.isEmpty(skills)) {
@@ -58,11 +56,19 @@ export class Skills {
 
   public async getSkills(): Promise<ApiResult> {
     try {
+      console.log('>>>>>');
+      
       const skills = await prisma.skills.findMany();
+      console.log('skilss');
+      
+      const stringifyJSON = await stringifyBigInts(skills);
+      console.log('stringifyJSON', stringifyJSON);
+      
       if (_.isEmpty(skills)) {
         return ApiResult.success({}, "No data retrieved", 202);
       }
-      return ApiResult.success(skills, "Successful data retrieved", 200);
+
+      return ApiResult.success(stringifyJSON, "Successful data retrieved", 200);
     } catch (error: any) {
       return ApiResult.error("Failed to fetch skills", 500);
     }

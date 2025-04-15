@@ -255,8 +255,8 @@ model user_skills {
   skill_id          BigInt
   organization_id   BigInt
   proficiency_level ProficiencyLevel @default(BEGINNER)
-  created_at        DateTime         @default(now()) @db.Timestamptz
-  updated_at        DateTime         @default(now()) @db.Timestamptz
+  created_at        String        @default("")
+  updated_at        String        @default("")
 
   // Relations
   users         users         @relation(fields: [user_id], references: [id])
@@ -279,7 +279,7 @@ model business_hours {
   start_time      String    @db.VarChar(50)
   end_time        String    @db.VarChar(50)
   created_at      String    @db.VarChar(50)
-  updated_at      String    @db.VarChar(50)
+  updated_at      String    @db.VarChar(50) @default("")
 
   organizations organizations @relation(fields: [organization_id], references: [id])
 

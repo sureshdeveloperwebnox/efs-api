@@ -12,7 +12,6 @@ export class SkillController {
   }
 
   // CREATE Skills API
-
   @POST("")
   public async createSkills(req: RequestX, res: Response): Promise<void> {
     try {
