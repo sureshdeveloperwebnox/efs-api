@@ -48,7 +48,7 @@ export class User {
 
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      const user = await prisma.$transaction(async (trx) => {
+      const user = await prisma.$transaction(async (trx: any) => {
         return await trx.users.create({
           data: {
             first_name,
@@ -128,7 +128,7 @@ export class User {
     } = data;
 
     try {
-      const result = await prisma.$transaction(async (trx) => {
+      const result = await prisma.$transaction(async (trx: any) => {
         const org = await trx.users.updateMany({
           where: {
             id: Number(id),
@@ -167,7 +167,7 @@ export class User {
   }): Promise<ApiResult> {
     const { organization_id } = data;
     try {
-      await prisma.$transaction(async (trx) => {
+      await prisma.$transaction(async (trx: any) => {
         return await trx.users.delete({
           where: {
             id: BigInt(organization_id),

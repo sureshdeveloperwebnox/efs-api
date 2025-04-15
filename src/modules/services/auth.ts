@@ -310,7 +310,7 @@ export class Auth {
 
     // Perform database operations in a transaction
     try {
-      const result = await prisma.$transaction(async (trx) => {
+      const result = await prisma.$transaction(async (trx: any) => {
         // Create a new organization record
         const org = await trx.organizations.create({
           data: {
@@ -381,7 +381,7 @@ export class Auth {
   public async me(userData: any): Promise<ApiResult> {
     const { id } = userData;
     try {
-      const result = await prisma.$transaction(async (trx) => {
+      const result = await prisma.$transaction(async (trx: any) => {
         const user = await trx.users.findFirst({
           where: {
             id: Number(id),

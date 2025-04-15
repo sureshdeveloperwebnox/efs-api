@@ -244,8 +244,8 @@ model skills {
   id          BigInt        @id @default(autoincrement())
   name        String        @db.VarChar(50)
   description String        @db.Text
-  created_at  String        @db.VarChar(50)
-  updated_at  String        @db.VarChar(50)
+  created_at  String        @db.VarChar(50) @default("")
+  updated_at  String        @db.VarChar(50) @default("")
   user_skills user_skills[]
 }
 

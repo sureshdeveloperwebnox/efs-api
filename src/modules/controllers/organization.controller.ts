@@ -13,7 +13,7 @@ import { AccessTokenGuard } from "../../middlewares/token.guard";
 
 @Controller("/organization")
 export class OrganizationController {
-  private organization: Organization;
+  private organization!: Organization;
 
   constructor() {
     this.organization = new Organization();

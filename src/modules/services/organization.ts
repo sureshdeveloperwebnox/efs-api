@@ -68,7 +68,7 @@ export class Organization {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Perform database operations in a transaction
-    const result = await prisma.$transaction(async (trx) => {
+    const result = await prisma.$transaction(async (trx: any) => {
       // Create a new organization record
       const reg = await trx.organizations.create({
         data: {
@@ -203,7 +203,7 @@ export class Organization {
 
     try {
       // Perform update in a transaction
-      const result = await prisma.$transaction(async (trx) => {
+      const result = await prisma.$transaction(async (trx: any) => {
         // Update organization record matching the ID
         const org = await trx.organizations.updateMany({
           where: {
@@ -256,7 +256,7 @@ export class Organization {
     const { organization_id } = data;
     try {
       // Perform deletion inside a transaction
-      await prisma.$transaction(async (trx) => {
+      await prisma.$transaction(async (trx: any) => {
         // Delete organization record matching the ID
         return await trx.organizations.delete({
           where: {
