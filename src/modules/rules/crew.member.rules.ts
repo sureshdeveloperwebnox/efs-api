@@ -1,5 +1,6 @@
 import Joi from "joi";
 
+// Create Crew Member Validation
 export const CreateCrewMemberValidation = {
   body: Joi.object({
     organization_id: Joi.number().required().messages({
@@ -19,8 +20,8 @@ export const CreateCrewMemberValidation = {
       "string.base": "Role must be a string",
     }),
     created_at: Joi.number().required().messages({
-      "any.required": "Created at is required",
-      "string.base": "Created at must be a string",
+      "any.required": "Created_at is required",
+      "string.base": "Created_at must be a string",
     }),
   }),
 };
