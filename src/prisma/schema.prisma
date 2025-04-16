@@ -294,7 +294,7 @@ model holidays {
   holiday_date    String @db.VarChar(20)
   is_recurring    Int    @default(0) @db.SmallInt
   created_at      String @db.VarChar(50)
-  updated_at      String @db.VarChar(50)
+  updated_at      String @db.VarChar(50) @default("")
 
   organizations organizations @relation(fields: [organization_id], references: [id])
 
@@ -310,11 +310,11 @@ model time_off_requests {
   reason     String        @db.Text
   status     RequestStatus @default(PENDING)
   created_at String        @db.VarChar(50)
-  updated_at String        @db.VarChar(50)
+  updated_at String        @db.VarChar(50) @default("")
 
   users users @relation(fields: [user_id], references: [id])
 
-  @@index([user_id], name: "time_off_requests_user_idx")
+  @@index([user_id], map: "time_off_requests_user_idx")
   @@map("time_off_requests")
 }
 
