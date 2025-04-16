@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-// User Login API Validation Schema
+// User Login Validation Schema
 export const Login = {
   body: Joi.object({
     email: Joi.string().email().required().messages({
@@ -15,7 +15,7 @@ export const Login = {
 };
 
 // Organization User Registration API Validation Schema
-export const authRegister = {
+export const OrganizationUserRegisterValidation = {
   body: Joi.object({
     email: Joi.string().required().messages({
       'any.required': 'Email is required'

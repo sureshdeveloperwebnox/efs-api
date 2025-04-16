@@ -3,6 +3,7 @@ import { UserSkills } from "../services/user.skill";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
 
+// User Skills Controller
 @Controller("/user-skills")
 export class UserSkillController {
   private userskills!: UserSkills;

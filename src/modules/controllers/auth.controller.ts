@@ -1,12 +1,13 @@
 import { RequestX } from "../../utils/request.interface";
 import { Controller, POST, GET, Validate, DELETE } from "../../decorators";
-import { Login, authRegister, organizationRegisterValidation } from "../rules";
+import { Login, OrganizationUserRegisterValidation } from "../rules";
 import { Auth } from "../services/auth";
 import { ApiResult } from "../../utils/api-result";
 import passport from "passport";
 import { NextFunction, Response } from "express";
 import { stringifyBigInts } from "../../middlewares";
 
+// Auth Cotroller
 @Controller("/auth")
 export class AuthController {
   private auth!: Auth;
@@ -17,14 +18,14 @@ export class AuthController {
 
   // POST Organization User Register API
   @POST('/register')
-  @Validate([organizationRegisterValidation]) // Organization Admin User Validation Schema
+  @Validate([OrganizationUserRegisterValidation]) // Organization Admin User Validation Schema
   public async register(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.auth.register(req.body);
       result.send(res);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      ApiResult.error(message, 400).send(res);
+    } catch (error: any) {
+      console.log('register error', error);
+      ApiResult.error(error.message || "Internal server error", 400);
     }
   }
 
@@ -94,7 +95,8 @@ export class AuthController {
       const result = await this.auth.login(req.body);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 400).send(res);
+      console.log('login error', error);
+      ApiResult.error(error.message || "Internal server error", 400);
     }
   }
 
@@ -105,12 +107,12 @@ export class AuthController {
       const result = await this.auth.me(req.body);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 400).send(res);
+      console.log('me error', error);
+      ApiResult.error(error.message || "Internal server error", 400);
     }
   }
 
   //POST Refresh Token Generation API
-   // POST Refresh Token API
    @POST("/refresh-token")
    public async refreshToken(req: RequestX, res: Response): Promise<void> {
      try {

@@ -1,6 +1,7 @@
 import Joi from "joi";
 
-export const TimeoffRequestValidationSchema = {
+// Create Time Off Request Validation Schema
+export const CreateTimeoffRequestValidationSchema = {
   body: Joi.object({
     user_id: Joi.number().required().messages({
       "any.required": "User id is required",
@@ -23,6 +24,7 @@ export const TimeoffRequestValidationSchema = {
   }),
 };
 
+// Update Time Off Request Validation Schema
 export const UpdateTimeoffRequestValidationSchema = {
   body: Joi.object({
     status: Joi.string().required().messages({

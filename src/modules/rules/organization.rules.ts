@@ -1,6 +1,7 @@
 import Joi from "joi";
 
-export const organizationRegisterValidation = {
+// Create Organization Validation Schema
+export const CreateOrganizationValidation = {
   body: Joi.object({
     name: Joi.string().required().messages({
       "any.required": "Name is required",
@@ -56,16 +57,8 @@ export const organizationRegisterValidation = {
   }),
 };
 
-export const userParamsValidation = {
-  params: Joi.object({
-    id: Joi.string().required().messages({
-      "any.required": "Id is required",
-    }),
-  }),
-};
-
-
-export const organizationUpdationValidation = {
+// Update Organization Validation Schema
+export const UpdateOrganizationValidation = {
   body: Joi.object({
     name: Joi.string().required().messages({
       "any.required": "Name is required",

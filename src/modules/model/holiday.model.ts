@@ -1,18 +1,18 @@
-export interface IHoliday {
+// Create Holiday Model
+export interface ICreateHoliday {
   organization_id: Number;
   name: string;
   holiday_date: string;
   is_recurring: Number;
   created_at: string;
 }
-
-export class Holiday implements IHoliday {
+export class CreateHoliday implements ICreateHoliday {
   organization_id: Number;
   name: string;
   holiday_date: string;
   is_recurring: Number;
   created_at: string;
-  constructor(data: IHoliday) {
+  constructor(data: ICreateHoliday) {
     this.name = data.name;
     this.organization_id = data.organization_id;
     this.holiday_date = data.holiday_date;

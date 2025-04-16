@@ -1,11 +1,13 @@
 import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
-import { ISkills, SkillsParams } from "../model/skills.model";
 import _ from "lodash";
 import { stringifyBigInts } from "../../middlewares";
+import { ICreateSkills, IIDModel } from "../model";
 
 export class Skills {
-  public async createSkill(data: ISkills): Promise<ApiResult> {
+
+  // Create Skill API Service
+  public async createSkill(data: ICreateSkills): Promise<ApiResult> {
     const { name, description, created_at } = data;
     try {
       //Check already skills exist
@@ -16,7 +18,7 @@ export class Skills {
       });
 
       if (!_.isEmpty(checkAlreadyExist)) {
-        return ApiResult.error("Skills already exist", 202);
+        return ApiResult.error("Skill name already exist", 202);
       }
 
       await prisma.$transaction(async (trx: any) => {
@@ -32,9 +34,10 @@ export class Skills {
     } catch (error: any) {
       return ApiResult.error("Failed to add skill", 500);
     }
-  }
+  };
 
-  public async getSkillByID(data: { id: SkillsParams }): Promise<ApiResult> {
+  // Get Skill By ID API Service
+  public async getSkillByID(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
 
@@ -52,8 +55,9 @@ export class Skills {
     } catch (error: any) {
       return ApiResult.error("Failed to fetch skills", 500);
     }
-  }
+  };
 
+  // Get Skills API Service
   public async getSkills(): Promise<ApiResult> {
     try {
       console.log('>>>>>');
@@ -72,5 +76,5 @@ export class Skills {
     } catch (error: any) {
       return ApiResult.error("Failed to fetch skills", 500);
     }
-  }
-}
+  };
+};

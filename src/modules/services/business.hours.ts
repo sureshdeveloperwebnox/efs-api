@@ -1,13 +1,13 @@
 import _ from "lodash";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { IBusinessHoursModel } from "../model/business.model";
 import { stringifyBigInts } from "../../middlewares";
+import { ICreateBusinessHoursModel, IIDModel } from "../model";
 
+// Business Hours API Service
 export class BusinessHours {
-  public async createBusinessHours(
-    data: IBusinessHoursModel
-  ): Promise<ApiResult> {
+  // Create Business Hours API Service
+  public async createBusinessHours(data: ICreateBusinessHoursModel): Promise<ApiResult> {
     const { organization_id, day_of_week, start_time, end_time, created_at } =
       data;
     try {
@@ -28,7 +28,8 @@ export class BusinessHours {
     }
   }
 
-  public async getBusinessHoursByID(data: { id: string }): Promise<ApiResult> {
+  // Get Business Hours By ID API Service
+  public async getBusinessHoursByID(data:IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
       const result = await prisma.business_hours.findFirst({
@@ -50,6 +51,7 @@ export class BusinessHours {
     }
   }
 
+  // Get Businsess Hours API Service
   public async getBusinessHours(): Promise<ApiResult> {
     try {
       const result = await prisma.business_hours.findMany();

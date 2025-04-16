@@ -1,12 +1,13 @@
 import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
-import { IEditUser, IUser } from "../model/user.model";
 import bcrypt from "bcrypt";
 import { stringifyBigInts } from "../../middlewares";
+import { ICreateUser, IEditUser, IIDModel } from "../model";
 
+// User API Service
 export class User {
-  // Register API
-  public async register(userData: IUser): Promise<ApiResult> {
+  // User Register API
+  public async register(userData: ICreateUser): Promise<ApiResult> {
     const {
       first_name,
       last_name,
@@ -87,7 +88,7 @@ export class User {
   }
 
   // GET User API
-  public async getUser(data: { id: string }): Promise<ApiResult> {
+  public async getUser(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
 
     try {
@@ -162,15 +163,13 @@ export class User {
   }
 
   // Delete User API
-  public async deleteUser(data: {
-    organization_id: string;
-  }): Promise<ApiResult> {
-    const { organization_id } = data;
+  public async deleteUser(data: {id: IIDModel;}): Promise<ApiResult> {
+    const { id } = data;
     try {
       await prisma.$transaction(async (trx: any) => {
         return await trx.users.delete({
           where: {
-            id: BigInt(organization_id),
+            id: Number(id),
           },
         });
       });
@@ -181,7 +180,6 @@ export class User {
   }
 
   //User Profile API
-
   public async getUserProfiles(): Promise<ApiResult> {
     try {
       const users = await prisma.users.findMany();

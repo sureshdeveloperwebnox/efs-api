@@ -5,8 +5,9 @@ import { NextFunction, Response } from "express";
 import { User } from "../services/users";
 import prisma from "@/config/db";
 import { AccessTokenGuard } from '../../middlewares/token.guard';
-import { userParams, userRegisterValidationSchema, userUpdationValidationSchema } from "../rules";
+import { ValidateParamsID, userRegisterValidationSchema, userUpdationValidationSchema } from "../rules";
 
+// User Controller
 
 @Controller('/user')
 export class UserController {
@@ -15,6 +16,7 @@ export class UserController {
     this.user = new User();
   }
 
+  // User Registration API 
   @POST('')
   @Validate([userRegisterValidationSchema])
   public async register(req: RequestX, res: Response): Promise<void> {
@@ -22,12 +24,14 @@ export class UserController {
       const result = await this.user.register(req.body);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 400).send(res);
+      console.log('register error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
+  // Get User API
   @GET("/:id")
-  @Validate([userParams])
+  @Validate([ValidateParamsID])
   @AccessTokenGuard()
   public async getUser(req: RequestX, res: Response): Promise<void> {
     try {
@@ -36,12 +40,14 @@ export class UserController {
       const result = await this.user.getUser({ id: id });
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 400).send(res);
+      console.log('getUser error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
+  // Update User API
   @PUT("/:id")
-  @Validate([userParams, userUpdationValidationSchema])
+  @Validate([ValidateParamsID, userUpdationValidationSchema])
   public async updateUser(req: RequestX, res: Response): Promise<void> {
     try {
       const id = req.params.id
@@ -53,12 +59,14 @@ export class UserController {
       const result = await this.user.updateUser(data);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 400).send(res)
+      console.log('updateUser error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
+  // DELETE User API
   @DELETE("/:id")
-  @Validate([userParams])
+  @Validate([ValidateParamsID])
   public async deleteUser(req: RequestX, res: Response): Promise<void> {
     try {
       const id = req.params.id
@@ -70,7 +78,8 @@ export class UserController {
       const result = await this.user.deleteUser(data);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 400).send(res)
+      console.log('deleteUser error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
@@ -81,7 +90,8 @@ export class UserController {
       const result = await this.user.getUserProfiles();
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error?.message || "Unexpected error", 400).send(res);
+      console.log('getUserProfiles error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
   

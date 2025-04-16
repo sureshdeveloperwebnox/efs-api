@@ -2,10 +2,12 @@ import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
 import _ from "lodash";
 import { stringifyBigInts } from "../../middlewares";
-import { IHoliday } from "../model/holiday.model";
+import { ICreateHoliday, IIDModel } from "../model";
 
+// Holiday API Service
 export class Holiday {
-  public async createHoliday(data: IHoliday): Promise<ApiResult> {
+  // Create Holiday API Service
+  public async createHoliday(data: ICreateHoliday): Promise<ApiResult> {
     const { organization_id, name, holiday_date, is_recurring, created_at } =
       data;
     try {
@@ -35,9 +37,10 @@ export class Holiday {
     } catch (error: any) {
       return ApiResult.error("Failed to add holiday", 500);
     }
-  }
+  };
 
-  public async getHolidayByID(data: { id: any }): Promise<ApiResult> {
+  // Get Holiday API Service
+  public async getHolidayByID(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
       const holiday = await prisma.holidays.findFirst({
@@ -56,7 +59,8 @@ export class Holiday {
     }
   }
 
-  public async deleteHoliday(data: { id: any }): Promise<ApiResult> {
+  // Delete Holiday API Service
+  public async deleteHoliday(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
 

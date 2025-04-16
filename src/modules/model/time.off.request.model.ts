@@ -1,10 +1,7 @@
-export enum RequestStatus {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-  DENIED = "DENIED",
-}
+import { RequestStatus } from "./main.model";
 
-export interface ITimeOffRequest {
+// Create Time Off Request Model
+export interface ICreateTimeOffRequest {
   user_id: Number;
   name: string;
   start_date: string;
@@ -14,7 +11,7 @@ export interface ITimeOffRequest {
   created_at: string;
 }
 
-export class TimeOffRequest implements ITimeOffRequest {
+export class CreateTimeOffRequest implements ICreateTimeOffRequest {
   user_id: Number;
   name: string;
   start_date: string;
@@ -22,7 +19,7 @@ export class TimeOffRequest implements ITimeOffRequest {
   reason: string;
   status: RequestStatus;
   created_at: string;
-  constructor(data: ITimeOffRequest) {
+  constructor(data: ICreateTimeOffRequest) {
     this.name = data.name;
     this.user_id = data.user_id;
     this.start_date = data.start_date;
@@ -34,6 +31,7 @@ export class TimeOffRequest implements ITimeOffRequest {
 }
 
 
+// Update (Approve or Reject) Time Off Request Model
 export interface IUpdateTimeOffRequest {
   id: Number;
   status: RequestStatus;
@@ -44,7 +42,7 @@ export class UpdateTimeOffRequest implements IUpdateTimeOffRequest {
   id: Number;
   status: RequestStatus;
   updated_at: string;
-  constructor(data: IUpdateTimeOffRequest) {
+  constructor(data: UpdateTimeOffRequest) {
     this.id = data.id;
     this.status = data.status;
     this.updated_at = data.updated_at;

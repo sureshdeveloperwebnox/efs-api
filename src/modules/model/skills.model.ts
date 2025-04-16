@@ -1,27 +1,19 @@
-export interface ISkills {
+// Skills Model
+
+// Create Skills Model
+export interface ICreateSkills {
   name: string;
   description: string;
   created_at: string;
 }
-
-export class Skills implements ISkills {
+export class CreateSkills implements ICreateSkills {
   name: string;
   description: string;
   created_at: string;
-  constructor(data: ISkills) {
+  constructor(data: ICreateSkills) {
     this.name = data.name;
     this.description = data.description;
     this.created_at = data.created_at;
   }
 }
 
-export interface ISkillsParams {
-  id: string;
-}
-
-export class SkillsParams implements ISkillsParams {
-  id: string;
-  constructor(data: ISkillsParams) {
-    this.id = data.id;
-  }
-}

@@ -1,14 +1,15 @@
 import { Express, Router } from 'express';
 import { attachControllers } from './api.routes';
-import { AuthController, BusinessHoursController, HelloController, HolidaysController, OrganizationController, SkillController, TimeOffRequestController, UserController, UserSkillController } from '../modules/controllers';
+import { AuthController, BusinessHoursController, CrewController, CrewMemberController, HelloController, HolidaysController, OrganizationController, SkillController, TimeOffRequestController, UserController, UserSkillController } from '../modules/controllers';
 import { createRoleMiddleware, ValidatorMiddleware } from '../middlewares';
 import passport from 'passport';
 import session from 'express-session';
+import envConfig from '../config/env.config';
 
 export const combineRouters = (app: Express) => {
   const apiRouter = Router();
   app.use(passport.initialize());
-  app.use(session({ secret: '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', resave: false, saveUninitialized: false }));
+  app.use(session({ secret: envConfig.GOOGLE_CLIENT_SECRET, resave: false, saveUninitialized: false }));
 
   attachControllers(
     apiRouter,
@@ -21,7 +22,9 @@ export const combineRouters = (app: Express) => {
       BusinessHoursController,
       UserSkillController,
       HolidaysController,
-      TimeOffRequestController
+      TimeOffRequestController,
+      CrewController,
+      CrewMemberController
     ],
     {
       middleware: {

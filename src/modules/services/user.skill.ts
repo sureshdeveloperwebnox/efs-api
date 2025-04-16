@@ -1,15 +1,13 @@
 import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
 import { Prisma } from "@prisma/client";
-import { IUserSkills } from "../model/user.skills.model";
+import { ICreateUserSkills } from "../model";
 
+// User Skills API Service
 export class UserSkills {
-  public async assignUserSkill(data: IUserSkills): Promise<ApiResult> {
+  public async assignUserSkill(data: ICreateUserSkills): Promise<ApiResult> {
     try {
       const { user_id, skill_id, organization_id, proficiency_level } = data;
-
-      // Check if the skill assignment already exists
-    
 
       await prisma.$transaction(async (trx) => {
         await trx.user_skills.create({
@@ -22,7 +20,6 @@ export class UserSkills {
           },
         });
       });
-
       return ApiResult.success({}, "Skill assigned successfully", 201);
     } catch (error: any) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

@@ -1,14 +1,8 @@
-// Plantype for organization user
-export enum PlanType {
-  FREE = 'FREE',
-  STANDARD = 'STANDARD',
-  PROFESSIONAL = 'PROFESSIONAL'
-}
-
 // Organization Models
+import { PlanType } from "./main.model";
 
 // Create Organization Model
-export interface IOrganization {
+export interface ICreateOrganization {
   name: string;
   first_name: string;
   last_name: string;
@@ -30,7 +24,7 @@ export interface IOrganization {
   created_at: string;
   updated_at: string;
 }
-export class Organization implements IOrganization {
+export class CreateOrganization implements ICreateOrganization {
   name: string;
   last_name: string;
   job_title: string;
@@ -52,7 +46,7 @@ export class Organization implements IOrganization {
   created_at: string;
   updated_at: string;
 
-  constructor(data: IOrganization) {
+  constructor(data: ICreateOrganization) {
     this.name = data.name;
     this.first_name = data.first_name;
     this.last_name = data.last_name;

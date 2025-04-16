@@ -1,22 +1,12 @@
-// Import ApiResult utility for handling API responses
 import { ApiResult } from "../../utils/api-result";
-
-// Import Prisma client for database operations
 import prisma from "../../config/db";
-
-// Import interfaces for organization model
-import { IEditOrganization, IOrganization } from "../model/organization.model";
-
-// Import bcrypt for password hashing
 import bcrypt from "bcrypt";
-
-// Import lodash library for utility functions
 import _ from "lodash";
-
-// Organization class handling all CRUD operations
+import { ICreateOrganization, IEditOrganization, IIDModel } from "../model";
 export class Organization {
+
   // Register a new organization
-  public async register(orgData: IOrganization): Promise<ApiResult> {
+  public async register(orgData: ICreateOrganization): Promise<ApiResult> {
     // Destructure organization data
     const {
       name,
@@ -133,16 +123,14 @@ export class Organization {
   }
 
   // Get organization details by ID
-  public async getOrganization(data: {
-    organization_id: string;
-  }): Promise<ApiResult> {
+  public async getOrganization(data: IIDModel): Promise<ApiResult> {
     // Destructure organization_id from request
-    const { organization_id } = data;
+    const { id } = data;
     try {
       // Find organizations matching the given ID
       const result = await prisma.organizations.findMany({
         where: {
-          id: BigInt(organization_id),
+          id: BigInt(id),
         },
       });
 
@@ -249,18 +237,16 @@ export class Organization {
   }
 
   // Delete organization by ID
-  public async deleteOrganization(data: {
-    organization_id: string;
-  }): Promise<ApiResult> {
+  public async deleteOrganization(data: IIDModel): Promise<ApiResult> {
     // Destructure organization_id from request
-    const { organization_id } = data;
+    const { id } = data;
     try {
       // Perform deletion inside a transaction
       await prisma.$transaction(async (trx: any) => {
         // Delete organization record matching the ID
         return await trx.organizations.delete({
           where: {
-            id: BigInt(organization_id),
+            id: BigInt(id),
           },
         });
       });

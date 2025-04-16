@@ -1,29 +1,7 @@
-export enum UserRole {
-  ADMIN = "ADMIN",
-  STAFF = "STAFF",
-  TECHNICIAN = "TECHNICIAN",
-  DISPATCHER = "DISPATCHER",
-  CUSTOMER = "CUSTOMER",
-}
+import { UserRole } from "./main.model";
 
-// Login API Model
-export interface IUserLogin {
-  email: string;
-  password: string;
-}
-
-export class UserLogin implements IUserLogin {
-  email: string;
-  password: string;
-
-  constructor(data: IUserLogin) {
-    this.email= data.email;
-    this.password = data.password;
-  }
-}
-
-
-export interface IUser {
+// Create User Model
+export interface ICreateUser {
   id: BigInt;
   organization_id: BigInt;
   email: string;
@@ -41,8 +19,7 @@ export interface IUser {
   created_at: string;
   updated_at: string;
 }
-
-export class User implements IUser {
+export class CreateUser implements ICreateUser {
   id: BigInt;
   organization_id: BigInt;
   email: string;
@@ -60,7 +37,7 @@ export class User implements IUser {
   created_at: string;
   updated_at: string;
 
-  constructor(data: IUser) {
+  constructor(data: ICreateUser) {
     if (!Object.values(UserRole).includes(data.user_type)) {
       throw new Error("Invalid user type");
     }
@@ -83,7 +60,7 @@ export class User implements IUser {
   }
 }
 
-
+// Edit User Model
 export interface IEditUser {
   id: BigInt;
   organization_id: BigInt;

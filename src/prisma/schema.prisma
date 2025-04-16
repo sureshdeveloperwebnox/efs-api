@@ -324,7 +324,7 @@ model crews {
   name            String @db.VarChar(50)
   leader_id       BigInt
   created_at      String @db.VarChar(50)
-  updated_at      String @db.VarChar(50)
+  updated_at      String @db.VarChar(50) @default("")
 
   users           users             @relation(fields: [leader_id], references: [id])
   crew_members    crew_members[]
@@ -341,7 +341,7 @@ model crew_members {
   user_id         BigInt
   role            String        @db.VarChar(50)
   created_at      String        @db.VarChar(50)
-  updated_at      String        @db.VarChar(50)
+  updated_at      String        @db.VarChar(50) @default("")
   organizations   organizations @relation(fields: [organization_id], references: [id])
   crews           crews         @relation(fields: [crew_id], references: [id])
   users           users         @relation(fields: [user_id], references: [id])

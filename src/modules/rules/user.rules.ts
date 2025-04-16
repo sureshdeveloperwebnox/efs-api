@@ -1,14 +1,5 @@
 import Joi from "joi";
 
-// User Params ID Validation Schema
-export const userParams = {
-  params: Joi.object({
-    id: Joi.string().required().messages({
-      "any.required": "Id is required",
-    }),
-  }),
-};
-
 // User Register API Validation Schema
 export const userRegisterValidationSchema = {
   body: Joi.object({

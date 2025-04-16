@@ -3,21 +3,19 @@ import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
 import { NextFunction, Request, Response } from "express";
-import { IUserLogin } from "../model/user.model";
 import _ from "lodash";
 import dotenv from "dotenv";
 import envConfig from "../../config/env.config";
-import { IOrganization } from "../model/organization.model";
 import {
   generateJWTToken,
   generateTokenPair,
   verifyRefreshToken,
 } from "../../utils/generate.jwt-token";
 import { stringifyBigInts } from "../../middlewares";
+import { IRegisterModel, IUserLogin } from "../model";
 
 dotenv.config();
 
@@ -257,7 +255,7 @@ export class Auth {
    * @param orgData Organization and user data
    * @returns ApiResult with organization and user info
    */
-  public async register(orgData: IOrganization): Promise<ApiResult> {
+  public async register(orgData: IRegisterModel): Promise<ApiResult> {
     const {
       name,
       email,

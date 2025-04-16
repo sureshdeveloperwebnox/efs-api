@@ -7,3 +7,5 @@ export * from "./buisness.hours.controller";
 export * from "./user.skills.controller";
 export * from "./holiday.controller";
 export * from "./time.off.request.controller";
+export * from "./crew.controller";
+export * from "./crew.member.controller";

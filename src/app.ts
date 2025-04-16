@@ -6,6 +6,7 @@ import passport from 'passport';
 import { combineRouters } from './routes';
 import { ResponseGenerator } from './utils/response-generator';
 import { Auth } from './modules/services/auth'; // ✅ Corrected import
+import envConfig from './config/env.config';
 
 // Load environment variables
 dotenv.config();
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 🛡️ Setup session (required for passport)
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_session_secret',
+  secret: envConfig.GOOGLE_CLIENT_SECRET || 'your_session_secret',
   resave: false,
   saveUninitialized: false
 }));

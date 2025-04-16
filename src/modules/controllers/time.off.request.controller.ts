@@ -1,10 +1,15 @@
 import { Controller, GET, POST, PUT, Validate } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
-import { TimeoffRequestValidationSchema, UpdateTimeoffRequestValidationSchema, userParams } from "../rules";
+import {
+  CreateTimeoffRequestValidationSchema,
+  UpdateTimeoffRequestValidationSchema,
+  ValidateParamsID,
+} from "../rules";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
 import { TimeOffRequest } from "../services/time.off.request";
 
+// Time Off Request Controller
 @Controller("/time-off-requests")
 export class TimeOffRequestController {
   private timeoffrequest!: TimeOffRequest;
@@ -15,23 +20,21 @@ export class TimeOffRequestController {
 
   // CREATE Time Off Request API
   @POST("")
-  @Validate([TimeoffRequestValidationSchema])
+  @Validate([CreateTimeoffRequestValidationSchema])
   @AccessTokenGuard()
-  public async createTimeOffRequest(
-    req: RequestX,
-    res: Response
-  ): Promise<void> {
+  public async createTimeOffRequest(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.timeoffrequest.createTimeOffRequest(req.body);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 500);
+      console.log('createTimeOffRequest error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
-  // GET Time Off Request By ID
+  // GET Time Off Request By ID API
   @GET("/:id")
-  @Validate([userParams])
+  @Validate([ValidateParamsID])
   @AccessTokenGuard()
   public async getTimeOffRequestByID(req: RequestX, res: Response): Promise<void> {
     try {
@@ -44,28 +47,28 @@ export class TimeOffRequestController {
       const result = await this.timeoffrequest.getTimeOffRequestByID(data);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 500);
+      console.log('getTimeOffRequestByID error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
+  // PUT Update Time Off Request Approve or Reject API
+  @PUT("/updateTimeOffRequest/:id")
+  @Validate([ValidateParamsID, UpdateTimeoffRequestValidationSchema])
+  @AccessTokenGuard()
+  public async updateTimeOffRequest(req: RequestX, res: Response): Promise<void> {
+    try {
+      const id = req.params.id;
 
+      const body = req.body;
 
-    // PUT Update Time Off Request Approve or Reject
-    @PUT("/updateTimeOffRequest/:id")
-    @Validate([userParams, UpdateTimeoffRequestValidationSchema])
-    @AccessTokenGuard()
-    public async updateTimeOffRequest(req: RequestX, res: Response): Promise<void> {
-      try {
-        const id = req.params.id;
-  
-        const body = req.body;
-  
-        const data = { ...body, id };
-  
-        const result = await this.timeoffrequest.updateTimeOffRequest(data);
-        result.send(res);
-      } catch (error: any) {
-        ApiResult.error(error.message, 500);
-      }
+      const data = { ...body, id };
+
+      const result = await this.timeoffrequest.updateTimeOffRequest(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log('updateTimeOffRequest error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
+  }
 }

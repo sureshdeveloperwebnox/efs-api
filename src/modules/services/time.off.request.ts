@@ -2,13 +2,13 @@ import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
 import _ from "lodash";
 import { stringifyBigInts } from "../../middlewares";
-import {
-  ITimeOffRequest,
-  IUpdateTimeOffRequest,
-} from "../model/time.off.request.model";
+import { ICreateTimeOffRequest, IUpdateTimeOffRequest } from "../model";
 
+// Time Off Request API Service
 export class TimeOffRequest {
-  public async createTimeOffRequest(data: ITimeOffRequest): Promise<ApiResult> {
+
+  // Create Time Off Request Service
+  public async createTimeOffRequest(data: ICreateTimeOffRequest): Promise<ApiResult> {
     const { user_id, start_date, end_date, reason, status, created_at } = data;
     try {
       await prisma.$transaction(async (trx: any) => {
@@ -29,8 +29,9 @@ export class TimeOffRequest {
 
       return ApiResult.error("Failed to add time off request", 500);
     }
-  }
+  };
 
+  // Get Time Off Request By ID API Service
   public async getTimeOffRequestByID(data: { id: string }): Promise<ApiResult> {
     const { id } = data;
     try {
@@ -50,6 +51,7 @@ export class TimeOffRequest {
     }
   }
 
+  // Update (Approve or Reject) Time Off Request API Service
   public async updateTimeOffRequest(data: IUpdateTimeOffRequest): Promise<ApiResult> {
     const { updated_at, id, status } = data;
     try {

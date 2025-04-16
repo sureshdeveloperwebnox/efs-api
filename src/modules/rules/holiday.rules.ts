@@ -1,6 +1,7 @@
 import Joi from "joi";
 
-export const holidayValidationSchema = {
+// Create Holiday Validation Schema
+export const CreateHolidayValidationSchema = {
   body: Joi.object({
     organization_id: Joi.number().required().messages({
       "any.required": "Organization id is required",

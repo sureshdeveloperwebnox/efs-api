@@ -1,10 +1,11 @@
 import { Controller, GET, POST, Validate } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
-import { holidayValidationSchema, userParams } from "../rules";
+import { CreateHolidayValidationSchema, ValidateParamsID } from "../rules";
 import { Holiday } from "../services/holiday";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
 
+// Holiday Controller
 @Controller("/holiday")
 export class HolidaysController {
   private holiday!: Holiday;
@@ -15,20 +16,21 @@ export class HolidaysController {
 
   // CREATE Holiday API
   @POST("")
-  @Validate([holidayValidationSchema])
+  @Validate([CreateHolidayValidationSchema])
   @AccessTokenGuard()
   public async createHoliday(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.holiday.createHoliday(req.body);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 500);
+      console.log('createHoliday error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
   // GET Holiday By ID
   @GET("/:id")
-  @Validate([userParams])
+  @Validate([ValidateParamsID])
   @AccessTokenGuard()
   public async getHolidayByID(req: RequestX, res: Response): Promise<void> {
     try {
@@ -41,13 +43,14 @@ export class HolidaysController {
       const result = await this.holiday.getHolidayByID(data);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 500);
+      console.log('getHolidayByID error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
   // DELETE Holiday
   @GET("/:id")
-  @Validate([userParams])
+  @Validate([ValidateParamsID])
   @AccessTokenGuard()
   public async deleteHoliday(req: RequestX, res: Response): Promise<void> {
     try {
@@ -60,7 +63,8 @@ export class HolidaysController {
       const result = await this.holiday.deleteHoliday(data);
       result.send(res);
     } catch (error: any) {
-      ApiResult.error(error.message, 500);
+      console.log('deleteHoliday error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 }
