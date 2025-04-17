@@ -9,3 +9,4 @@ export * from './crew.rules';
 export * from './skills.rules';
 export * from './crew.member.rules';
 export * from './equipments.rules';
+export * from './company.rules';

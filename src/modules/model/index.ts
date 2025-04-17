@@ -10,3 +10,4 @@ export * from './skills.model'; // Skills Model
 export * from './crew.model'; // Crew Model
 export * from './crew.member.model'; // Crew Member Model
 export * from './equipments.model'; // Equiments Model
+export * from './company.model'; // Company Model

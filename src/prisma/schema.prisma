@@ -378,8 +378,8 @@ model companies {
   phone           String        @unique @db.VarChar(20)
   email           String        @unique @db.VarChar(100)
   website         String        @db.VarChar(100)
-  created_at      String        @db.VarChar(50)
-  updated_at      String        @db.VarChar(50)
+  created_at      String        @db.VarChar(50) @default("")
+  updated_at      String        @db.VarChar(50) @default("")
   organizations   organizations @relation(fields: [organization_id], references: [id])
   customers       customers[]
   work_orders     work_orders[]

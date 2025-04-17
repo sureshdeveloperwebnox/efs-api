@@ -10,3 +10,4 @@ export * from "./time.off.request.controller";
 export * from "./crew.controller";
 export * from "./crew.member.controller";
 export * from "./equipments.controller";
+export * from "./company.controller";
