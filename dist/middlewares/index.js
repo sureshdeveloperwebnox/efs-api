@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./auth.middleware"), exports);
 __exportStar(require("./validator.middleware"), exports);
 __exportStar(require("./token.guard"), exports);
+__exportStar(require("./json.stringify.middleware"), exports);

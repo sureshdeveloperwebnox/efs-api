@@ -14,29 +14,36 @@ const decorators_1 = require("../../decorators");
 const api_result_1 = require("../../utils/api-result");
 const users_1 = require("../services/users");
 const token_guard_1 = require("../../middlewares/token.guard");
+const rules_1 = require("../rules");
+// User Controller
 let UserController = class UserController {
     constructor() {
         this.user = new users_1.User();
     }
-    async registration(req, res) {
+    // User Registration API 
+    async register(req, res) {
         try {
-            const result = await this.user.registration(req.body);
+            const result = await this.user.register(req.body);
             result.send(res);
         }
         catch (error) {
-            api_result_1.ApiResult.error(error.message, 400).send(res);
+            console.log('register error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
-    async listAllUser(req, res) {
+    // Get User API
+    async getUser(req, res) {
         try {
             const id = req.params.id;
-            const result = await this.user.listAllUser({ id: id });
+            const result = await this.user.getUser({ id: id });
             result.send(res);
         }
         catch (error) {
-            api_result_1.ApiResult.error(error.message, 400).send(res);
+            console.log('getUser error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
+    // Update User API
     async updateUser(req, res) {
         try {
             const id = req.params.id;
@@ -46,9 +53,11 @@ let UserController = class UserController {
             result.send(res);
         }
         catch (error) {
-            api_result_1.ApiResult.error(error.message, 400).send(res);
+            console.log('updateUser error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
+    // DELETE User API
     async deleteUser(req, res) {
         try {
             const id = req.params.id;
@@ -58,37 +67,59 @@ let UserController = class UserController {
             result.send(res);
         }
         catch (error) {
-            api_result_1.ApiResult.error(error.message, 400).send(res);
+            console.log('deleteUser error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
+        }
+    }
+    async getUserProfiles(req, res) {
+        try {
+            const result = await this.user.getUserProfiles();
+            result.send(res);
+        }
+        catch (error) {
+            console.log('getUserProfiles error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
 };
 exports.UserController = UserController;
 __decorate([
-    (0, decorators_1.POST)("/registration"),
+    (0, decorators_1.POST)(''),
+    (0, decorators_1.Validate)([rules_1.userRegisterValidationSchema]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "registration", null);
+], UserController.prototype, "register", null);
 __decorate([
-    (0, decorators_1.GET)("/listAllUser/:id"),
+    (0, decorators_1.GET)("/:id"),
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID]),
     (0, token_guard_1.AccessTokenGuard)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "listAllUser", null);
+], UserController.prototype, "getUser", null);
 __decorate([
-    (0, decorators_1.PUT)("/updateUser/:id"),
+    (0, decorators_1.PUT)("/:id"),
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID, rules_1.userUpdationValidationSchema]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
 __decorate([
-    (0, decorators_1.DELETE)("/deleteUser/:id"),
+    (0, decorators_1.DELETE)("/:id"),
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "deleteUser", null);
+__decorate([
+    (0, decorators_1.GET)('/user-profiles'),
+    (0, token_guard_1.AccessTokenGuard)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserProfiles", null);
 exports.UserController = UserController = __decorate([
-    (0, decorators_1.Controller)("/user"),
+    (0, decorators_1.Controller)('/user'),
     __metadata("design:paramtypes", [])
 ], UserController);

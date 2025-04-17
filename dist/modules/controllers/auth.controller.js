@@ -18,6 +18,8 @@ const rules_1 = require("../rules");
 const auth_1 = require("../services/auth");
 const api_result_1 = require("../../utils/api-result");
 const passport_1 = __importDefault(require("passport"));
+const middlewares_1 = require("../../middlewares");
+// Auth Cotroller
 let AuthController = class AuthController {
     constructor() {
         this.auth = new auth_1.Auth();
@@ -29,8 +31,8 @@ let AuthController = class AuthController {
             result.send(res);
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown error";
-            api_result_1.ApiResult.error(message, 400).send(res);
+            console.log('register error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 400);
         }
     }
     // GET Google User Registration API
@@ -41,6 +43,8 @@ let AuthController = class AuthController {
         return passport_1.default.authenticate("google", {
             scope: ["profile", "email"],
             state: state,
+            accessType: 'offline', // Add this to request refresh token
+            prompt: 'consent' //
         })(req, res, next);
     }
     // Get Google User Regisration Callback API
@@ -59,7 +63,8 @@ let AuthController = class AuthController {
                     throw new Error("Authentication failed: No user returned");
                 }
                 console.log("✅ Authenticated User:", user);
-                const result = await this.auth.handleGoogleAuthSuccess(user);
+                const stringifydata = await (0, middlewares_1.stringifyBigInts)(user);
+                const result = await this.auth.handleGoogleAuthSuccess(stringifydata);
                 result.send(res);
             }
             catch (error) {
@@ -75,14 +80,44 @@ let AuthController = class AuthController {
             result.send(res);
         }
         catch (error) {
-            api_result_1.ApiResult.error(error.message, 400).send(res);
+            console.log('login error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 400);
+        }
+    }
+    //GET Me User Info API
+    async me(req, res) {
+        try {
+            const result = await this.auth.me(req.body);
+            result.send(res);
+        }
+        catch (error) {
+            console.log('me error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 400);
+        }
+    }
+    //POST Refresh Token Generation API
+    async refreshToken(req, res) {
+        var _a;
+        try {
+            // Get refresh token from cookie or request body
+            const refreshToken = ((_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken) || req.body.refreshToken;
+            if (!refreshToken) {
+                api_result_1.ApiResult.error('Refresh token is required', 401).send(res);
+                return;
+            }
+            const result = await this.auth.refreshAccessToken(refreshToken);
+            result.send(res);
+        }
+        catch (error) {
+            console.error("🔄 Token refresh failed:", error);
+            api_result_1.ApiResult.error(error.message || 'Token refresh failed', 401).send(res);
         }
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, decorators_1.POST)('/register'),
-    (0, decorators_1.Validate)([rules_1.organizationRegister]) // Organization Admin User Validation Schema
+    (0, decorators_1.Validate)([rules_1.OrganizationUserRegisterValidation]) // Organization Admin User Validation Schema
     ,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
@@ -108,6 +143,18 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, decorators_1.GET)('/me'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "me", null);
+__decorate([
+    (0, decorators_1.POST)("/refresh-token"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refreshToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, decorators_1.Controller)("/auth"),
     __metadata("design:paramtypes", [])

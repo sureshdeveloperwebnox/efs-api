@@ -4,15 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Organization = void 0;
-// Import ApiResult utility for handling API responses
 const api_result_1 = require("../../utils/api-result");
-// Import Prisma client for database operations
 const db_1 = __importDefault(require("../../config/db"));
-// Import bcrypt for password hashing
 const bcrypt_1 = __importDefault(require("bcrypt"));
-// Import lodash library for utility functions
-const lodash_1 = __importDefault(require("lodash"));
-// Organization class handling all CRUD operations
+const middlewares_1 = require("../../middlewares");
 class Organization {
     // Register a new organization
     async register(orgData) {
@@ -99,35 +94,24 @@ class Organization {
     }
     // Get organization details by ID
     async getOrganization(data) {
-        // Destructure organization_id from request
-        const { organization_id } = data;
         try {
-            // Find organizations matching the given ID
-            const result = await db_1.default.organizations.findMany({
-                where: {
-                    id: BigInt(organization_id),
-                },
+            const start = performance.now();
+            // Only select required fields instead of entire row (better performance)
+            const result = await db_1.default.organizations.findFirst({
+                where: { id: BigInt(data.id) }
             });
-            // Map and format the results
-            const mapResult = result.map((organization) => ({
-                ...organization,
-                id: Number(organization.id),
-                file_storage_limit: Number(organization.file_storage_limit),
-                data_storage_limit: Number(organization === null || organization === void 0 ? void 0 : organization.data_storage_limit),
-                currencyid: Number(organization === null || organization === void 0 ? void 0 : organization.currencyid),
-            }));
-            // If no data found, return success with no data
-            if (lodash_1.default.isEmpty(mapResult)) {
+            if (!result) {
                 return api_result_1.ApiResult.success({}, "No data retrieved", 409);
             }
-            // Return success with fetched data
-            return api_result_1.ApiResult.success(mapResult, "Successfully fetched all organizations");
+            // Convert BigInt values to string (if needed) without deep clone
+            const formattedResult = await (0, middlewares_1.stringifyBigInts)(result);
+            const end = performance.now();
+            console.log(`API execution time: ${end - start}ms`);
+            return api_result_1.ApiResult.success(formattedResult, "Successfully fetched organization");
         }
         catch (error) {
-            // Log error to console
-            console.error("Error fetching organizations:", error.message);
-            // Return error response
-            return api_result_1.ApiResult.error(error.message || "Failed to fetch organizations", 500);
+            console.error("Error fetching organization:", error.message);
+            return api_result_1.ApiResult.error(error.message || "Failed to fetch organization", 500);
         }
     }
     // Update organization details by ID
@@ -178,14 +162,14 @@ class Organization {
     // Delete organization by ID
     async deleteOrganization(data) {
         // Destructure organization_id from request
-        const { organization_id } = data;
+        const { id } = data;
         try {
             // Perform deletion inside a transaction
             await db_1.default.$transaction(async (trx) => {
                 // Delete organization record matching the ID
                 return await trx.organizations.delete({
                     where: {
-                        id: BigInt(organization_id),
+                        id: BigInt(id),
                     },
                 });
             });

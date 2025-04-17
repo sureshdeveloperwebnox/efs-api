@@ -49,3 +49,11 @@ export enum ProficiencyLevel {
   INTERMEDIATE = "BEGINNER",
   EXPERT = "EXPERT",
 }
+
+// 
+export enum EquipmentStatus {
+  AVAILABLE = "AVAILABLE",
+  IN_USE = "IN_USE",
+  UNDER_MAINTENANCE = "UNDER_MAINTENANCE",
+  DAMAGED = "DAMAGED"
+}

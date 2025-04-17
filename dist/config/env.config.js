@@ -10,8 +10,9 @@ const envConfig = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
     GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || '',
-    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || 'fdzzfz',
-    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'sdddddddddddddd',
-    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '1h'
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || '',
+    ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN || '3h',
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || '',
+    REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN || '9d',
 };
 exports.default = envConfig;

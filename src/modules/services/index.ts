@@ -7,3 +7,4 @@ export * from './holiday'; // Holiday Service
 export * from './time.off.request'; // Time Off Request Service 
 export * from './business.hours'; // Buinsess Hours Service
 export * from './crew.members'; // Crew Members
+export * from './equipments'; // Equipments

@@ -11,6 +11,7 @@ const passport_1 = __importDefault(require("passport"));
 const routes_1 = require("./routes");
 const response_generator_1 = require("./utils/response-generator");
 const auth_1 = require("./modules/services/auth"); // ✅ Corrected import
+const env_config_1 = __importDefault(require("./config/env.config"));
 // Load environment variables
 dotenv_1.default.config();
 // Initialize express app
@@ -21,7 +22,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // 🛡️ Setup session (required for passport)
 app.use((0, express_session_1.default)({
-    secret: process.env.SESSION_SECRET || 'your_session_secret',
+    secret: env_config_1.default.GOOGLE_CLIENT_SECRET || 'your_session_secret',
     resave: false,
     saveUninitialized: false
 }));

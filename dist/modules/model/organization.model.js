@@ -1,14 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EditOrganization = exports.Organization = exports.PlanType = void 0;
-// Plantype for organization user
-var PlanType;
-(function (PlanType) {
-    PlanType["FREE"] = "FREE";
-    PlanType["STANDARD"] = "STANDARD";
-    PlanType["PROFESSIONAL"] = "PROFESSIONAL";
-})(PlanType || (exports.PlanType = PlanType = {}));
-class Organization {
+exports.EditOrganization = exports.CreateOrganization = void 0;
+class CreateOrganization {
     constructor(data) {
         this.name = data.name;
         this.first_name = data.first_name;
@@ -32,7 +25,7 @@ class Organization {
         this.updated_at = data.updated_at;
     }
 }
-exports.Organization = Organization;
+exports.CreateOrganization = CreateOrganization;
 class EditOrganization {
     constructor(data) {
         this.id = data.id;

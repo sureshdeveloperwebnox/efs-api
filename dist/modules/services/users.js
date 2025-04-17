@@ -7,8 +7,11 @@ exports.User = void 0;
 const api_result_1 = require("../../utils/api-result");
 const db_1 = __importDefault(require("../../config/db"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const middlewares_1 = require("../../middlewares");
+// User API Service
 class User {
-    async registration(userData) {
+    // User Register API
+    async register(userData) {
         const { first_name, last_name, organization_id, isVerified_Email, isVerified_PhoneNumber, email, phone, job_title, user_type, is_active, email_verified, created_at, updated_at, } = userData;
         try {
             // Check if email already exists
@@ -59,32 +62,30 @@ class User {
             }, "User registration successful");
         }
         catch (error) {
-            console.error('User registration error:', error);
+            console.error("User registration error:", error);
             return api_result_1.ApiResult.error("User registration failed", 500);
         }
     }
-    async listAllUser(data) {
+    // GET User API
+    async getUser(data) {
         const { id } = data;
         try {
-            const result = await db_1.default.$transaction(async (trx) => {
-                const user = await trx.users.findMany({
-                    where: {
-                        id: BigInt(id)
-                    },
-                });
-                const mapUser = user.map((data) => ({
-                    ...data,
-                    id: Number(data.id),
-                    organization_id: Number(data.organization_id)
-                }));
-                return api_result_1.ApiResult.success({ data: mapUser }, 'Successfull fetched all users');
+            const user = await db_1.default.users.findUnique({
+                where: {
+                    id: BigInt(id),
+                },
             });
-            return result;
+            if (!user) {
+                return api_result_1.ApiResult.error("User not found", 404);
+            }
+            const result = await (0, middlewares_1.stringifyBigInts)(user);
+            return api_result_1.ApiResult.success(result, "Successfully fetched user");
         }
         catch (error) {
-            return api_result_1.ApiResult.error('Failed to fetch user data', 500);
+            return api_result_1.ApiResult.error("Failed to fetch user data", 500);
         }
     }
+    // Update User API
     async updateUser(data) {
         const { id, first_name, last_name, organization_id, isVerified_Email, isVerified_PhoneNumber, email, phone, job_title, user_type, is_active, email_verified, created_at, updated_at, } = data;
         try {
@@ -118,24 +119,34 @@ class User {
             return api_result_1.ApiResult.error(error.message || "Failed to update user", 500);
         }
     }
+    // Delete User API
     async deleteUser(data) {
-        const { organization_id } = data;
+        const { id } = data;
         try {
-            const result = await db_1.default.$transaction(async (trx) => {
+            await db_1.default.$transaction(async (trx) => {
                 return await trx.users.delete({
                     where: {
-                        id: BigInt(organization_id)
-                    }
+                        id: Number(id),
+                    },
                 });
             });
-            return api_result_1.ApiResult.success({ data: this.parseBigInt(result) }, 'User deleted successful');
+            return api_result_1.ApiResult.success({}, "User deleted successful");
         }
         catch (error) {
-            return api_result_1.ApiResult.error('Failed to delete user', 500);
+            return api_result_1.ApiResult.error("Failed to delete user", 500);
         }
     }
-    parseBigInt(obj) {
-        return JSON.parse(JSON.stringify(obj, (_, value) => typeof value === 'bigint' ? value.toString() : value));
+    //User Profile API
+    async getUserProfiles() {
+        try {
+            const users = await db_1.default.users.findMany();
+            const result = await (0, middlewares_1.stringifyBigInts)(users); // Optional, if you're handling BigInts
+            console.log('users', users);
+            return api_result_1.ApiResult.success(result, "Successfully fetched all user profiles", 200);
+        }
+        catch (error) {
+            return api_result_1.ApiResult.error("Failed to fetch user profiles", 500);
+        }
     }
 }
 exports.User = User;

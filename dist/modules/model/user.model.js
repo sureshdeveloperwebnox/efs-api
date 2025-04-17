@@ -1,24 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EditUser = exports.User = exports.UserLogin = exports.UserRole = void 0;
-var UserRole;
-(function (UserRole) {
-    UserRole["ADMIN"] = "ADMIN";
-    UserRole["STAFF"] = "STAFF";
-    UserRole["TECHNICIAN"] = "TECHNICIAN";
-    UserRole["DISPATCHER"] = "DISPATCHER";
-    UserRole["CUSTOMER"] = "CUSTOMER";
-})(UserRole || (exports.UserRole = UserRole = {}));
-class UserLogin {
+exports.EditUser = exports.CreateUser = void 0;
+const main_model_1 = require("./main.model");
+class CreateUser {
     constructor(data) {
-        this.email = data.email;
-        this.password = data.password;
-    }
-}
-exports.UserLogin = UserLogin;
-class User {
-    constructor(data) {
-        if (!Object.values(UserRole).includes(data.user_type)) {
+        if (!Object.values(main_model_1.UserRole).includes(data.user_type)) {
             throw new Error("Invalid user type");
         }
         this.id = data.id;
@@ -39,10 +25,10 @@ class User {
         this.updated_at = data.updated_at;
     }
 }
-exports.User = User;
+exports.CreateUser = CreateUser;
 class EditUser {
     constructor(data) {
-        if (!Object.values(UserRole).includes(data.user_type)) {
+        if (!Object.values(main_model_1.UserRole).includes(data.user_type)) {
             throw new Error("Invalid user type");
         }
         this.id = data.id;

@@ -15,6 +15,7 @@ const rules_1 = require("../rules");
 const api_result_1 = require("../../utils/api-result");
 const organization_1 = require("../services/organization");
 const token_guard_1 = require("../../middlewares/token.guard");
+// Organization Controller
 let OrganizationController = class OrganizationController {
     constructor() {
         this.organization = new organization_1.Organization();
@@ -22,9 +23,7 @@ let OrganizationController = class OrganizationController {
     // CREATE Organization API endpoint
     async register(req, res) {
         try {
-            // Calling the register service method with request body
             const result = await this.organization.register(req.body);
-            // Sending success response
             result.send(res);
         }
         catch (error) {
@@ -35,88 +34,74 @@ let OrganizationController = class OrganizationController {
     // GET Organization API endpoint
     async getOrganization(req, res) {
         try {
-            // Extracting organization ID from request parameters
             const id = req.params.id;
-            // Calling the getOrganization service method with organization ID
             const result = await this.organization.getOrganization({
-                organization_id: id,
+                id
             });
-            // Sending success response
             result.send(res);
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown error";
-            api_result_1.ApiResult.error(message, 400).send(res);
+            console.log('getOrganization error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
     // UPDATE Organization API endpoint
     async updateOrganization(req, res) {
         try {
-            // Extracting organization ID from request parameters
             const id = req.params.id;
-            // Extracting the body from request
             const body = req.body;
-            // Merging body and ID into a single data object
             const data = { ...body, id };
-            // Calling the updateOrganization service method with merged data
             const result = await this.organization.updateOrganization(data);
-            // Sending success response
             result.send(res);
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown error";
-            api_result_1.ApiResult.error(message, 400).send(res);
+            console.log('updateOrganization error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
     // DELETE Organization API endpoint
     async deleteOrganization(req, res) {
         try {
-            // Extracting organization ID from request parameters
             const id = req.params.id;
-            // Calling the deleteOrganization service method with organization ID
             const result = await this.organization.deleteOrganization({
-                organization_id: id,
+                id,
             });
-            // Sending success response
             result.send(res);
         }
         catch (error) {
-            const message = error instanceof Error ? error.message : "Unknown error";
-            api_result_1.ApiResult.error(message, 400).send(res);
+            console.log('deleteOrganization error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
 };
 exports.OrganizationController = OrganizationController;
 __decorate([
     (0, decorators_1.POST)(""),
-    (0, decorators_1.Validate)([rules_1.organizationRegister]),
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID, rules_1.CreateOrganizationValidation]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "register", null);
 __decorate([
     (0, decorators_1.GET)("/:id"),
-    (0, decorators_1.Validate)([rules_1.organizationDetails]),
-    (0, token_guard_1.AccessTokenGuard)() // Applying access token guard middleware
-    ,
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID]),
+    (0, token_guard_1.AccessTokenGuard)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "getOrganization", null);
 __decorate([
     (0, decorators_1.PUT)("/:id"),
-    (0, decorators_1.Validate)([rules_1.organizationDetails]),
-    (0, token_guard_1.AccessTokenGuard)() // Applying access token guard middleware
-    ,
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID, rules_1.UpdateOrganizationValidation]),
+    (0, token_guard_1.AccessTokenGuard)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "updateOrganization", null);
 __decorate([
     (0, decorators_1.DELETE)("/:id"),
-    (0, decorators_1.Validate)([rules_1.organizationDetails]),
-    (0, token_guard_1.AccessTokenGuard)() // Applying access token guard middleware
-    ,
+    (0, decorators_1.Validate)([rules_1.ValidateParamsID]),
+    (0, token_guard_1.AccessTokenGuard)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)

@@ -8,3 +8,4 @@ export * from './time.off.request.rules';
 export * from './crew.rules';
 export * from './skills.rules';
 export * from './crew.member.rules';
+export * from './equipments.rules';

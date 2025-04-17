@@ -43,7 +43,7 @@ enum RequestStatus {
   DENIED
 }
 
-enum EqupmentStatus {
+enum EquipmentStatus {
   AVAILABLE
   IN_USE
   UNDER_MAINTENANCE
@@ -357,15 +357,15 @@ model equipments {
   organization_id   BigInt
   name              String         @db.VarChar(100)
   equipment_type    String         @db.VarChar(100)
-  status            EqupmentStatus
+  status            EquipmentStatus
   location          String         @db.Text
   availability_date String         @db.VarChar(20)
   created_at        String         @db.VarChar(50)
-  updated_at        String         @db.VarChar(50)
+  updated_at        String         @db.VarChar(50) @default("")
   organizations     organizations  @relation(fields: [organization_id], references: [id])
 
-  @@index([organization_id], name: "quipments_organization_idx")
-  @@map("quipments_organization")
+  @@index([organization_id], name: "equipments_organization_idx")
+  @@map("equipments_organization")
 }
 
 model companies {
