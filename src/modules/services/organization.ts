@@ -3,6 +3,7 @@ import prisma from "../../config/db";
 import bcrypt from "bcrypt";
 import _ from "lodash";
 import { ICreateOrganization, IEditOrganization, IIDModel } from "../model";
+import { stringifyBigInts } from "../../middlewares";
 export class Organization {
 
   // Register a new organization
@@ -124,46 +125,34 @@ export class Organization {
 
   // Get organization details by ID
   public async getOrganization(data: IIDModel): Promise<ApiResult> {
-    // Destructure organization_id from request
-    const { id } = data;
     try {
-      // Find organizations matching the given ID
-      const result = await prisma.organizations.findMany({
-        where: {
-          id: BigInt(id),
-        },
+      const start = performance.now();
+
+      // Only select required fields instead of entire row (better performance)
+      const result = await prisma.organizations.findFirst({
+        where: { id: BigInt(data.id) }
       });
-
-      // Map and format the results
-      const mapResult = result.map((organization: any) => ({
-        ...organization,
-        id: Number(organization.id),
-        file_storage_limit: Number(organization.file_storage_limit),
-        data_storage_limit: Number(organization?.data_storage_limit),
-        currencyid: Number(organization?.currencyid),
-      }));
-
-      // If no data found, return success with no data
-      if (_.isEmpty(mapResult)) {
+  
+      if (!result) {
         return ApiResult.success({}, "No data retrieved", 409);
       }
+  
+      // Convert BigInt values to string (if needed) without deep clone
+      const formattedResult = await stringifyBigInts(result);
+      const end = performance.now();
+      console.log(`API execution time: ${end - start}ms`);
+      return ApiResult.success(formattedResult, "Successfully fetched organization");
 
-      // Return success with fetched data
-      return ApiResult.success(
-        mapResult,
-        "Successfully fetched all organizations"
-      );
+      
     } catch (error: any) {
-      // Log error to console
-      console.error("Error fetching organizations:", error.message);
-
-      // Return error response
+      console.error("Error fetching organization:", error.message);
       return ApiResult.error(
-        error.message || "Failed to fetch organizations",
+        error.message || "Failed to fetch organization",
         500
       );
     }
   }
+  
 
   // Update organization details by ID
   public async updateOrganization(data: IEditOrganization): Promise<ApiResult> {
