@@ -398,8 +398,8 @@ model customers {
   phone           String        @unique @db.VarChar(20)
   address         String        @db.Text
   is_active       Int           @default(0) @db.SmallInt
-  created_at      String        @db.VarChar(50)
-  updated_at      String        @db.VarChar(50)
+  created_at      String        @db.VarChar(50) @default("")
+  updated_at      String        @db.VarChar(50) @default("")
   organizations   organizations @relation(fields: [organization_id], references: [id])
   companies       companies     @relation(fields: [company_id], references: [id])
   assets          assets[]

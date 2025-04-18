@@ -153,7 +153,6 @@ export class Organization {
     }
   }
   
-
   // Update organization details by ID
   public async updateOrganization(data: IEditOrganization): Promise<ApiResult> {
     // Destructure organization data

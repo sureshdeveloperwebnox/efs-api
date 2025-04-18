@@ -9,3 +9,4 @@ export * from './business.hours'; // Buinsess Hours Service
 export * from './crew.members'; // Crew Members
 export * from './equipments'; // Equipments
 export * from './company'; // Company
+export * from './customers'; // Customer
