@@ -1,39 +1,70 @@
 import { stringifyBigInts } from "../../middlewares";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { ICreateCustomer, IIDModel, IUpdateCustomer } from "../model";
+import {
+  ICreateCustomer,
+  IDateTime,
+  IIDModel,
+  IUpdateCustomer,
+} from "../model";
+import { generateHashPassword } from "../../utils";
 
 // Customer API Service
 export class Customers {
-    
   // Create Customer API Service
-  public async createCustomer(data: ICreateCustomer): Promise<ApiResult> {
+  public async createCustomer(data: [ICreateCustomer, IDateTime]): Promise<ApiResult> {
+    const [customerData, date_time] = data;
+  
     const {
       organization_id,
       company_id,
       first_name,
       last_name,
+      job_title,
       email,
       phone,
       address,
       is_active,
-      created_at,
-    } = data;
-
+      isVerified_Email,
+      isVerified_PhoneNumber,
+      email_verified
+    } = customerData;
+  
     try {
+      // Check if customer email already exists
       const checkCustomer = await prisma.users.findFirst({
-        where: {
-          email,
-        },
+        where: { email },
       });
-
-      if (!checkCustomer) {
-        return ApiResult.error("Customer email already exist", 202);
+  
+      if (checkCustomer) {
+        return ApiResult.error("Customer email already exists", 202);
       }
+  
+      // Generate password only after email is confirmed unique
+      const { hashedPassword } = await generateHashPassword();
+  
       await prisma.$transaction(async (trx) => {
-        return await trx.customers.createMany({
+        const user = await trx.users.create({
+          data: {
+            first_name,
+            last_name,
+            organization_id,
+            password_hash: hashedPassword,
+            isVerified_Email,
+            isVerified_PhoneNumber,
+            email,
+            phone,
+            job_title,
+            user_type: "CUSTOMER",
+            is_active,
+            email_verified,
+          },
+        });
+  
+        await trx.customers.create({
           data: {
             organization_id,
+            user_id: user.id,
             company_id,
             first_name,
             last_name,
@@ -41,16 +72,17 @@ export class Customers {
             phone,
             address,
             is_active,
-            created_at,
           },
         });
       });
-      return ApiResult.success({}, "Customer created successful", 201);
+  
+      return ApiResult.success({}, "Customer created successfully", 201);
     } catch (error: any) {
       console.log("CreateCustomer Error", error);
       return ApiResult.error("Failed to create customer", 500);
     }
   }
+  
 
   // Get Customer details by ID API Service
   public async getCustomerByID(data: IIDModel): Promise<ApiResult> {

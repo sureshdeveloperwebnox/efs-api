@@ -50,10 +50,23 @@ export enum ProficiencyLevel {
   EXPERT = "EXPERT",
 }
 
-// 
+// Equipment Status 
 export enum EquipmentStatus {
   AVAILABLE = "AVAILABLE",
   IN_USE = "IN_USE",
   UNDER_MAINTENANCE = "UNDER_MAINTENANCE",
   DAMAGED = "DAMAGED"
+}
+
+
+// Date Time
+export interface IDateTime {
+  date_time: string;
+}
+
+export class DateTime implements IDateTime {
+  date_time: string;
+  constructor(data: IDateTime) {
+    this.date_time = data.date_time;
+  }
 }

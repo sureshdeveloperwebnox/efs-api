@@ -6,8 +6,10 @@ import { AccessTokenGuard } from "../../middlewares";
 import {
   CreateCustomerValidation,
   UpdateCompanyValidation,
+  ValidateDateTime,
   ValidateParamsID,
 } from "../rules";
+import { getDateTime } from "../../utils/get.date.time";
 
 @Controller("/customers")
 export class CustomerController {
@@ -20,10 +22,18 @@ export class CustomerController {
   // Create Customer API Endpoint
   @POST("")
   @AccessTokenGuard()
-  @Validate([CreateCustomerValidation])
+  @Validate([CreateCustomerValidation, ValidateDateTime])
   public async createCustomer(req: RequestX, res: Response): Promise<void> {
     try {
-      const result = await this.customers.createCustomer(req.body);
+
+        // Get Date Time
+      const date_time = await getDateTime(req);
+
+      const data = {
+        ...req.body
+      };
+
+      const result = await this.customers.createCustomer([data, date_time]);
       result.send(res);
     } catch (error: any) {
       console.log("createCustomer Controller Error", error);
