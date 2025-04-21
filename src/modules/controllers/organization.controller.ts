@@ -22,7 +22,7 @@ export class OrganizationController {
 
   // CREATE Organization API endpoint
   @POST("")
-  @Validate([ValidateParamsID, CreateOrganizationValidation])
+  @Validate([CreateOrganizationValidation])
   public async register(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.organization.register(req.body);

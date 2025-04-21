@@ -420,9 +420,9 @@ model services {
   description         String                @db.Text
   duration            Int
   price               Decimal               @db.Decimal(10, 2)
-  required_skills     Json
-  created_at          String                @db.VarChar(50)
-  updated_at          String                @db.VarChar(50)
+  required_skills     Json                  @default("{}")
+  created_at          String                @db.VarChar(50) @default("")
+  updated_at          String                @db.VarChar(50) @default("")
   organizations       organizations         @relation(fields: [organization_id], references: [id])
   work_order_services work_order_services[]
   invoice_items       invoice_items[]

@@ -35,7 +35,7 @@ export class CompanyController {
   @GET("/:id")
   @AccessTokenGuard()
   @Validate([ValidateParamsID])
-  public async getEquipmentsByID(req: RequestX, res: Response): Promise<void> {
+  public async getCompanyByID(req: RequestX, res: Response): Promise<void> {
     try {
       const id = req.params.id;
 

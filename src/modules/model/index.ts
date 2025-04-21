@@ -1,5 +1,5 @@
-export * from './main.model';
-export * from './auth.model'; 
+export * from './main.model'; // Main Model
+export * from './auth.model'; // Authentication Model
 export * from './user.model'; // User Model 
 export * from './organization.model'; // Organization Model
 export * from './user.skills.model'; // Skills Model
@@ -12,3 +12,4 @@ export * from './crew.member.model'; // Crew Member Model
 export * from './equipments.model'; // Equiments Model
 export * from './company.model'; // Company Model
 export * from './customers.model'; // Customers Model
+export * from "./service.model"; // Service Model

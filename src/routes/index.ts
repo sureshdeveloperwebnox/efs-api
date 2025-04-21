@@ -27,7 +27,7 @@ export const combineRouters = (app: Express) => {
       CrewMemberController,
       EquipmentController,
       CompanyController,
-      CustomerController
+      CustomerController,
     ],
     {
       middleware: {

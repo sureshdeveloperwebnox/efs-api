@@ -10,3 +10,4 @@ export * from './crew.members'; // Crew Members
 export * from './equipments'; // Equipments
 export * from './company'; // Company
 export * from './customers'; // Customer
+export * from './services'; // Services
