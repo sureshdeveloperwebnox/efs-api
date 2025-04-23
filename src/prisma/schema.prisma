@@ -179,6 +179,7 @@ model organizations {
   parts                   parts[]
   maintenance_plans       maintenance_plans[]
   work_orders             work_orders[]
+  service_types           service_types[]
 }
 
 model users {
@@ -421,14 +422,27 @@ model services {
   duration            Int
   price               Decimal               @db.Decimal(10, 2)
   required_skills     Json                  @default("{}")
-  created_at          String                @db.VarChar(50) @default("")
-  updated_at          String                @db.VarChar(50) @default("")
+  created_at          String                @default("") @db.VarChar(50)
+  updated_at          String                @default("") @db.VarChar(50)
   organizations       organizations         @relation(fields: [organization_id], references: [id])
   work_order_services work_order_services[]
   invoice_items       invoice_items[]
 
   @@index([organization_id], name: "services_organization_idx")
   @@map("services")
+}
+
+model service_types {
+  id              BigInt        @id @default(autoincrement())
+  organization_id BigInt
+  name            String        @db.Text
+  description     String        @db.Text
+  created_at      String        @default("") @db.VarChar(50)
+  updated_at      String        @default("") @db.VarChar(50)
+  organizations   organizations @relation(fields: [organization_id], references: [id])
+
+  @@index([organization_id], name: "service_types_organization_idx")
+  @@map("service_types")
 }
 
 model assets {
@@ -463,8 +477,8 @@ model parts {
   price           Decimal         @db.Decimal(10, 2)
   inventory_count Int
   reorder_level   Int
-  created_at      String          @db.VarChar(50) @default("")
-  updated_at      String          @db.VarChar(50) @default("")
+  created_at      String          @default("") @db.VarChar(50)
+  updated_at      String          @default("") @db.VarChar(50)
   organizations   organizations   @relation(fields: [organization_id], references: [id])
   invoice_items   invoice_items[]
 
