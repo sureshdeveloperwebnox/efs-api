@@ -81,7 +81,7 @@ export class Service {
           },
         });
       });
-      return ApiResult.success({}, "Service created sucessful", 201);
+      return ApiResult.success({}, "Service updated sucessful", 202);
     } catch (error: any) {
       console.log("createService Error", error);
       return ApiResult.error("Failed create service", 500);
