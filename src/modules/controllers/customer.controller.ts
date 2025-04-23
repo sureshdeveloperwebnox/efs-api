@@ -27,13 +27,14 @@ export class CustomerController {
     try {
 
         // Get Date Time
-      const date_time = await getDateTime(req);
+      const date = await getDateTime(req);
 
       const data = {
-        ...req.body
+        ...req.body,
+        date
       };
 
-      const result = await this.customers.createCustomer([data, date_time]);
+      const result = await this.customers.createCustomer(data);
       result.send(res);
     } catch (error: any) {
       console.log("createCustomer Controller Error", error);

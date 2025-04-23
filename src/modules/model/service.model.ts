@@ -33,6 +33,7 @@ export interface IUpdateService {
   duration: number;
   price: number;
   required_skills: JSON;
+  date: string;
 }
 
 export class UpdateService implements IUpdateService {
@@ -42,6 +43,7 @@ export class UpdateService implements IUpdateService {
   duration: number;
   price: number;
   required_skills: JSON;
+  date: string;
 
   constructor(data: IUpdateService) {
     this.id = data.id;
@@ -50,5 +52,6 @@ export class UpdateService implements IUpdateService {
     this.duration = data.duration;
     this.price = data.price;
     this.required_skills = data.required_skills;
+    this.date = data.date;
   }
 }

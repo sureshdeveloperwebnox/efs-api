@@ -13,7 +13,7 @@ import { generateHashPassword } from "../../utils";
 export class Customers {
   // Create Customer API Service
   public async createCustomer(data: [ICreateCustomer, IDateTime]): Promise<ApiResult> {
-    const [customerData, date_time] = data;
+    const [customerData, date] = data;
   
     const {
       organization_id,
@@ -58,6 +58,7 @@ export class Customers {
             user_type: "CUSTOMER",
             is_active,
             email_verified,
+            created_at: date.date_time
           },
         });
   

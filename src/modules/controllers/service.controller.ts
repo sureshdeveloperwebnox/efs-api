@@ -1,5 +1,5 @@
 import { RequestX } from "../../utils/request.interface";
-import { Controller, GET, POST, PUT, Validate } from "../../decorators";
+import { Controller, GET, POSTPayloadDecorator, POST, PUT, Validate, PUTPayloadDecorator } from "../../decorators";
 import { Service } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { AccessTokenGuard } from "../../middlewares";
@@ -52,14 +52,10 @@ export class ServiceController {
     @PUT("/:id")
     @AccessTokenGuard()
     @Validate([ValidateParamsID])
-    public async updateService(req: RequestX, res: Response): Promise<void> {
+    @PUTPayloadDecorator()
+    public async updateService(req: RequestX, res: Response, data: any): Promise<void> {
       try {
-        const id = req.params.id;
-  
-        const body = req.body;
-  
-        const data = { ...body, id };
-  
+        
         const result = await this.service.updateService(data);
         result.send(res);
       } catch (error: any) {

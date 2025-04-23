@@ -1,10 +1,11 @@
 import { stringifyBigInts } from "../../middlewares";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { ICreateService, IIDModel, IUpdateService } from "../model";
+import { ICreateService, IDateTime, IIDModel, IUpdateService } from "../model";
 
 // Service API
 export class Service {
+
   // Create Service API
   public async createService(data: ICreateService): Promise<ApiResult> {
     const { organization_id, description, duration, price, required_skills } =
@@ -65,12 +66,17 @@ export class Service {
       duration,
       price,
       required_skills,
+      date,
     } = data;
+
+    console.log('data service', data);
+    
+
     try {
       await prisma.$transaction(async (trx) => {
         return await trx.services.update({
           where: {
-            id: id
+            id: id,
           },
           data: {
             organization_id,
@@ -78,13 +84,14 @@ export class Service {
             duration,
             price,
             required_skills: JSON.stringify(required_skills),
+            updated_at: date
           },
         });
       });
       return ApiResult.success({}, "Service updated sucessful", 202);
     } catch (error: any) {
-      console.log("createService Error", error);
-      return ApiResult.error("Failed create service", 500);
+      console.log("updateService Error", error);
+      return ApiResult.error("Failed update service", 500);
     }
   }
 }

@@ -13,3 +13,4 @@ export * from './equipments.model'; // Equiments Model
 export * from './company.model'; // Company Model
 export * from './customers.model'; // Customers Model
 export * from "./service.model"; // Service Model
+export * from "./parts.model"; // Part Model

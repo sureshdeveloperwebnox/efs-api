@@ -463,8 +463,8 @@ model parts {
   price           Decimal         @db.Decimal(10, 2)
   inventory_count Int
   reorder_level   Int
-  created_at      String          @db.VarChar(50)
-  updated_at      String          @db.VarChar(50)
+  created_at      String          @db.VarChar(50) @default("")
+  updated_at      String          @db.VarChar(50) @default("")
   organizations   organizations   @relation(fields: [organization_id], references: [id])
   invoice_items   invoice_items[]
 

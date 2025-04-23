@@ -12,3 +12,4 @@ export * from './equipments.rules';
 export * from './company.rules';
 export * from './customers.rules';
 export * from './service.rules';
+export * from './parts.rules';
