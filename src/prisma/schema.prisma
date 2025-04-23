@@ -458,8 +458,8 @@ model assets {
   notes           String        @db.Text
   purchase_date   String        @db.VarChar(50)
   warranty_expiry String        @db.VarChar(50)
-  created_at      String        @db.VarChar(50)
-  updated_at      String        @db.VarChar(50)
+  created_at      String        @db.VarChar(50) @default("")
+  updated_at      String        @db.VarChar(50) @default("")
   organizations   organizations @relation(fields: [organization_id], references: [id])
   customers       customers     @relation(fields: [customer_id], references: [id])
   work_orders     work_orders[]

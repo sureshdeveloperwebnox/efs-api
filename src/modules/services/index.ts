@@ -13,3 +13,4 @@ export * from './customers'; // Customer
 export * from './services'; // Services
 export * from './parts'; // Parts
 export * from './service.types'; // Service Types
+export * from './assets'; // Assets
