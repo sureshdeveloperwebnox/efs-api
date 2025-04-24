@@ -85,6 +85,25 @@ export enum FrequencyUnitType {
   MONTHS = "MONTHS"
 }
 
+// Priority
+export enum Prioirty {
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH",
+  URGENT = "URGENT"
+}
+
+// Work Order Status
+export enum WorkOrderStatus {
+  DRAFT = "DRAFT",
+  OPEN = "OPEN",
+  SCHEDULED = "SCHEDULED",
+  IN_PROGRESS = "IN_PROGRESS",
+  ON_HOLD = "ON_HOLD",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED"
+}
+
 
 // Date Time
 export interface IDateTime {

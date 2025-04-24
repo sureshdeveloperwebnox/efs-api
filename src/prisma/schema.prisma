@@ -532,7 +532,7 @@ model work_orders {
   description          String                 @db.Text
   priority             Prioirty
   status               WorkOrderStatus        @default(DRAFT)
-  assigned_to          String                 @db.VarChar(50)
+  assigned_to          BigInt                 
   assigned_crew_id     Int
   scheduled_start_date String                 @db.VarChar(50)
   scheduled_end_date   String                 @db.VarChar(50)
@@ -547,8 +547,8 @@ model work_orders {
   postal_code          String                 @db.VarChar(20)
   country              String                 @db.VarChar(50)
   is_multi_day         Int                    @db.SmallInt
-  created_at           String                 @db.VarChar(50)
-  updated_at           String                 @db.VarChar(50)
+  created_at           String                 @db.VarChar(50) @default("")
+  updated_at           String                 @db.VarChar(50) @default("")
   organizations        organizations          @relation(fields: [organization_id], references: [id])
   customers            customers              @relation(fields: [customer_id], references: [id])
   companies            companies              @relation(fields: [company_id], references: [id])
