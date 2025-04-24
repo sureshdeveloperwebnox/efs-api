@@ -14,3 +14,5 @@ export * from "./company.controller";
 export * from "./customer.controller";
 export * from "./service.controller";
 export * from "./parts.controller";
+export * from "./service.types.controller";
+export * from "./assets.controller";

@@ -58,6 +58,13 @@ export enum EquipmentStatus {
   DAMAGED = "DAMAGED"
 }
 
+export enum AssetStatus {
+  OPERATIONAL = "OPERATIONAL",
+  NEEDS_MAINTENANCE = "NEEDS_MAINTENANCE",
+  UNDER_REPAIR = "UNDER_REPAIR",
+  DECOMMISSIONED = "DECOMMISSIONED"
+}
+
 
 // Date Time
 export interface IDateTime {

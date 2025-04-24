@@ -435,12 +435,9 @@ model services {
 
 model service_types {
   id              BigInt        @id @default(autoincrement())
-  service_id      BigInt
   organization_id BigInt
+  name            String        @db.Text
   description     String        @db.Text
-  duration        Int
-  price           Decimal       @db.Decimal(10, 2)
-  required_skills Json          @default("{}")
   created_at      String        @default("") @db.VarChar(50)
   updated_at      String        @default("") @db.VarChar(50)
   organizations   organizations @relation(fields: [organization_id], references: [id])
@@ -462,8 +459,8 @@ model assets {
   notes           String        @db.Text
   purchase_date   String        @db.VarChar(50)
   warranty_expiry String        @db.VarChar(50)
-  created_at      String        @db.VarChar(50)
-  updated_at      String        @db.VarChar(50)
+  created_at      String        @db.VarChar(50) @default("")
+  updated_at      String        @db.VarChar(50) @default("")
   organizations   organizations @relation(fields: [organization_id], references: [id])
   customers       customers     @relation(fields: [customer_id], references: [id])
   work_orders     work_orders[]
