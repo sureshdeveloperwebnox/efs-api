@@ -20,7 +20,7 @@ export class TimeOffRequestController {
 
   // CREATE Time Off Request API
   @POST("")
-  @Validate([CreateTimeoffRequestValidationSchema])
+  @Validate({body: CreateTimeoffRequestValidationSchema})
   @AccessTokenGuard()
   public async createTimeOffRequest(req: RequestX, res: Response): Promise<void> {
     try {
@@ -34,7 +34,7 @@ export class TimeOffRequestController {
 
   // GET Time Off Request By ID API
   @GET("/:id")
-  @Validate([ValidateParamsID])
+  @Validate({params: ValidateParamsID})
   @AccessTokenGuard()
   public async getTimeOffRequestByID(req: RequestX, res: Response): Promise<void> {
     try {
@@ -54,7 +54,7 @@ export class TimeOffRequestController {
 
   // PUT Update Time Off Request Approve or Reject API
   @PUT("/updateTimeOffRequest/:id")
-  @Validate([ValidateParamsID, UpdateTimeoffRequestValidationSchema])
+  @Validate({params: ValidateParamsID, body: UpdateTimeoffRequestValidationSchema})
   @AccessTokenGuard()
   public async updateTimeOffRequest(req: RequestX, res: Response): Promise<void> {
     try {
