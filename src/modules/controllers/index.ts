@@ -16,3 +16,4 @@ export * from "./service.controller";
 export * from "./parts.controller";
 export * from "./service.types.controller";
 export * from "./assets.controller";
+export * from "./maintenance.plan.controller";

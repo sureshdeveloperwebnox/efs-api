@@ -15,3 +15,4 @@ export * from './service.rules';
 export * from './parts.rules';
 export * from './service.types.rules';
 export * from './asstes.rules';
+export * from './maintenance.plan.rules';

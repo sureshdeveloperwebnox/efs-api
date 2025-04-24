@@ -58,11 +58,31 @@ export enum EquipmentStatus {
   DAMAGED = "DAMAGED"
 }
 
+// Asset Status
 export enum AssetStatus {
   OPERATIONAL = "OPERATIONAL",
   NEEDS_MAINTENANCE = "NEEDS_MAINTENANCE",
   UNDER_REPAIR = "UNDER_REPAIR",
   DECOMMISSIONED = "DECOMMISSIONED"
+}
+
+// Frequency
+export enum Frequency {
+  DAILY =  "DAILY",
+  WEEKLY = "WEEKLY",
+  BIWEEKLY = "BIWEEKLY",
+  MONTHLY = "MONTHLY",
+  QUARTERLY = "QUARTERLY",
+  SEMIANNUALLY = "SEMIANNUALLY",
+  ANNUALLY = "ANNUALLY",
+  CUSTOM = "CUSTOM"
+}
+
+// Frequency Type
+export enum FrequencyUnitType {
+  DAYS = "DAYS",
+  WEEKS = "WEEKS",
+  MONTHS = "MONTHS"
 }
 
 

@@ -14,3 +14,4 @@ export * from './services'; // Services
 export * from './parts'; // Parts
 export * from './service.types'; // Service Types
 export * from './assets'; // Assets
+export * from './maintenance.plan'; // Maintenance Plans

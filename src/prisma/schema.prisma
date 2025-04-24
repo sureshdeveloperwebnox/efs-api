@@ -498,8 +498,8 @@ model maintenance_plans {
   frequency_unit          Int
   frequency_unit_type     FrequencyUnitType
   is_active               Int                       @db.SmallInt
-  created_at              String                    @db.VarChar(50)
-  updated_at              String                    @db.VarChar(50)
+  created_at              String                    @db.VarChar(50) @default("")
+  updated_at              String                    @db.VarChar(50) @default("")
   organizations           organizations             @relation(fields: [organization_id], references: [id])
   maintenance_plan_assets maintenance_plan_assets[]
   work_orders             work_orders[]
