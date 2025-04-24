@@ -513,8 +513,8 @@ model maintenance_plan_assets {
   maintenance_plan_id BigInt
   asset_id            BigInt
   assigned_at         String            @db.VarChar(50)
-  created_at          String            @db.VarChar(50)
-  updated_at          String            @db.VarChar(50)
+  created_at          String            @db.VarChar(50) @default("")
+  updated_at          String            @db.VarChar(50) @default("")
   maintenance_plans   maintenance_plans @relation(fields: [maintenance_plan_id], references: [id])
 
   @@index([maintenance_plan_id], name: "maintenance_plan_assets_maintenance_plan_idx")

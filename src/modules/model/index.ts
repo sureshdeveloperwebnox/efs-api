@@ -17,3 +17,4 @@ export * from './parts.model'; // Part Model
 export * from  './service.types.model'; // Service Type Model
 export * from  './assets.model'; // Assets Model
 export * from './maintenance.plans.model'; // Maintenance Plan Model
+export * from  './maintenance.plan.assets.model'; // Maintenance Plan Asset Model
