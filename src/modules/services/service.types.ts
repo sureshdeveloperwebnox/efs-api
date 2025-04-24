@@ -34,14 +34,14 @@ export class ServiceTypes {
     }
   }
 
-  // Get Service Type details by ID
-  public async getServiceTypeByID(data: IIDModel ): Promise<ApiResult> {
-    const { id } = data;
+  // Get Service Type
+  public async getServiceType(data: IIDModel ): Promise<ApiResult> {
+    
     try {
       
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.service_types.findFirst({
-        where: { id: BigInt(id) }
+        where: { id: BigInt(data.id) }
       });
 
       if (!result) {

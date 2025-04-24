@@ -1,5 +1,5 @@
 
-// Create Service Validation
+// Create Service 
 export interface ICreateService {
   organization_id: bigint;
   name: string;
@@ -28,7 +28,7 @@ export class CreateService implements ICreateService {
 }
 
 
-// Update Service Validation
+// Update Service 
 export interface IUpdateService {
   id: bigint;
   name: string;

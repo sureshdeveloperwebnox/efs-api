@@ -3,7 +3,7 @@ import { GET, POST, PUT, Validate, POSTPayloadDecorator, Controller, PUTPayloadD
 import { ServiceTypes } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
-import { CreatePartValidation, ValidateDateTime, ValidateParamsID } from "../rules";
+import { CreateServiceTypeValidation, UpdateServiceTypeValidation, ValidateDateTime, ValidateParamsID } from "../rules";
 
 // Service Type Controller API 
 
@@ -19,7 +19,7 @@ export class ServiceTypeController {
   @POST("")
   @AccessTokenGuard()
   @POSTPayloadDecorator()
-  @Validate([CreatePartValidation, ValidateDateTime])
+  @Validate([CreateServiceTypeValidation, ValidateDateTime])
   public async createServiceType(req: RequestX, res: Response, data: any): Promise<void> {
     try {
       const result = await this.servicetypes.createServiceType(data);
@@ -35,20 +35,20 @@ export class ServiceTypeController {
   @AccessTokenGuard()
   @Validate([ValidateParamsID])
   @GETPayloadDecorator()
-  public async getServiceTypeByID(req: RequestX, res: Response, data: any): Promise<void> {
+  public async getServiceType(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.servicetypes.getServiceTypeByID(data);
+      const result = await this.servicetypes.getServiceType(data);
       result.send(res);
     } catch (error: any) {
-      console.log("getServiceTypeByID Controller Error", error);
+      console.log("getServiceType Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }
 
   // Update Service Type API
   @PUT("/:id")
-  @AccessTokenGuard()
-  @Validate([ValidateParamsID])
+  @Validate([ValidateParamsID, ValidateDateTime, UpdateServiceTypeValidation])
+  // @AccessTokenGuard()
   @PUTPayloadDecorator()
   public async updateServiceType(req: RequestX, res: Response, data: any): Promise<void> {
     try {

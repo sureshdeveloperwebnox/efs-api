@@ -49,8 +49,12 @@ export function GETPayloadDecorator() {
       try {
         const id = req.params.id;
 
-        // Call the original method with injected `id`
-        return await originalMethod.call(this, req, res, id);
+        const data = {
+          id
+        }
+
+        // Call the original method with injected `data`
+        return await originalMethod.call(this, req, res, data);
       } catch (error) {
         console.error("InjectPayload Error:", error);
         next(error);

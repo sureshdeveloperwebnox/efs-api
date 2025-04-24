@@ -17,5 +17,5 @@ export const ValidateDateTime = {
       "any.required": "Date time is required",
       "string.base": "Date time must be a string",
     }),
-  }),
+  }).unknown(true)
 };
