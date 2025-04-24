@@ -32,8 +32,8 @@ export class ServiceTypeController {
 
   // GET Service Type By ID API
   @GET("/:id")
-  @AccessTokenGuard()
   @Validate([ValidateParamsID])
+  @AccessTokenGuard()
   @GETPayloadDecorator()
   public async getServiceType(req: RequestX, res: Response, data: any): Promise<void> {
     try {
@@ -48,7 +48,7 @@ export class ServiceTypeController {
   // Update Service Type API
   @PUT("/:id")
   @Validate([ValidateParamsID, ValidateDateTime, UpdateServiceTypeValidation])
-  // @AccessTokenGuard()
+  @AccessTokenGuard()
   @PUTPayloadDecorator()
   public async updateServiceType(req: RequestX, res: Response, data: any): Promise<void> {
     try {

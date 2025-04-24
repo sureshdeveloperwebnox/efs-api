@@ -3,7 +3,8 @@ import { GET, POST, PUT, Validate, POSTPayloadDecorator, Controller, PUTPayloadD
 import { Assets } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
-import { ValidateParamsID } from "../rules";
+import { CreateAssetValidation, ValidateDateTime, ValidateParamsID } from "../rules";
+import { UpdateAssetValidation } from '../rules/asstes.rules';
 
 // Asset Controller API 
 
@@ -18,7 +19,9 @@ export class AssetController {
   // Create Asset API 
   @POST("")
   @AccessTokenGuard()
+  @Validate([ValidateDateTime, CreateAssetValidation])
   @POSTPayloadDecorator()
+
   public async createAsset(req: RequestX, res: Response, data: any): Promise<void> {
     try {
       const result = await this.assets.createAsset(data);
@@ -46,8 +49,8 @@ export class AssetController {
 
   // Update Asset Type API
   @PUT("/:id")
+  @Validate([UpdateAssetValidation, ValidateParamsID, ValidateDateTime])
   @AccessTokenGuard()
-  @Validate([ValidateParamsID])
   @PUTPayloadDecorator()
   public async updateAsset(req: RequestX, res: Response, data: any): Promise<void> {
     try {

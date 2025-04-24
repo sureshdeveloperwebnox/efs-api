@@ -1,5 +1,5 @@
 import { RequestX } from "../../utils/request.interface";
-import { Controller, GET, POST, PUT, Validate } from "../../decorators";
+import { Controller, GET, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
 import { Customers } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { AccessTokenGuard } from "../../middlewares";
@@ -9,7 +9,6 @@ import {
   ValidateDateTime,
   ValidateParamsID,
 } from "../rules";
-import { getDateTime } from "../../utils/get.date.time";
 
 @Controller("/customers")
 export class CustomerController {
@@ -22,18 +21,10 @@ export class CustomerController {
   // Create Customer API Endpoint
   @POST("")
   @AccessTokenGuard()
+  @POSTPayloadDecorator()
   @Validate([CreateCustomerValidation, ValidateDateTime])
-  public async createCustomer(req: RequestX, res: Response): Promise<void> {
+  public async createCustomer(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-
-        // Get Date Time
-      const date = await getDateTime(req);
-
-      const data = {
-        ...req.body,
-        date
-      };
-
       const result = await this.customers.createCustomer(data);
       result.send(res);
     } catch (error: any) {

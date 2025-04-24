@@ -12,7 +12,7 @@ export interface ICreateCustomer {
   address: string;
   is_active: number;
   email_verified: boolean;
-  created_at: string;
+  date_time: string;
 }
 
 export class CreateCustomer implements ICreateCustomer {
@@ -28,7 +28,7 @@ export class CreateCustomer implements ICreateCustomer {
   address: string;
   is_active: number;
   email_verified: boolean;
-  created_at: string;
+  date_time: string;
 
   constructor(data: ICreateCustomer) {
     this.organization_id = data.organization_id;
@@ -43,7 +43,7 @@ export class CreateCustomer implements ICreateCustomer {
     this.address = data.address;
     this.is_active = data.is_active;
     this.email_verified = data.email_verified;
-    this.created_at = data.created_at;
+    this.date_time = data.date_time;
   }
 }
 
