@@ -8,13 +8,14 @@ export class Service {
 
   // Create Service API
   public async createService(data: ICreateService): Promise<ApiResult> {
-    const { organization_id, description, duration, price, required_skills } =
+    const { organization_id, name, description, duration, price, required_skills } =
       data;
     try {
       await prisma.$transaction(async (trx) => {
         return await trx.services.create({
           data: {
             organization_id,
+            name,
             description,
             duration,
             price,
@@ -62,6 +63,7 @@ export class Service {
     const {
       id,
       organization_id,
+      name,
       description,
       duration,
       price,
@@ -80,6 +82,7 @@ export class Service {
           },
           data: {
             organization_id,
+            name,
             description,
             duration,
             price,

@@ -2,6 +2,7 @@
 // Create Service Validation
 export interface ICreateService {
   organization_id: bigint;
+  name: string;
   description: string;
   duration: number;
   price: number;
@@ -10,6 +11,7 @@ export interface ICreateService {
 
 export class CreateService implements ICreateService {
   organization_id: bigint;
+  name: string;
   description: string;
   duration: number;
   price: number;
@@ -17,6 +19,7 @@ export class CreateService implements ICreateService {
 
   constructor(data: ICreateService) {
     this.organization_id = data.organization_id;
+    this.name = data.name;
     this.description = data.description;
     this.duration = data.duration;
     this.price = data.price;
@@ -28,6 +31,7 @@ export class CreateService implements ICreateService {
 // Update Service Validation
 export interface IUpdateService {
   id: bigint;
+  name: string;
   organization_id: bigint;
   description: string;
   duration: number;
@@ -38,6 +42,7 @@ export interface IUpdateService {
 
 export class UpdateService implements IUpdateService {
   id: bigint;
+  name: string;
   organization_id: bigint;
   description: string;
   duration: number;
@@ -47,6 +52,7 @@ export class UpdateService implements IUpdateService {
 
   constructor(data: IUpdateService) {
     this.id = data.id;
+    this.name = data.name;
     this.organization_id = data.organization_id;
     this.description = data.description;
     this.duration = data.duration;
