@@ -1,79 +1,89 @@
 import { stringifyBigInts } from "../../middlewares";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { ICreateMaintenancePlanAsset, ICreateWorkOrder, IIDModel, IUpdateMaintenancePlanAsset } from "../model";
+import { ICreateWorkOrder, IIDModel, IUpdateWorkOrder } from "../model";
 
 // Work Order Service
 export class WorkOrder {
-
   // Create Work Order Service
-  public async createWorkOrder(data: ICreateWorkOrder): Promise<ApiResult> {
-      const {
-        organization_id,
-        customer_id,
-        company_id,
-        asset_id,
-        maintenance_plan_id,  
-        title,
-        description,
-        priority,
-        status,
-        assigned_to,
-        assigned_crew_id,
-        scheduled_start_date,
-        scheduled_end_date,
-        actual_start_date,
-        actual_end_date,
-        currency_id,
-        estimated_cost,
-        actual_cost,
-        address,
-        city,
-        state,
-        postal_code,
-        country,
-        is_multi_day,
-        date_time
+  public async createWorkOrder(data: any): Promise<ApiResult> {
+    const {
+      organization_id,
+      customer_id,
+      company_id,
+      asset_id,
+      maintenance_plan_id,
+      title,
+      description,
+      priority,
+      status,
+      assigned_to,
+      assigned_crew_id,
+      scheduled_start_date,
+      scheduled_end_date,
+      actual_start_date,
+      actual_end_date,
+      currency_id,
+      estimated_cost,
+      actual_cost,
+      address,
+      city,
+      state,
+      postal_code,
+      country,
+      is_multi_day,
+      date_time,
+      services = [],
+      tasks = [],
+      assets = [],
     } = data;
 
     try {
-      await prisma.$transaction(async (trx) => {
-        return await trx.work_orders.create({
-          data: {
-        organization_id,
-        customer_id,
-        company_id,
-        asset_id,
-        maintenance_plan_id,  
-        title,
-        description,
-        priority,
-        status,
-        assigned_to,
-        assigned_crew_id,
-        scheduled_start_date,
-        scheduled_end_date,
-        actual_start_date,
-        actual_end_date,
-        currency_id,
-        estimated_cost,
-        actual_cost,
-        address,
-        city,
-        state,
-        postal_code,
-        country,
-        is_multi_day,
-        created_at: date_time,
-          },
-        });
-      });
-      return ApiResult.success({}, "Work order created successful", 201);
+      // Convert arrays to JSON strings for the stored procedure
+      const servicesJson = services.length > 0 ? JSON.stringify(services) : null;
+      const tasksJson = tasks.length > 0 ? JSON.stringify(tasks) : null;
+      const assetsJson = assets.length > 0 ? JSON.stringify(assets) : null;
+
+      // Call the stored procedure
+      await prisma.$executeRaw`
+        CALL create_work_order(
+          ${organization_id},
+          ${customer_id},
+          ${company_id},
+          ${asset_id},
+          ${maintenance_plan_id},
+          ${title},
+          ${description},
+          ${priority},
+          ${status},
+          ${assigned_to},
+          ${assigned_crew_id},
+          ${scheduled_start_date},
+          ${scheduled_end_date},
+          ${actual_start_date},
+          ${actual_end_date},
+          ${currency_id},
+          ${estimated_cost},
+          ${actual_cost},
+          ${address},
+          ${city},
+          ${state},
+          ${postal_code},
+          ${country},
+          ${is_multi_day === 1},
+          ${date_time},
+          ${servicesJson}::jsonb,
+          ${tasksJson}::jsonb,
+          ${assetsJson}::jsonb
+        )
+      `;
+
+      return ApiResult.success({}, "Work order created successfully", 201);
     } catch (error: any) {
-      console.log("createWorkOrder Error", error);
-      return ApiResult.error("Failed to create maintenance plan asset", 500);
+      console.error("createWorkOrder Error:", error.message, error.stack);
+      return ApiResult.error("Failed to create work order", 500);
     }
-  };
+}
 
   // Get Work Order Service
   public async getWorkOrder(data: IIDModel): Promise<ApiResult> {
@@ -101,36 +111,81 @@ export class WorkOrder {
         500
       );
     }
-  };
+  }
 
   // Update Work Order Service
-  public async updateWorkOrder(data: IUpdateMaintenancePlanAsset): Promise<ApiResult> {
+  public async updateWorkOrder(data: IUpdateWorkOrder): Promise<ApiResult> {
     const {
       id,
-      maintenance_plan_id,
+      organization_id,
+      customer_id,
+      company_id,
       asset_id,
-      assigned_at,
+      maintenance_plan_id,
+      title,
+      description,
+      priority,
+      status,
+      assigned_to,
+      assigned_crew_id,
+      scheduled_start_date,
+      scheduled_end_date,
+      actual_start_date,
+      actual_end_date,
+      currency_id,
+      estimated_cost,
+      actual_cost,
+      address,
+      city,
+      state,
+      postal_code,
+      country,
+      is_multi_day,
       date_time,
     } = data;
 
     try {
       await prisma.$transaction(async (trx) => {
-        return await trx.maintenance_plan_assets.update({
+        return await trx.work_orders.update({
           data: {
-            maintenance_plan_id,
+            organization_id,
+            customer_id,
+            company_id,
             asset_id,
-            assigned_at,
-            created_at: date_time,
+            maintenance_plan_id,
+            title,
+            description,
+            priority,
+            status,
+            assigned_to,
+            assigned_crew_id,
+            scheduled_start_date,
+            scheduled_end_date,
+            actual_start_date,
+            actual_end_date,
+            currency_id,
+            estimated_cost,
+            actual_cost,
+            address,
+            city,
+            state,
+            postal_code,
+            country,
+            is_multi_day,
+            updated_at: date_time,
           },
           where: {
-            id: id
-          }
+            id: id,
+          },
         });
       });
-      return ApiResult.success({}, "Maintenance plan asset updated successful", 201);
+      return ApiResult.success({}, "Work order updated successful", 201);
     } catch (error: any) {
-      console.log("updateMaintancePlan Error", error);
-      return ApiResult.error("Failed to update maintenance plan", 500);
+      console.log("updateWorkOrder Error", error);
+      return ApiResult.error("Failed to update work order", 500);
     }
-  };
+  }
 }
+
+
+

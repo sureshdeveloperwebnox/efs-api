@@ -575,8 +575,8 @@ model work_order_services {
   service_id    BigInt
   quantity      Int
   service_cost  Decimal     @db.Decimal(10, 2)
-  created_at    String      @db.VarChar(50)
-  updated_at    String      @db.VarChar(50)
+  created_at    String      @db.VarChar(50) @default("")
+  updated_at    String      @db.VarChar(50) @default("")
   work_orders   work_orders @relation(fields: [work_order_id], references: [id])
   services      services    @relation(fields: [service_id], references: [id])
 
@@ -592,9 +592,9 @@ model work_order_tasks {
   task_description String              @db.Text
   assigned_to      BigInt
   status           WorkOrderTaskStatus @default(NOT_STARTED)
-  due_date         String              @db.VarChar(50)
-  created_at       String              @db.VarChar(50)
-  updated_at       String              @db.VarChar(50)
+  due_date         String              @db.VarChar(50) 
+  created_at       String              @db.VarChar(50) @default("")
+  updated_at       String              @db.VarChar(50) @default("")
   work_orders      work_orders         @relation(fields: [work_order_id], references: [id])
 
   @@index([work_order_id], name: "work_order_tasks_work_order_idx")
@@ -606,8 +606,8 @@ model work_order_assets {
   work_order_id BigInt
   asset_id      BigInt
   quantity      Int
-  created_at    String      @db.VarChar(50)
-  updated_at    String      @db.VarChar(50)
+  created_at    String      @db.VarChar(50) @default("")
+  updated_at    String      @db.VarChar(50) @default("")
   work_orders   work_orders @relation(fields: [work_order_id], references: [id])
 
   @@index([work_order_id], name: "work_order_assets_work_order_idx")

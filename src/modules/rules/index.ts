@@ -17,3 +17,4 @@ export * from './service.types.rules';
 export * from './asstes.rules';
 export * from './maintenance.plan.rules';
 export * from './maintenance.plan.asset.rules';
+export * from './work.order.rules';
