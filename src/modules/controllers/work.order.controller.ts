@@ -32,13 +32,13 @@ export class WorkOrderController {
 
   // Get Work Order API
   @GET("/:id")
-  @Validate([ValidateParamsID])
-  @AccessTokenGuard()
-  @GETPayloadDecorator()
+  // @Validate([ValidateParamsID])
+  // @AccessTokenGuard()
+  // @GETPayloadDecorator()
   public async getWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.work_order.getWorkOrder(data);
-      result.send(res);
+      // const result = await this.work_order.callProcedure();
+      // result.send(res);
     } catch (error: any) {
       console.log("getWorkOrder Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
@@ -52,8 +52,21 @@ export class WorkOrderController {
   @PUTPayloadDecorator()
   public async updateWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.work_order.updateWorkOrder(data);
-      result.send(res);
+      // const result = await this.work_order.updateWorkOrder(data);
+      // result.send(res);
+    } catch (error: any) {
+      console.log("updateWorkOrder Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
+
+  @GET("/call")
+  public async callProcedure(req: RequestX, res: Response,): Promise<void> {
+    console.log('ji');
+    
+    try {
+      await this.work_order.callProcedure();
+      // result.send(res);
     } catch (error: any) {
       console.log("updateWorkOrder Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);

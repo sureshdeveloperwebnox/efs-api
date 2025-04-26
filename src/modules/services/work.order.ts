@@ -4,6 +4,12 @@ import { ApiResult } from "../../utils/api-result";
 import { ICreateWorkOrder, IIDModel, IUpdateWorkOrder } from "../model";
 
 // Work Order Service
+interface CreateWorkOrderResult {
+  success: boolean;
+  message: string;
+  status_code: number;
+  work_order_id: number;
+}
 export class WorkOrder {
   // Create Work Order Service
   public async createWorkOrder(data: any): Promise<ApiResult> {
@@ -32,160 +38,63 @@ export class WorkOrder {
       postal_code,
       country,
       is_multi_day,
-      date_time,
-      services = [],
-      tasks = [],
-      assets = [],
+      assets,
+      services,
+      tasks
     } = data;
 
     try {
-      // Convert arrays to JSON strings for the stored procedure
-      const servicesJson = services.length > 0 ? JSON.stringify(services) : null;
-      const tasksJson = tasks.length > 0 ? JSON.stringify(tasks) : null;
-      const assetsJson = assets.length > 0 ? JSON.stringify(assets) : null;
-
-      // Call the stored procedure
-      await prisma.$executeRaw`
+      // Make sure JSON data is properly stringified and passed as jsonb
+    await prisma.$executeRawUnsafe(`
         CALL create_work_order(
           ${organization_id},
           ${customer_id},
           ${company_id},
           ${asset_id},
           ${maintenance_plan_id},
-          ${title},
-          ${description},
-          ${priority},
-          ${status},
+         ' ${title}',
+         ' ${description}',
+           '${priority}', 
+           '${status}',
           ${assigned_to},
           ${assigned_crew_id},
-          ${scheduled_start_date},
-          ${scheduled_end_date},
-          ${actual_start_date},
-          ${actual_end_date},
+          '${scheduled_start_date}',
+         ' ${scheduled_end_date}',
+         ' ${actual_start_date}',
+          '${actual_end_date}',
           ${currency_id},
           ${estimated_cost},
           ${actual_cost},
-          ${address},
-          ${city},
-          ${state},
-          ${postal_code},
-          ${country},
-          ${is_multi_day === 1},
-          ${date_time},
-          ${servicesJson}::jsonb,
-          ${tasksJson}::jsonb,
-          ${assetsJson}::jsonb
+         ' ${address}',
+         ' ${city}',
+         ' ${state}',
+         ' ${postal_code}',
+          '${country}',
+           ${is_multi_day},
+           ${services ? `'${JSON.stringify(services)}'::jsonb` : 'NULL'},
+           ${tasks ? `'${JSON.stringify(tasks)}'::jsonb` : 'NULL'},
+           ${assets ? `'${JSON.stringify(assets)}'::jsonb` : 'NULL'}
         )
-      `;
+      `);
 
-      return ApiResult.success({}, "Work order created successfully", 201);
+      return ApiResult.success({ }, "Work order created", 201);
     } catch (error: any) {
       console.error("createWorkOrder Error:", error.message, error.stack);
       return ApiResult.error("Failed to create work order", 500);
     }
-}
-
-  // Get Work Order Service
-  public async getWorkOrder(data: IIDModel): Promise<ApiResult> {
-    try {
-      // Only select required fields instead of entire row (better performance)
-      const result = await prisma.work_orders.findFirst({
-        where: { id: BigInt(data.id) },
-      });
-
-      if (!result) {
-        return ApiResult.success({}, "No data retrieved", 202);
-      }
-
-      // Convert BigInt values to string (if needed) without deep clone
-      const formattedResult = await stringifyBigInts(result);
-      return ApiResult.success(
-        formattedResult,
-        "Successfully fetched work orders",
-        200
-      );
-    } catch (error: any) {
-      console.error("getWorkOrder", error);
-      return ApiResult.error(
-        error.message || "Failed to fetch work orders",
-        500
-      );
-    }
   }
 
-  // Update Work Order Service
-  public async updateWorkOrder(data: IUpdateWorkOrder): Promise<ApiResult> {
-    const {
-      id,
-      organization_id,
-      customer_id,
-      company_id,
-      asset_id,
-      maintenance_plan_id,
-      title,
-      description,
-      priority,
-      status,
-      assigned_to,
-      assigned_crew_id,
-      scheduled_start_date,
-      scheduled_end_date,
-      actual_start_date,
-      actual_end_date,
-      currency_id,
-      estimated_cost,
-      actual_cost,
-      address,
-      city,
-      state,
-      postal_code,
-      country,
-      is_multi_day,
-      date_time,
-    } = data;
-
+  public async callProcedure() {
     try {
-      await prisma.$transaction(async (trx) => {
-        return await trx.work_orders.update({
-          data: {
-            organization_id,
-            customer_id,
-            company_id,
-            asset_id,
-            maintenance_plan_id,
-            title,
-            description,
-            priority,
-            status,
-            assigned_to,
-            assigned_crew_id,
-            scheduled_start_date,
-            scheduled_end_date,
-            actual_start_date,
-            actual_end_date,
-            currency_id,
-            estimated_cost,
-            actual_cost,
-            address,
-            city,
-            state,
-            postal_code,
-            country,
-            is_multi_day,
-            updated_at: date_time,
-          },
-          where: {
-            id: id,
-          },
-        });
-      });
-      return ApiResult.success({}, "Work order updated successful", 201);
-    } catch (error: any) {
-      console.log("updateWorkOrder Error", error);
-      return ApiResult.error("Failed to update work order", 500);
+      const result = await prisma.$queryRawUnsafe(
+        `SELECT proname::text FROM pg_proc WHERE proname = 'create_work_order';`
+      );
+      console.log(result);
+      console.log('Procedure executed successfully.');
+    } catch (error) {
+      console.error('Error executing procedure:', error);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 }
-
-
-

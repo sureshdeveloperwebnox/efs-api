@@ -86,7 +86,7 @@ export enum FrequencyUnitType {
 }
 
 // Priority
-export enum Prioirty {
+export enum Priority {
   LOW = "LOW",
   MEDIUM = "MEDIUM",
   HIGH = "HIGH",
@@ -94,15 +94,15 @@ export enum Prioirty {
 }
 
 // Work Order Status
-export enum WorkOrderStatus {
-  DRAFT = "DRAFT",
-  OPEN = "OPEN",
-  SCHEDULED = "SCHEDULED",
-  IN_PROGRESS = "IN_PROGRESS",
-  ON_HOLD = "ON_HOLD",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED"
-}
+  export enum WorkOrderStatus {
+    DRAFT = "DRAFT",
+    OPEN = "OPEN",
+    SCHEDULED = "SCHEDULED",
+    IN_PROGRESS = "IN_PROGRESS",
+    ON_HOLD = "ON_HOLD",
+    COMPLETED = "COMPLETED",
+    CANCELLED = "CANCELLED"
+  }
 
 
 // Date Time

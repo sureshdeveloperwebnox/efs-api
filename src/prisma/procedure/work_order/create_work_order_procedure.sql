@@ -1,27 +1,28 @@
+
 CREATE OR REPLACE PROCEDURE create_work_order(
     p_organization_id BIGINT,
     p_customer_id BIGINT,
     p_company_id BIGINT,
     p_asset_id BIGINT,
     p_maintenance_plan_id BIGINT,
-    p_title VARCHAR(255),
+    p_title TEXT,
     p_description TEXT,
-    p_priority VARCHAR(50),
-    p_status VARCHAR(50),
+    p_priority TEXT,
+    p_status TEXT,
     p_assigned_to BIGINT,
     p_assigned_crew_id BIGINT,
     p_scheduled_start_date TEXT,
     p_scheduled_end_date TEXT,
     p_actual_start_date TEXT,
     p_actual_end_date TEXT,
-    p_currency_id BIGINT,
-    p_estimated_cost DECIMAL(10,2),
-    p_actual_cost DECIMAL(10,2),
-    p_address VARCHAR(255),
-    p_city VARCHAR(100),
-    p_state VARCHAR(100),
-    p_postal_code VARCHAR(20),
-    p_country VARCHAR(100),
+    p_currency_id INTEGER,
+    p_estimated_cost NUMERIC(10,2),
+    p_actual_cost NUMERIC(10,2),
+    p_address TEXT,
+    p_city TEXT,
+    p_state TEXT,
+    p_postal_code TEXT,
+    p_country TEXT,
     p_is_multi_day INTEGER,
     p_date_time TEXT,
     p_services JSONB DEFAULT NULL,
@@ -36,7 +37,7 @@ DECLARE
     v_task RECORD;
     v_asset RECORD;
 BEGIN
-    -- Insert work order
+    -- Insert into work_orders
     INSERT INTO work_orders (
         organization_id,
         customer_id,
@@ -61,8 +62,7 @@ BEGIN
         state,
         postal_code,
         country,
-        is_multi_day,
-        created_at
+        is_multi_day
     ) VALUES (
         p_organization_id,
         p_customer_id,
@@ -71,8 +71,8 @@ BEGIN
         p_maintenance_plan_id,
         p_title,
         p_description,
-        p_priority,
-        p_status,
+        p_priority::"Priority",
+        p_status::"WorkOrderStatus",
         p_assigned_to,
         p_assigned_crew_id,
         p_scheduled_start_date,
@@ -87,42 +87,39 @@ BEGIN
         p_state,
         p_postal_code,
         p_country,
-        p_is_multi_day,
-        p_date_time
+        p_is_multi_day
     ) RETURNING id INTO v_work_order_id;
 
-    -- Insert services if provided
+    -- Insert work_order_services
     IF p_services IS NOT NULL THEN
         FOR v_service IN SELECT * FROM jsonb_to_recordset(p_services) AS x(
             service_id BIGINT,
             quantity INTEGER,
-            service_cost DECIMAL(10,2)
+            service_cost NUMERIC(10,2)
         )
         LOOP
             INSERT INTO work_order_services (
                 work_order_id,
                 service_id,
                 quantity,
-                service_cost,
-                created_at
+                service_cost
             ) VALUES (
                 v_work_order_id,
                 v_service.service_id,
                 v_service.quantity,
-                v_service.service_cost,
-                p_date_time
+                v_service.service_cost
             );
         END LOOP;
     END IF;
 
-    -- Insert tasks if provided
+    -- Insert work_order_tasks
     IF p_tasks IS NOT NULL THEN
         FOR v_task IN SELECT * FROM jsonb_to_recordset(p_tasks) AS x(
             task_name VARCHAR(255),
             task_description TEXT,
             assigned_to BIGINT,
-            status VARCHAR(50),
-            due_date DATE
+            status TEXT,
+            due_date TEXT
         )
         LOOP
             INSERT INTO work_order_tasks (
@@ -131,21 +128,19 @@ BEGIN
                 task_description,
                 assigned_to,
                 status,
-                due_date,
-                created_at
+                due_date
             ) VALUES (
                 v_work_order_id,
                 v_task.task_name,
                 v_task.task_description,
                 v_task.assigned_to,
-                v_task.status,
-                v_task.due_date,
-                p_date_time
+                v_task.status::"WorkOrderTaskStatus",
+                v_task.due_date
             );
         END LOOP;
     END IF;
 
-    -- Insert assets if provided
+    -- Insert work_order_assets
     IF p_assets IS NOT NULL THEN
         FOR v_asset IN SELECT * FROM jsonb_to_recordset(p_assets) AS x(
             asset_id BIGINT,
@@ -155,15 +150,14 @@ BEGIN
             INSERT INTO work_order_assets (
                 work_order_id,
                 asset_id,
-                quantity,
-                created_at
+                quantity
             ) VALUES (
                 v_work_order_id,
                 v_asset.asset_id,
-                v_asset.quantity,
-                p_date_time
+                v_asset.quantity
             );
         END LOOP;
     END IF;
+
 END;
 $$;

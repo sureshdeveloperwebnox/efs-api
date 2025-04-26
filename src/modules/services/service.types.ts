@@ -1,21 +1,20 @@
 import { stringifyBigInts } from "../../middlewares";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { ICreatePart, ICreateServiceType, IIDModel, IUpdateServiceType } from "../model";
+import {
+  ICreatePart,
+  ICreateServiceType,
+  IIDModel,
+  IUpdateServiceType,
+} from "../model";
 
 // Service Types API Service
 
 export class ServiceTypes {
-
   // Create Service Type
   public async createServiceType(data: ICreateServiceType): Promise<ApiResult> {
     // Destructure the data
-    const {
-      organization_id,
-      name,
-      description,
-      date_time,
-    } = data;
+    const { organization_id, name, description, date_time } = data;
     try {
       await prisma.$transaction(async (trx) => {
         return await trx.service_types.create({
@@ -35,13 +34,11 @@ export class ServiceTypes {
   }
 
   // Get Service Type
-  public async getServiceType(data: IIDModel ): Promise<ApiResult> {
-    
+  public async getServiceType(data: IIDModel): Promise<ApiResult> {
     try {
-      
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.service_types.findFirst({
-        where: { id: BigInt(data.id) }
+        where: { id: BigInt(data.id) },
       });
 
       if (!result) {
@@ -57,20 +54,17 @@ export class ServiceTypes {
       );
     } catch (error: any) {
       console.error("getServiceTypeByID", error);
-      return ApiResult.error(error.message || "Failed to fetch service types", 500);
+      return ApiResult.error(
+        error.message || "Failed to fetch service types",
+        500
+      );
     }
   }
 
   // Update Service Types Service
   public async updateServiceType(data: IUpdateServiceType): Promise<ApiResult> {
     // Destructure the data
-    const {
-      id,
-      organization_id,
-      name,
-      description,
-      date_time
-    } = data;
+    const { id, organization_id, name, description, date_time } = data;
     try {
       await prisma.$transaction(async (trx) => {
         return await trx.service_types.update({
@@ -89,6 +83,43 @@ export class ServiceTypes {
     } catch (error: any) {
       console.log("updateServiceType Error", error);
       return ApiResult.error("Failed to update service type", 500);
+    }
+  }
+
+  public async createHoliday(data: any): Promise<ApiResult> {
+    try {
+      const { organization_id, name, holiday_date, is_recurring, created_at, holidayData } =
+        data;
+
+      await prisma.$executeRawUnsafe(`
+          CALL create_holiday_prcd(
+            ${organization_id},
+           '${name}',
+           '${holiday_date}',
+            ${is_recurring},
+           '${created_at}',
+            ${holidayData ? `'${JSON.stringify(holidayData)}'::jsonb` : 'NULL'}
+          )
+        `);
+
+      return ApiResult.success("Service type created successfully.");
+    } catch (error: any) {
+      console.log("createServiceType proc Error", error);
+      return ApiResult.error("Failed to service type proc", 500);
+    }
+  }
+  
+  public async callProcedure() {
+    try {
+      const result = await prisma.$queryRawUnsafe(
+        `SELECT proname::text FROM pg_proc WHERE proname = 'create_holiday_proc';`
+      );
+      console.log(result);
+      console.log('Procedure executed successfully.');
+    } catch (error) {
+      console.error('Error executing procedure:', error);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 }

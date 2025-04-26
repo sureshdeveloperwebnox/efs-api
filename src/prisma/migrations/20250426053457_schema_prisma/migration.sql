@@ -350,8 +350,8 @@ CREATE TABLE "maintenance_plans" (
     "frequency_unit" INTEGER NOT NULL,
     "frequency_unit_type" "FrequencyUnitType" NOT NULL,
     "is_active" SMALLINT NOT NULL,
-    "created_at" VARCHAR(50) NOT NULL,
-    "updated_at" VARCHAR(50) NOT NULL,
+    "created_at" VARCHAR(50) NOT NULL DEFAULT '',
+    "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
     CONSTRAINT "maintenance_plans_pkey" PRIMARY KEY ("id")
 );
@@ -362,8 +362,8 @@ CREATE TABLE "maintenance_plan_assets" (
     "maintenance_plan_id" BIGINT NOT NULL,
     "asset_id" BIGINT NOT NULL,
     "assigned_at" VARCHAR(50) NOT NULL,
-    "created_at" VARCHAR(50) NOT NULL,
-    "updated_at" VARCHAR(50) NOT NULL,
+    "created_at" VARCHAR(50) NOT NULL DEFAULT '',
+    "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
     CONSTRAINT "maintenance_plan_assets_pkey" PRIMARY KEY ("id")
 );
@@ -380,7 +380,7 @@ CREATE TABLE "work_orders" (
     "description" TEXT NOT NULL,
     "priority" "Prioirty" NOT NULL,
     "status" "WorkOrderStatus" NOT NULL DEFAULT 'DRAFT',
-    "assigned_to" VARCHAR(50) NOT NULL,
+    "assigned_to" BIGINT NOT NULL,
     "assigned_crew_id" INTEGER NOT NULL,
     "scheduled_start_date" VARCHAR(50) NOT NULL,
     "scheduled_end_date" VARCHAR(50) NOT NULL,
@@ -395,8 +395,8 @@ CREATE TABLE "work_orders" (
     "postal_code" VARCHAR(20) NOT NULL,
     "country" VARCHAR(50) NOT NULL,
     "is_multi_day" SMALLINT NOT NULL,
-    "created_at" VARCHAR(50) NOT NULL,
-    "updated_at" VARCHAR(50) NOT NULL,
+    "created_at" VARCHAR(50) NOT NULL DEFAULT '',
+    "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
     CONSTRAINT "work_orders_pkey" PRIMARY KEY ("id")
 );
@@ -408,8 +408,8 @@ CREATE TABLE "work_order_services" (
     "service_id" BIGINT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "service_cost" DECIMAL(10,2) NOT NULL,
-    "created_at" VARCHAR(50) NOT NULL,
-    "updated_at" VARCHAR(50) NOT NULL,
+    "created_at" VARCHAR(50) NOT NULL DEFAULT '',
+    "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
     CONSTRAINT "work_order_services_pkey" PRIMARY KEY ("id")
 );
@@ -423,8 +423,8 @@ CREATE TABLE "work_order_tasks" (
     "assigned_to" BIGINT NOT NULL,
     "status" "WorkOrderTaskStatus" NOT NULL DEFAULT 'NOT_STARTED',
     "due_date" VARCHAR(50) NOT NULL,
-    "created_at" VARCHAR(50) NOT NULL,
-    "updated_at" VARCHAR(50) NOT NULL,
+    "created_at" VARCHAR(50) NOT NULL DEFAULT '',
+    "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
     CONSTRAINT "work_order_tasks_pkey" PRIMARY KEY ("id")
 );
@@ -435,8 +435,8 @@ CREATE TABLE "work_order_assets" (
     "work_order_id" BIGINT NOT NULL,
     "asset_id" BIGINT NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "created_at" VARCHAR(50) NOT NULL,
-    "updated_at" VARCHAR(50) NOT NULL,
+    "created_at" VARCHAR(50) NOT NULL DEFAULT '',
+    "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
     CONSTRAINT "work_order_assets_pkey" PRIMARY KEY ("id")
 );

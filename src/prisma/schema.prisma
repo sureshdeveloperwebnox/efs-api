@@ -74,7 +74,7 @@ enum FrequencyUnitType {
   MONTHS
 }
 
-enum Prioirty {
+enum Priority {
   LOW
   MEDIUM
   HIGH
@@ -530,7 +530,7 @@ model work_orders {
   maintenance_plan_id  BigInt
   title                String                 @db.VarChar(255)
   description          String                 @db.Text
-  priority             Prioirty
+  priority             Priority               @default(HIGH)
   status               WorkOrderStatus        @default(DRAFT)
   assigned_to          BigInt                 
   assigned_crew_id     Int
