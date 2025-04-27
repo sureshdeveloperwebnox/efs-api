@@ -1,4 +1,4 @@
-import { Controller, GET, POST, PUT, Validate } from "../../decorators";
+import { Controller, GET, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
@@ -17,11 +17,12 @@ export class CrewMemberController {
 
   // Create Crew Memeber API
   @POST("")
-  @AccessTokenGuard()
   @Validate([CreateCrewMemberValidation])
-  public async createCrewMember(req: RequestX, res: Response): Promise<void> {
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async createCrewMember(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.crewmember.createCrewMember(req.body);
+      const result = await this.crewmember.createCrewMember(data);
       result.send(res);
     } catch (error: any) {
       console.log("createCrewMember Controller Error", error);
@@ -29,19 +30,15 @@ export class CrewMemberController {
     }
   };
 
-  // GET Crew Member By ID API
+  // GET Crew Member API
   @GET("/:id")
   @AccessTokenGuard()
   @Validate([ValidateParamsID])
-  public async getCrewMemebrByID(req: RequestX, res: Response): Promise<void> {
+  @GETPayloadDecorator()
+  public async getCrewMember(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const id = req.params.id
 
-      const body = req.body;
-
-      const data = { ...body, id }
-
-      const result = await this.crewmember.getCrewMemebrByID(data);
+      const result = await this.crewmember.getCrewMember(data);
       result.send(res);
     } catch (error: any) {
       console.log("getCrewMemebrByID Controller Error", error);

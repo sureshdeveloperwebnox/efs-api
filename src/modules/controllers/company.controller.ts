@@ -1,5 +1,5 @@
 import { AccessTokenGuard } from "../../middlewares";
-import { Controller, GET, POST, PUT, Validate } from "../../decorators";
+import { Controller, GET, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
 import { Company } from "../services";
 import { RequestX } from "../../utils/request.interface";
 import { ApiResult } from "../../utils/api-result";
@@ -21,9 +21,10 @@ export class CompanyController {
   @POST("")
   @Validate([CreateCompanyValidation])
   @AccessTokenGuard()
-  public async createCompany(req: RequestX, res: Response): Promise<void> {
+  @POSTPayloadDecorator()
+  public async createCompany(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.company.createCompany(req.body);
+      const result = await this.company.createCompany(data);
       result.send(res);
     } catch (error: any) {
       console.log("createEquipment Error", error);

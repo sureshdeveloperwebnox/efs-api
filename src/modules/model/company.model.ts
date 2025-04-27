@@ -9,7 +9,7 @@ export interface ICreateCompany {
   phone: string;
   email: string;
   website: string;
-  created_at: string;
+  date_time: string;
 };
 
 export class CreateCompany implements ICreateCompany {
@@ -21,7 +21,7 @@ export class CreateCompany implements ICreateCompany {
   phone: string;
   email: string;
   website: string;
-  created_at: string;
+  date_time: string;
 
   constructor(data: ICreateCompany) {
     this.organization_id = data.organization_id;
@@ -32,7 +32,7 @@ export class CreateCompany implements ICreateCompany {
     this.phone = data.phone;
     this.email = data.email;
     this.website = data.website;
-    this.created_at = data.created_at;
+    this.date_time = data.date_time;
   }
 };
 
@@ -48,7 +48,7 @@ export interface IUpdateCompany {
     phone: string;
     email: string;
     website: string;
-    created_at: string;
+    date_time: string;
   };
   
   export class UpdateCompany implements IUpdateCompany {
@@ -61,7 +61,7 @@ export interface IUpdateCompany {
     phone: string;
     email: string;
     website: string;
-    created_at: string;
+    date_time: string;
   
     constructor(data: IUpdateCompany) {
       this.id = data.id;
@@ -73,6 +73,6 @@ export interface IUpdateCompany {
       this.phone = data.phone;
       this.email = data.email;
       this.website = data.website;
-      this.created_at = data.created_at;
+      this.date_time = data.date_time;
     }
   };

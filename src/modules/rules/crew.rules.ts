@@ -15,9 +15,5 @@ export const CreateCrewValidation = {
       "any.required": "Leader id is required",
       "number.base": "Leader id must be a number",
     }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Created at is required",
-      "string.base": "Created at must be a string",
-    }),
   }),
 };

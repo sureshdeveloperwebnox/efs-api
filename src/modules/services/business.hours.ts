@@ -8,7 +8,7 @@ import { ICreateBusinessHoursModel, IIDModel } from "../model";
 export class BusinessHours {
   // Create Business Hours API Service
   public async createBusinessHours(data: ICreateBusinessHoursModel): Promise<ApiResult> {
-    const { organization_id, day_of_week, start_time, end_time, created_at } =
+    const { organization_id, day_of_week, start_time, end_time, date_time } =
       data;
     try {
       await prisma.$transaction(async (trx) => {
@@ -18,7 +18,7 @@ export class BusinessHours {
             day_of_week,
             start_time,
             end_time,
-            created_at,
+            created_at: date_time
           },
         });
       });
@@ -28,8 +28,8 @@ export class BusinessHours {
     }
   }
 
-  // Get Business Hours By ID API Service
-  public async getBusinessHoursByID(data:IIDModel): Promise<ApiResult> {
+  // Get Business Hour API Service
+  public async getBusinessHour(data:IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
       const result = await prisma.business_hours.findFirst({
@@ -39,20 +39,22 @@ export class BusinessHours {
       });
       const stingifyJSON = await stringifyBigInts(result);
       if (_.isEmpty(result)) {
-        return ApiResult.success({}, "No data retrieved", 202);
+        return ApiResult.success({}, "No data fetched", 202);
       }
       return ApiResult.success(
         stingifyJSON,
-        "Successfully data retrieved",
+        "Successfully fetched business hours",
         200
       );
     } catch (error: any) {
+      console.log("getBusinessHour error", error);
+      
       return ApiResult.error("Failed to retrieve business hours");
     }
   }
 
-  // Get Businsess Hours API Service
-  public async getBusinessHours(): Promise<ApiResult> {
+  // Get All Business Hours API Service
+  public async getAllBusinessHour(): Promise<ApiResult> {
     try {
       const result = await prisma.business_hours.findMany();
       const stingifyJSON = await stringifyBigInts(result);
@@ -65,6 +67,7 @@ export class BusinessHours {
         200
       );
     } catch (error: unknown) {
+      console.log('getAllBusinessHour Error', error);
       return ApiResult.error("Failed to retrieve business hours", 501);
     }
   }

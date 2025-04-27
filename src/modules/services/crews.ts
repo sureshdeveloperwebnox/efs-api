@@ -9,7 +9,7 @@ import { ICreateCrew, IIDModel } from "../model";
 export class Crew {
   // Create Crew
   public async createCrew(data: ICreateCrew): Promise<ApiResult> {
-    const { organization_id, name, leader_id, created_at } = data;
+    const { organization_id, name, leader_id, date_time } = data;
 
     try {
       await prisma.$transaction(async (trx) => {
@@ -18,7 +18,7 @@ export class Crew {
             organization_id: Number(organization_id),
             name,
             leader_id: Number(leader_id),
-            created_at,
+            created_at: date_time,
           },
         });
       });
@@ -29,8 +29,8 @@ export class Crew {
     }
   };
 
-  // Get Crew By ID
-  public async getCrewByID(data: IIDModel): Promise<ApiResult> {
+  // Get Crew
+  public async getCrew(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
       const crew = await prisma.crews.findFirst({
@@ -43,9 +43,9 @@ export class Crew {
       if (_.isEmpty(crew)) {
         return ApiResult.success({}, "No crew found", 202);
       }
-      return ApiResult.success(result, "Crew data retrieved successfully", 200);
+      return ApiResult.success(result, "Crew data fetched successfully", 200);
     } catch (error: any) {
-      console.log("getCrewByID Service Error", error);
+      console.log("getCrew Service Error", error);
       return ApiResult.error("Failed to fetch crew data", 500);
     }
   };

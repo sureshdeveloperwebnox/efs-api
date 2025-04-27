@@ -9,16 +9,18 @@ export class CrewMember {
     
   // Create Crew Member
   public async createCrewMember(data: ICreateCrewMember): Promise<ApiResult> {
-    const { organization_id, crew_id, user_id, role, created_at } = data;
+    const { organization_id, crew_id, user_id, role, date_time } = data;
     try {
+      console.log('data', data);
+      
       await prisma.$transaction(async (trx) => {
-        return await trx.crew_members.createMany({
+        return await trx.crew_members.create({
           data: {
             organization_id,
             crew_id,
             user_id,
             role,
-            created_at,
+            created_at: date_time,
           },
         });
       });
@@ -30,7 +32,7 @@ export class CrewMember {
   }
 
   // Get Crew Member By ID
-  public async getCrewMemebrByID(data: IIDModel): Promise<ApiResult> {
+  public async getCrewMember(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
       const crew = await prisma.crew_members.findFirst({

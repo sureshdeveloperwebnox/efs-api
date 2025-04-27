@@ -59,14 +59,5 @@ export class ServiceTypeController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }
-  @POST("/createHoliday")
-  public async CreateHoliday(req: RequestX, res: Response): Promise<void> {
-    try {
-      const result = await this.servicetypes.createHoliday(req.body);
-      result.send(res);
-    } catch (error: any) {
-      console.log("CreateHoliday Controller Error", error);
-      ApiResult.error(error.message || "Internal server error", 500);
-    }
-  }
+
 }

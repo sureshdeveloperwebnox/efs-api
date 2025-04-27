@@ -1,4 +1,4 @@
-import { Controller, GET, POST, PUT, Validate } from "../../decorators";
+import { Controller, GET, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
@@ -17,11 +17,12 @@ export class CrewController {
 
   // Create Crew API
   @POST("")
-  @AccessTokenGuard()
   @Validate([CreateCrewValidation])
-  public async createCrew(req: RequestX, res: Response): Promise<void> {
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async createCrew(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.crew.createCrew(req.body);
+      const result = await this.crew.createCrew(data);
       result.send(res);
     } catch (error: any) {
       console.log("createCrew Controller Error", error);
@@ -29,22 +30,17 @@ export class CrewController {
     }
   };
 
-  // GET Crew By ID API
+  // GET Crew API
   @GET("/:id")
-  @AccessTokenGuard()
   @Validate([ValidateParamsID])
-  public async getCrewByID(req: RequestX, res: Response): Promise<void> {
+  @AccessTokenGuard()
+  @GETPayloadDecorator()
+  public async getCrew(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const id = req.params.id
-
-      const body = req.body;
-
-      const data = { ...body, id }
-
-      const result = await this.crew.getCrewByID(data);
+      const result = await this.crew.getCrew(data);
       result.send(res);
     } catch (error: any) {
-      console.log("getCrewByID Controller Error", error);
+      console.log("getCrew Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };

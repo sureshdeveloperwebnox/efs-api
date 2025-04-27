@@ -16,7 +16,7 @@ export class Company {
       phone,
       email,
       website,
-      created_at,
+      date_time,
     } = data;
     try {
 
@@ -25,13 +25,14 @@ export class Company {
         where: {
           name,
         },
-      });
+      })
 
       if (checkCompanyName) {
         return ApiResult.error("Company name exist", 202);
       }
+
       await prisma.$transaction(async (trx) => {
-        return await trx.companies.createMany({
+        return await trx.companies.create({
           data: {
             organization_id,
             name,
@@ -41,7 +42,7 @@ export class Company {
             phone,
             email,
             website,
-            created_at,
+            created_at: date_time,
           },
         });
       });
@@ -91,7 +92,7 @@ export class Company {
       phone,
       email,
       website,
-      created_at,
+      date_time,
     } = data;
 
     try {
@@ -109,8 +110,7 @@ export class Company {
             phone,
             email,
             website,
-            created_at,
-            updated_at: created_at
+            updated_at: date_time
           },
         });
       });

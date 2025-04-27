@@ -3,7 +3,7 @@ export * from "./hello.controller";
 export * from "./organization.controller";
 export * from "./user.controller";
 export * from "./skills.controller";
-export * from "./buisness.hours.controller";
+export * from "./business.hours.controller";
 export * from "./user.skills.controller";
 export * from "./holiday.controller";
 export * from "./time.off.request.controller";

@@ -86,40 +86,5 @@ export class ServiceTypes {
     }
   }
 
-  public async createHoliday(data: any): Promise<ApiResult> {
-    try {
-      const { organization_id, name, holiday_date, is_recurring, created_at, holidayData } =
-        data;
-
-      await prisma.$executeRawUnsafe(`
-          CALL create_holiday_prcd(
-            ${organization_id},
-           '${name}',
-           '${holiday_date}',
-            ${is_recurring},
-           '${created_at}',
-            ${holidayData ? `'${JSON.stringify(holidayData)}'::jsonb` : 'NULL'}
-          )
-        `);
-
-      return ApiResult.success("Service type created successfully.");
-    } catch (error: any) {
-      console.log("createServiceType proc Error", error);
-      return ApiResult.error("Failed to service type proc", 500);
-    }
-  }
-  
-  public async callProcedure() {
-    try {
-      const result = await prisma.$queryRawUnsafe(
-        `SELECT proname::text FROM pg_proc WHERE proname = 'create_holiday_proc';`
-      );
-      console.log(result);
-      console.log('Procedure executed successfully.');
-    } catch (error) {
-      console.error('Error executing procedure:', error);
-    } finally {
-      await prisma.$disconnect();
-    }
-  }
+ 
 }

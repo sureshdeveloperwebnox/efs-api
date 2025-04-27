@@ -34,11 +34,7 @@ export const CreateCompanyValidation = {
     website: Joi.string().required().messages({
       "any.required": "Website is required",
       "string.base": "Website must be a string",
-    }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Created at is required",
-      "string.base": "Created at must be a string",
-    }),
+    })
   }),
 };
 
@@ -76,10 +72,6 @@ export const UpdateCompanyValidation = {
     website: Joi.string().required().messages({
       "any.required": "Website is required",
       "string.base": "Website must be a string",
-    }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Created at is required",
-      "string.base": "Created at must be a string",
-    }),
+    })
   }),
 };
