@@ -17,9 +17,9 @@ export class WorkOrderController {
 
   // Create Work Order API 
   @POST("")
+  @Validate([CreateWorkOrderValidation, ValidateDateTime])
   @AccessTokenGuard()
   @POSTPayloadDecorator()
-  // @Validate([CreateWorkOrderValidation, ValidateDateTime])
   public async createWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
     try {
       const result = await this.work_order.createWorkOrder(data);
@@ -32,8 +32,8 @@ export class WorkOrderController {
 
   // Get Work Order API
   @GET("/:id")
-  // @Validate([ValidateParamsID])
-  // @AccessTokenGuard()
+  @Validate([ValidateParamsID])
+  @AccessTokenGuard()
   @GETPayloadDecorator()
   public async getWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
     try {
@@ -47,8 +47,8 @@ export class WorkOrderController {
 
   // Update Work Order API
   @PUT("/:id")
-  // @Validate([ValidateParamsID, ValidateDateTime, UpdateWorkOrderValidation])
-  // @AccessTokenGuard()
+  @Validate([ValidateParamsID, ValidateDateTime, UpdateWorkOrderValidation])
+  @AccessTokenGuard()
   @PUTPayloadDecorator()
   public async updateWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
     try {
@@ -60,18 +60,18 @@ export class WorkOrderController {
     }
   };
 
-
-    // Get Work Orders API
-    @GET("/get_all_orders")
-    public async getAllWorkOrder(req: RequestX, res: Response): Promise<void> {
-      try {
-        const result = await this.work_order.getAllWorkOrder();
-        result.send(res);
-      } catch (error: any) {
-        console.log("getAllWorkOrder Controller Error", error);
-        ApiResult.error(error.message || "Internal server error", 500);
-      }
-    };
-
+  // Get Work Orders API
+  @GET("/get_all_orders")
+  @AccessTokenGuard()
+  @GETPayloadDecorator()
+  public async getAllWorkOrder(req: RequestX, res: Response): Promise<void> {
+    try {
+      const result = await this.work_order.getAllWorkOrder();
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllWorkOrder Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 
 }
