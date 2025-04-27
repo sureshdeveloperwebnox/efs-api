@@ -1,4 +1,26 @@
-import { Prioirty, WorkOrderStatus } from "./main.model";
+import { Priority, WorkOrderStatus } from "./main.model";
+
+// Service interface
+export interface IService {
+  service_id: bigint;
+  quantity: number;
+  service_cost: number;
+}
+
+// Task interface
+export interface ITask {
+  task_name: string;
+  task_description: string;
+  assigned_to: bigint;
+  status: string; // You might want to create a TaskStatus enum
+  due_date: string;
+}
+
+// Asset interface for work order
+export interface IWorkOrderAsset {
+  asset_id: bigint;
+  quantity: number;
+}
 
 // Create Work Order Model
 export interface ICreateWorkOrder {
@@ -9,7 +31,7 @@ export interface ICreateWorkOrder {
   maintenance_plan_id: bigint;
   title: string;
   description: string;
-  priority: Prioirty;
+  priority: Priority;
   status: WorkOrderStatus;
   assigned_to: bigint;
   assigned_crew_id: number;
@@ -27,6 +49,9 @@ export interface ICreateWorkOrder {
   country: string;
   is_multi_day: number;
   date_time: string;
+  services: IService[];
+  tasks: ITask[];
+  assets: IWorkOrderAsset[];
 }
 
 export class CreateWorkOrder implements ICreateWorkOrder {
@@ -37,7 +62,7 @@ export class CreateWorkOrder implements ICreateWorkOrder {
   maintenance_plan_id: bigint;
   title: string;
   description: string;
-  priority: Prioirty;
+  priority: Priority;
   status: WorkOrderStatus;
   assigned_to: bigint;
   assigned_crew_id: number;
@@ -55,6 +80,9 @@ export class CreateWorkOrder implements ICreateWorkOrder {
   country: string;
   is_multi_day: number;
   date_time: string;
+  services: IService[];
+  tasks: ITask[];
+  assets: IWorkOrderAsset[];
 
   constructor(data: ICreateWorkOrder) {
     this.organization_id = data.organization_id;
@@ -82,6 +110,9 @@ export class CreateWorkOrder implements ICreateWorkOrder {
     this.country = data.country;
     this.is_multi_day = data.is_multi_day;
     this.date_time = data.date_time;
+    this.services = data.services || [];
+    this.tasks = data.tasks || [];
+    this.assets = data.assets || [];
   }
 }
 
@@ -95,7 +126,7 @@ export interface IUpdateWorkOrder {
   maintenance_plan_id: bigint;
   title: string;
   description: string;
-  priority: Prioirty;
+  priority: Priority;
   status: WorkOrderStatus;
   assigned_to: bigint;
   assigned_crew_id: number;
@@ -113,6 +144,9 @@ export interface IUpdateWorkOrder {
   country: string;
   is_multi_day: number;
   date_time: string;
+  services: IService[];
+  tasks: ITask[];
+  assets: IWorkOrderAsset[];
 }
 
 export class UpdateWorkOrder implements IUpdateWorkOrder {
@@ -124,7 +158,7 @@ export class UpdateWorkOrder implements IUpdateWorkOrder {
   maintenance_plan_id: bigint;
   title: string;
   description: string;
-  priority: Prioirty;
+  priority: Priority;
   status: WorkOrderStatus;
   assigned_to: bigint;
   assigned_crew_id: number;
@@ -142,6 +176,9 @@ export class UpdateWorkOrder implements IUpdateWorkOrder {
   country: string;
   is_multi_day: number;
   date_time: string;
+  services: IService[];
+  tasks: ITask[];
+  assets: IWorkOrderAsset[];
 
   constructor(data: IUpdateWorkOrder) {
     this.id = data.id;
@@ -170,5 +207,8 @@ export class UpdateWorkOrder implements IUpdateWorkOrder {
     this.country = data.country;
     this.is_multi_day = data.is_multi_day;
     this.date_time = data.date_time;
+    this.services = data.services || [];
+    this.tasks = data.tasks || [];
+    this.assets = data.assets || [];
   }
 }

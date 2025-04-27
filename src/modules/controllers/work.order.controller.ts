@@ -65,7 +65,7 @@ export class WorkOrderController {
     console.log('ji');
     
     try {
-      await this.work_order.callProcedure();
+      // await this.work_order.callProcedure();
       // result.send(res);
     } catch (error: any) {
       console.log("updateWorkOrder Controller Error", error);
