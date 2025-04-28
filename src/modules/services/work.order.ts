@@ -42,7 +42,7 @@ export class WorkOrder {
     try {
       // Using the safer $queryRaw with template literals
       const result = await prisma.$queryRaw<{ p_work_order_id: bigint }[]>`
-      CALL create_work_order_print(
+      CALL create_work_order_procedure(
         ${organization_id}::bigint, 
         ${customer_id}::bigint, 
         ${company_id}::bigint, 
@@ -209,8 +209,8 @@ export class WorkOrder {
   }
 
   // get Work Order Service
-  // Note: Use Get All Work Order Procedure
-  public async getWorkOrder(data: any): Promise<ApiResult> {
+  // Note: Use Get Work Order Procedure
+  public async getWorkOrder(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
       // Correctly call the function with the ID

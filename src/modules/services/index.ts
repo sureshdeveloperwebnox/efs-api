@@ -17,3 +17,4 @@ export * from './assets'; // Assets
 export * from './maintenance.plan'; // Maintenance Plans
 export * from './maintenance.plan.asset'; // Maintenance Plans Asset
 export * from './work.order'; // Work Order
+export * from './work.order.crew'; // Work Order Crew
