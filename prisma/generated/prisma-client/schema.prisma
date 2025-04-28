@@ -630,8 +630,8 @@ model work_order_approvals {
   approved_by     BigInt
   approval_status ApprovalStatus
   approved_at     String         @db.VarChar(50)
-  created_at      String         @db.VarChar(50)
-  updated_at      String         @db.VarChar(50)
+  created_at      String         @default("") @db.VarChar(50)
+  updated_at      String         @default("") @db.VarChar(50)
   work_orders     work_orders    @relation(fields: [work_order_id], references: [id])
 
   @@index([work_order_id], name: "work_order_approvals_work_order_idx")

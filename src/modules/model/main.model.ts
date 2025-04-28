@@ -105,6 +105,14 @@ export enum Priority {
   }
 
 
+  // Approval Status
+  export enum ApprovalStatus {
+    PENDING = "PENDING",
+    APPROVED = "APPROVED",
+    REJECTED = "REJECTED"
+  }
+
+
 // Date Time
 export interface IDateTime {
   date_time: string;

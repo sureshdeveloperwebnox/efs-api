@@ -20,3 +20,4 @@ export * from "./maintenance.plan.controller";
 export * from "./maintenance.plan.assets.controller";
 export * from "./work.order.controller";
 export * from "./work.order.crew.controller";
+export * from  "./work.order.approval.controller";

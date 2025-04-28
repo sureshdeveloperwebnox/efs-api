@@ -615,8 +615,8 @@ model work_order_crew {
   work_order_id BigInt
   crew_id       BigInt
   assigned_at   String      @db.VarChar(50)
-  created_at    String      @default("") @db.VarChar(50)
-  updated_at    String      @default("") @db.VarChar(50)
+  created_at    String      @db.VarChar(50) @default("")
+  updated_at    String      @db.VarChar(50) @default("")
   work_orders   work_orders @relation(fields: [work_order_id], references: [id])
   crews         crews       @relation(fields: [crew_id], references: [id])
 
@@ -631,8 +631,8 @@ model work_order_approvals {
   approved_by     BigInt
   approval_status ApprovalStatus
   approved_at     String         @db.VarChar(50)
-  created_at      String         @db.VarChar(50)
-  updated_at      String         @db.VarChar(50)
+  created_at      String         @db.VarChar(50) @default("")
+  updated_at      String         @db.VarChar(50) @default("")
   work_orders     work_orders    @relation(fields: [work_order_id], references: [id])
 
   @@index([work_order_id], name: "work_order_approvals_work_order_idx")

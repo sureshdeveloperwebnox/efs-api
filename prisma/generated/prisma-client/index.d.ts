@@ -50997,8 +50997,8 @@ export namespace Prisma {
     approved_by: bigint | number
     approval_status: $Enums.ApprovalStatus
     approved_at: string
-    created_at: string
-    updated_at: string
+    created_at?: string
+    updated_at?: string
     work_orders: work_ordersCreateNestedOneWithoutWork_order_approvalsInput
   }
 
@@ -51008,8 +51008,8 @@ export namespace Prisma {
     approved_by: bigint | number
     approval_status: $Enums.ApprovalStatus
     approved_at: string
-    created_at: string
-    updated_at: string
+    created_at?: string
+    updated_at?: string
   }
 
   export type work_order_approvalsUpdateInput = {
@@ -51038,8 +51038,8 @@ export namespace Prisma {
     approved_by: bigint | number
     approval_status: $Enums.ApprovalStatus
     approved_at: string
-    created_at: string
-    updated_at: string
+    created_at?: string
+    updated_at?: string
   }
 
   export type work_order_approvalsUpdateManyMutationInput = {
@@ -62329,8 +62329,8 @@ export namespace Prisma {
     approved_by: bigint | number
     approval_status: $Enums.ApprovalStatus
     approved_at: string
-    created_at: string
-    updated_at: string
+    created_at?: string
+    updated_at?: string
   }
 
   export type work_order_approvalsUncheckedCreateWithoutWork_ordersInput = {
@@ -62338,8 +62338,8 @@ export namespace Prisma {
     approved_by: bigint | number
     approval_status: $Enums.ApprovalStatus
     approved_at: string
-    created_at: string
-    updated_at: string
+    created_at?: string
+    updated_at?: string
   }
 
   export type work_order_approvalsCreateOrConnectWithoutWork_ordersInput = {
@@ -66429,8 +66429,8 @@ export namespace Prisma {
     approved_by: bigint | number
     approval_status: $Enums.ApprovalStatus
     approved_at: string
-    created_at: string
-    updated_at: string
+    created_at?: string
+    updated_at?: string
   }
 
   export type invoicesCreateManyWork_ordersInput = {

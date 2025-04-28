@@ -20,3 +20,4 @@ export * from './maintenance.plan.asset.rules';
 export * from './work.order.rules';
 export * from './business.hours.rules';
 export * from './work.order.crew.rules';
+export * from './work.order.approval.rules';
