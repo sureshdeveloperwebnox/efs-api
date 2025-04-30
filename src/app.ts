@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import passport from 'passport';
+import cors from 'cors'; // 👈 Added
 import { combineRouters } from './routes';
 import { ResponseGenerator } from './utils/response-generator';
 import { Auth } from './modules/services/auth'; // ✅ Corrected import
@@ -18,6 +19,11 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const corsOptions = {
+  origin: 'http://localhost:8081', //only allow http://localhost:8081 to make requests
+};
+app.use(cors(corsOptions));
 
 // 🛡️ Setup session (required for passport)
 app.use(session({

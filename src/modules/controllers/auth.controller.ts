@@ -6,6 +6,7 @@ import { ApiResult } from "../../utils/api-result";
 import passport from "passport";
 import { NextFunction, Response } from "express";
 import { stringifyBigInts } from "../../middlewares";
+import { POSTPayloadDecorator } from '../../decorators/inject.payload.decorator';
 
 // Auth Cotroller
 @Controller("/auth")
@@ -129,6 +130,19 @@ export class AuthController {
      } catch (error: any) {
        console.error("🔄 Token refresh failed:", error);
        ApiResult.error(error.message || 'Token refresh failed', 401).send(res);
+     }
+   }
+
+  //POST Sign UP Generation API
+   @POST("/signUp")
+  //  @POSTPayloadDecorator()
+   public async signUp(req: RequestX, res: Response): Promise<void> {
+     try {
+       const result = await this.auth.signUp(req.body);
+       result.send(res);
+     } catch (error: any) {
+       console.error("signUp controller", error);
+       ApiResult.error(error.message || 'Internal server error', 401)
      }
    }
 

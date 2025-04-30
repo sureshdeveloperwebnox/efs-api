@@ -86,4 +86,25 @@ export class RegisterModel implements IRegisterModel {
   }
 }
 
+// Sign Up Model
 
+export interface ISignUpModel {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+}
+
+export class SignUpModel implements ISignUpModel {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+
+  constructor(data: ISignUpModel) {
+    this.name = data.name;
+    this.email = data.email;
+    this.phone = data.phone;
+    this.password = data.password
+  }
+}

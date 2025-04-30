@@ -18,7 +18,7 @@ export class BusinessHours {
             day_of_week,
             start_time,
             end_time,
-            created_at: date_time
+            created_at: date_time 
           },
         });
       });

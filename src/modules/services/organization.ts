@@ -5,7 +5,6 @@ import _ from "lodash";
 import { ICreateOrganization, IEditOrganization, IIDModel } from "../model";
 import { stringifyBigInts } from "../../middlewares";
 export class Organization {
-
   // Register a new organization
   public async register(orgData: ICreateOrganization): Promise<ApiResult> {
     // Destructure organization data
@@ -30,7 +29,7 @@ export class Organization {
     } = orgData;
 
     // Check if email already exists in the database
-    const existingEmail = await prisma.organizations.findFirst({
+    const existingEmail = await prisma.users.findFirst({
       where: { email },
     });
 
@@ -40,7 +39,7 @@ export class Organization {
     }
 
     // Check if phone number already exists in the database
-    const existingPhone = await prisma.organizations.findFirst({
+    const existingPhone = await prisma.users.findFirst({
       where: { phone },
     });
 
@@ -130,20 +129,21 @@ export class Organization {
 
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.organizations.findFirst({
-        where: { id: BigInt(data.id) }
+        where: { id: BigInt(data.id) },
       });
-  
+
       if (!result) {
         return ApiResult.success({}, "No data retrieved", 409);
       }
-  
+
       // Convert BigInt values to string (if needed) without deep clone
       const formattedResult = await stringifyBigInts(result);
       const end = performance.now();
       console.log(`API execution time: ${end - start}ms`);
-      return ApiResult.success(formattedResult, "Successfully fetched organization");
-
-      
+      return ApiResult.success(
+        formattedResult,
+        "Successfully fetched organization"
+      );
     } catch (error: any) {
       console.error("Error fetching organization:", error.message);
       return ApiResult.error(
@@ -152,7 +152,7 @@ export class Organization {
       );
     }
   }
-  
+
   // Update organization details by ID
   public async updateOrganization(data: IEditOrganization): Promise<ApiResult> {
     // Destructure organization data

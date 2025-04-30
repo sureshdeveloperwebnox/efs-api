@@ -191,6 +191,7 @@ model users {
   password_hash          String              @default("") @db.VarChar(100)
   isVerified_Email       Boolean             @default(false)
   isVerified_PhoneNumber Boolean             @default(false)
+  name                   String              @default("")
   first_name             String              @default("") @db.VarChar(50)
   last_name              String              @default("") @db.VarChar(50)
   phone                  String              @default("") @db.VarChar(20)

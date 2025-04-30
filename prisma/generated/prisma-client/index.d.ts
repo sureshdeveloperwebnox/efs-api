@@ -6462,6 +6462,7 @@ export namespace Prisma {
     password_hash: string | null
     isVerified_Email: boolean | null
     isVerified_PhoneNumber: boolean | null
+    name: string | null
     first_name: string | null
     last_name: string | null
     phone: string | null
@@ -6481,6 +6482,7 @@ export namespace Prisma {
     password_hash: string | null
     isVerified_Email: boolean | null
     isVerified_PhoneNumber: boolean | null
+    name: string | null
     first_name: string | null
     last_name: string | null
     phone: string | null
@@ -6500,6 +6502,7 @@ export namespace Prisma {
     password_hash: number
     isVerified_Email: number
     isVerified_PhoneNumber: number
+    name: number
     first_name: number
     last_name: number
     phone: number
@@ -6533,6 +6536,7 @@ export namespace Prisma {
     password_hash?: true
     isVerified_Email?: true
     isVerified_PhoneNumber?: true
+    name?: true
     first_name?: true
     last_name?: true
     phone?: true
@@ -6552,6 +6556,7 @@ export namespace Prisma {
     password_hash?: true
     isVerified_Email?: true
     isVerified_PhoneNumber?: true
+    name?: true
     first_name?: true
     last_name?: true
     phone?: true
@@ -6571,6 +6576,7 @@ export namespace Prisma {
     password_hash?: true
     isVerified_Email?: true
     isVerified_PhoneNumber?: true
+    name?: true
     first_name?: true
     last_name?: true
     phone?: true
@@ -6677,6 +6683,7 @@ export namespace Prisma {
     password_hash: string
     isVerified_Email: boolean
     isVerified_PhoneNumber: boolean
+    name: string
     first_name: string
     last_name: string
     phone: string
@@ -6715,6 +6722,7 @@ export namespace Prisma {
     password_hash?: boolean
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: boolean
     first_name?: boolean
     last_name?: boolean
     phone?: boolean
@@ -6742,6 +6750,7 @@ export namespace Prisma {
     password_hash?: boolean
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: boolean
     first_name?: boolean
     last_name?: boolean
     phone?: boolean
@@ -6762,6 +6771,7 @@ export namespace Prisma {
     password_hash?: boolean
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: boolean
     first_name?: boolean
     last_name?: boolean
     phone?: boolean
@@ -6782,6 +6792,7 @@ export namespace Prisma {
     password_hash?: boolean
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: boolean
     first_name?: boolean
     last_name?: boolean
     phone?: boolean
@@ -6794,7 +6805,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organization_id" | "email" | "password_hash" | "isVerified_Email" | "isVerified_PhoneNumber" | "first_name" | "last_name" | "phone" | "job_title" | "user_type" | "is_active" | "last_login_at" | "email_verified" | "created_at" | "updated_at", ExtArgs["result"]["users"]>
+  export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organization_id" | "email" | "password_hash" | "isVerified_Email" | "isVerified_PhoneNumber" | "name" | "first_name" | "last_name" | "phone" | "job_title" | "user_type" | "is_active" | "last_login_at" | "email_verified" | "created_at" | "updated_at", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organizations?: boolean | organizationsDefaultArgs<ExtArgs>
     user_skills?: boolean | users$user_skillsArgs<ExtArgs>
@@ -6830,6 +6841,7 @@ export namespace Prisma {
       password_hash: string
       isVerified_Email: boolean
       isVerified_PhoneNumber: boolean
+      name: string
       first_name: string
       last_name: string
       phone: string
@@ -7276,6 +7288,7 @@ export namespace Prisma {
     readonly password_hash: FieldRef<"users", 'String'>
     readonly isVerified_Email: FieldRef<"users", 'Boolean'>
     readonly isVerified_PhoneNumber: FieldRef<"users", 'Boolean'>
+    readonly name: FieldRef<"users", 'String'>
     readonly first_name: FieldRef<"users", 'String'>
     readonly last_name: FieldRef<"users", 'String'>
     readonly phone: FieldRef<"users", 'String'>
@@ -44971,6 +44984,7 @@ export namespace Prisma {
     password_hash: 'password_hash',
     isVerified_Email: 'isVerified_Email',
     isVerified_PhoneNumber: 'isVerified_PhoneNumber',
+    name: 'name',
     first_name: 'first_name',
     last_name: 'last_name',
     phone: 'phone',
@@ -46033,6 +46047,7 @@ export namespace Prisma {
     password_hash?: StringFilter<"users"> | string
     isVerified_Email?: BoolFilter<"users"> | boolean
     isVerified_PhoneNumber?: BoolFilter<"users"> | boolean
+    name?: StringFilter<"users"> | string
     first_name?: StringFilter<"users"> | string
     last_name?: StringFilter<"users"> | string
     phone?: StringFilter<"users"> | string
@@ -46059,6 +46074,7 @@ export namespace Prisma {
     password_hash?: SortOrder
     isVerified_Email?: SortOrder
     isVerified_PhoneNumber?: SortOrder
+    name?: SortOrder
     first_name?: SortOrder
     last_name?: SortOrder
     phone?: SortOrder
@@ -46088,6 +46104,7 @@ export namespace Prisma {
     password_hash?: StringFilter<"users"> | string
     isVerified_Email?: BoolFilter<"users"> | boolean
     isVerified_PhoneNumber?: BoolFilter<"users"> | boolean
+    name?: StringFilter<"users"> | string
     first_name?: StringFilter<"users"> | string
     last_name?: StringFilter<"users"> | string
     phone?: StringFilter<"users"> | string
@@ -46114,6 +46131,7 @@ export namespace Prisma {
     password_hash?: SortOrder
     isVerified_Email?: SortOrder
     isVerified_PhoneNumber?: SortOrder
+    name?: SortOrder
     first_name?: SortOrder
     last_name?: SortOrder
     phone?: SortOrder
@@ -46141,6 +46159,7 @@ export namespace Prisma {
     password_hash?: StringWithAggregatesFilter<"users"> | string
     isVerified_Email?: BoolWithAggregatesFilter<"users"> | boolean
     isVerified_PhoneNumber?: BoolWithAggregatesFilter<"users"> | boolean
+    name?: StringWithAggregatesFilter<"users"> | string
     first_name?: StringWithAggregatesFilter<"users"> | string
     last_name?: StringWithAggregatesFilter<"users"> | string
     phone?: StringWithAggregatesFilter<"users"> | string
@@ -48838,6 +48857,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -48864,6 +48884,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -48888,6 +48909,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -48914,6 +48936,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -48939,6 +48962,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -48957,6 +48981,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -48976,6 +49001,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -51971,6 +51997,7 @@ export namespace Prisma {
     password_hash?: SortOrder
     isVerified_Email?: SortOrder
     isVerified_PhoneNumber?: SortOrder
+    name?: SortOrder
     first_name?: SortOrder
     last_name?: SortOrder
     phone?: SortOrder
@@ -51996,6 +52023,7 @@ export namespace Prisma {
     password_hash?: SortOrder
     isVerified_Email?: SortOrder
     isVerified_PhoneNumber?: SortOrder
+    name?: SortOrder
     first_name?: SortOrder
     last_name?: SortOrder
     phone?: SortOrder
@@ -52015,6 +52043,7 @@ export namespace Prisma {
     password_hash?: SortOrder
     isVerified_Email?: SortOrder
     isVerified_PhoneNumber?: SortOrder
+    name?: SortOrder
     first_name?: SortOrder
     last_name?: SortOrder
     phone?: SortOrder
@@ -57032,6 +57061,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -57056,6 +57086,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -57598,6 +57629,7 @@ export namespace Prisma {
     password_hash?: StringFilter<"users"> | string
     isVerified_Email?: BoolFilter<"users"> | boolean
     isVerified_PhoneNumber?: BoolFilter<"users"> | boolean
+    name?: StringFilter<"users"> | string
     first_name?: StringFilter<"users"> | string
     last_name?: StringFilter<"users"> | string
     phone?: StringFilter<"users"> | string
@@ -58558,6 +58590,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -58583,6 +58616,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -58716,6 +58750,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -58741,6 +58776,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -59174,6 +59210,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -59199,6 +59236,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -59238,6 +59276,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -59263,6 +59302,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -59482,6 +59522,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -59507,6 +59548,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -59656,6 +59698,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -59681,6 +59724,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -60270,6 +60314,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -60295,6 +60340,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -60578,6 +60624,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -60603,6 +60650,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64248,6 +64296,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -64273,6 +64322,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -64312,6 +64362,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64337,6 +64388,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64360,6 +64412,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -64385,6 +64438,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -64424,6 +64478,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64449,6 +64504,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64472,6 +64528,7 @@ export namespace Prisma {
     password_hash?: string
     isVerified_Email?: boolean
     isVerified_PhoneNumber?: boolean
+    name?: string
     first_name?: string
     last_name?: string
     phone?: string
@@ -64653,6 +64710,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64677,6 +64735,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -64701,6 +64760,7 @@ export namespace Prisma {
     password_hash?: StringFieldUpdateOperationsInput | string
     isVerified_Email?: BoolFieldUpdateOperationsInput | boolean
     isVerified_PhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string

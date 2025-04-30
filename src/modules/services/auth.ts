@@ -15,7 +15,8 @@ import {
   verifyRefreshToken,
 } from "../../utils/generate.jwt-token";
 import { stringifyBigInts } from "../../middlewares";
-import { IRegisterModel, IUserLogin } from "../model";
+import { IRegisterModel, ISignUpModel, IUserLogin } from "../model";
+import { getHashPassword } from "../../utils";
 
 dotenv.config();
 
@@ -450,7 +451,43 @@ export class Auth {
     }
   }
 
-  
+  /**
+   * Generate a Sign Up
+   * @param data Token
+   * @returns ApiResult with organization and user info
+   */
+  public async signUp(data: ISignUpModel): Promise<ApiResult> {
+    const { name, email, phone, password } = data;
+    
+    try {
+      await prisma.$transaction(async (trx) => {
+        const organization = await trx.organizations.create({
+          data: {
+            name,
+            email,
+            phone,
+          },
+        });
+
+        const { hashedPassword } = await getHashPassword(password);
+
+        await trx.users.create({
+          data: {
+            organization_id: organization.id,
+            email,
+            phone,
+            user_type: "ADMIN",
+            password_hash: hashedPassword,
+          },
+        });
+      });
+
+      return ApiResult.success({}, "Signup successful", 201);
+    } catch (error: any) {
+      console.log("signUp Error", error);
+      return ApiResult.error("Failed to sign up", 401);
+    }
+  }
 }
 
 export const authService = new Auth();
