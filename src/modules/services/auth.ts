@@ -82,6 +82,8 @@ export class Auth {
                 const response = {
                   ...userData,
                   provider,
+                  accessToken,
+                  refreshToken,
                 };
                 return done(null, response);
               }
@@ -173,9 +175,26 @@ export class Auth {
    * @returns ApiResult with user data
    */
   public async handleGoogleAuthSuccess(data: any): Promise<ApiResult> {
+
+    const { email } = data;
+
+    const checkUser = await this.checkAlreadyExistUser(email);
+    if (!checkUser) {
+      const createGoogleSignUp = await this.googleSignUp(data);
+      return ApiResult.success(
+        {
+          ...data,
+          userid: createGoogleSignUp?.user_id
+        },
+        "Google authentication successful",
+        200
+      );
+    }
+
     return ApiResult.success(
       {
         ...data,
+        user_id: checkUser.id
       },
       "Google authentication successful",
       200
@@ -456,14 +475,14 @@ export class Auth {
    * @param data Token
    * @returns ApiResult with organization and user info
    */
-  public async signUp(data: ISignUpModel): Promise<ApiResult> {
-    const { name, email, phone, password } = data;
-    
+  public async authRegister(data: ISignUpModel): Promise<ApiResult> {
+    const { first_name, last_name, email, phone, password } = data;
+
     try {
       await prisma.$transaction(async (trx) => {
         const organization = await trx.organizations.create({
           data: {
-            name,
+            name: first_name + last_name,
             email,
             phone,
           },
@@ -488,6 +507,94 @@ export class Auth {
       return ApiResult.error("Failed to sign up", 401);
     }
   }
+
+  public async checkAlreadyExistUser(email: string) {
+    try {
+      const userExist = await prisma.users.findFirst({
+        where: {
+          email: email
+        }
+      });
+      const stringifyData = await stringifyBigInts(userExist);
+      return stringifyData;
+    } catch (error) {
+      console.log("checkAlreadyExistUser Error", error);
+    }
+  }
+
+
+  public async googleSignUp(data: any) {
+    const { first_name, last_name, email } = data;
+    try {
+      const result = await prisma.$transaction(async (trx) => {
+        // Insert Organization
+        const organization = await trx.organizations.create({
+          data: {
+            name: first_name + last_name,
+            email
+          },
+        });
+
+        // Insert Users
+        const users = await trx.users.create({
+          data: {
+            organization_id: organization.id,
+            first_name,
+            last_name,
+            email
+          }
+        });
+
+        const user_id = users.id
+
+        return { user_id };
+      });
+      return result;
+    } catch (error: any) {
+      console.log('googleSignUp Error', error);
+    }
+  }
+  public async organizationRegister(data: any): Promise<ApiResult> {
+    const {
+      organization_name,
+      industry_name,
+      email,
+      pincode,
+      website,
+      address
+    } = data;
+  
+    // Basic validation
+    if (!organization_name || !industry_name || !pincode) {
+      return ApiResult.error("Required fields are missing", 400);
+    }
+  
+    try {
+      // Using transaction is good practice, though for a single operation it's not strictly necessary
+      await prisma.$transaction(async (trx) => {
+        return await trx.organizations.create({
+          data: {
+            name: organization_name,
+            email: email,
+            organization_name,
+            industry_name,
+            pincode,
+            website: website || null, // Convert empty string to null
+            address: address || null  // Convert empty string to null
+          }
+        });
+      });
+  
+      return ApiResult.success(
+        {  }, // Return at least the ID for reference
+        'Organization registration successful'
+      );
+    } catch (error: any) {
+      console.error("Organization registration error:", error);
+      return ApiResult.error("Failed to register organization", 500); // 500 for server errors
+    }
+  }
+
 }
 
 export const authService = new Auth();

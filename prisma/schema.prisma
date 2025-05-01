@@ -151,8 +151,8 @@ enum LogType {
 
 model organizations {
   id                      BigInt              @id @default(autoincrement())
-  name                    String              @db.VarChar(100)
-  email                   String              @unique @db.VarChar(100)
+  name                    String              @db.VarChar(100) @default("")
+  email                   String              @db.VarChar(100) @default("")
   address                 String              @default("") @db.Text
   phone                   String              @default("") @db.VarChar(20)
   organization_name       String              @default("") @db.VarChar(100)

@@ -134,16 +134,29 @@ export class AuthController {
    }
 
   //POST Sign UP Generation API
-   @POST("/signUp")
+   @POST("/authRegister")
   //  @POSTPayloadDecorator()
-   public async signUp(req: RequestX, res: Response): Promise<void> {
+   public async authRegister(req: RequestX, res: Response): Promise<void> {
      try {
-       const result = await this.auth.signUp(req.body);
+       const result = await this.auth.authRegister(req.body);
        result.send(res);
      } catch (error: any) {
-       console.error("signUp controller", error);
+       console.error("authRegister controller", error);
        ApiResult.error(error.message || 'Internal server error', 401)
      }
    }
+
+
+     // POST Organization User Register API
+  @POST('/organizationRegister')
+  public async organizationRegister(req: RequestX, res: Response): Promise<void> {
+    try {
+      const result = await this.auth.organizationRegister(req.body);
+      result.send(res);
+    } catch (error: any) {
+      console.log('organizationRegister error', error);
+      ApiResult.error(error.message || "Internal server error", 400);
+    }
+  }
 
 }

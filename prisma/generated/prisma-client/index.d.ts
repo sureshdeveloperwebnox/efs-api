@@ -5907,7 +5907,7 @@ export namespace Prisma {
     /**
      * The data needed to create a organizations.
      */
-    data: XOR<organizationsCreateInput, organizationsUncheckedCreateInput>
+    data?: XOR<organizationsCreateInput, organizationsUncheckedCreateInput>
   }
 
   /**
@@ -45951,11 +45951,11 @@ export namespace Prisma {
 
   export type organizationsWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
-    email?: string
     AND?: organizationsWhereInput | organizationsWhereInput[]
     OR?: organizationsWhereInput[]
     NOT?: organizationsWhereInput | organizationsWhereInput[]
     name?: StringFilter<"organizations"> | string
+    email?: StringFilter<"organizations"> | string
     address?: StringFilter<"organizations"> | string
     phone?: StringFilter<"organizations"> | string
     organization_name?: StringFilter<"organizations"> | string
@@ -45985,7 +45985,7 @@ export namespace Prisma {
     maintenance_plans?: Maintenance_plansListRelationFilter
     work_orders?: Work_ordersListRelationFilter
     service_types?: Service_typesListRelationFilter
-  }, "id" | "email">
+  }, "id">
 
   export type organizationsOrderByWithAggregationInput = {
     id?: SortOrder
@@ -48650,8 +48650,8 @@ export namespace Prisma {
 
   export type organizationsCreateInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -48685,8 +48685,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -48790,8 +48790,8 @@ export namespace Prisma {
 
   export type organizationsCreateManyInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -58067,8 +58067,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutUsersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -58101,8 +58101,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutUsersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -58662,8 +58662,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutUser_skillsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -58696,8 +58696,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutUser_skillsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -58902,8 +58902,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutBusiness_hoursInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -58936,8 +58936,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutBusiness_hoursInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59054,8 +59054,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutHolidaysInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59088,8 +59088,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutHolidaysInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59420,8 +59420,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutCrew_membersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59454,8 +59454,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutCrew_membersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59744,8 +59744,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutEquipmentsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59778,8 +59778,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutEquipmentsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59896,8 +59896,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutCompaniesInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -59930,8 +59930,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutCompaniesInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -60202,8 +60202,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutCustomersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -60236,8 +60236,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutCustomersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -60702,8 +60702,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutServicesInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -60736,8 +60736,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutServicesInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -60977,8 +60977,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutService_typesInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61011,8 +61011,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutService_typesInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61129,8 +61129,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutAssetsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61163,8 +61163,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutAssetsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61457,8 +61457,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutPartsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61491,8 +61491,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutPartsInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61659,8 +61659,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutMaintenance_plansInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -61693,8 +61693,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutMaintenance_plansInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -62041,8 +62041,8 @@ export namespace Prisma {
 
   export type organizationsCreateWithoutWork_ordersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string
@@ -62075,8 +62075,8 @@ export namespace Prisma {
 
   export type organizationsUncheckedCreateWithoutWork_ordersInput = {
     id?: bigint | number
-    name: string
-    email: string
+    name?: string
+    email?: string
     address?: string
     phone?: string
     organization_name?: string

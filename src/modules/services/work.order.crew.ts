@@ -15,6 +15,7 @@ export class WorkOrderCrew {
             crew_id,
             assigned_at,
             created_at: date_time,
+            updated_at: date_time
           },
         });
       });
