@@ -17,6 +17,7 @@ import {
 import { stringifyBigInts } from "../../middlewares";
 import { IRegisterModel, ISignUpModel, IUserLogin } from "../model";
 import { getHashPassword } from "../../utils";
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -592,6 +593,17 @@ export class Auth {
     } catch (error: any) {
       console.error("Organization registration error:", error);
       return ApiResult.error("Failed to register organization", 500); // 500 for server errors
+    }
+  }
+
+  public async verifyAccessToken(token: string): Promise<ApiResult> {
+    try {
+    // verify token 
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    return ApiResult.success({decoded}, "Token verified successful", 200)
+    } catch (error: any) {
+      return ApiResult.error("Failed to verify token", 200)
+
     }
   }
 

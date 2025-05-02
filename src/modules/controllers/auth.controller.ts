@@ -159,4 +159,24 @@ export class AuthController {
     }
   }
 
+
+  @POST("/verify-access-token")
+  public async verifyAccessToken(req: RequestX, res: Response): Promise<void> {
+    try {
+      // Get refresh token from cookie or request body
+      const accessToken = req.cookies?.accessToken 
+      
+      if (!accessToken) {
+        ApiResult.error('Access token is required', 401).send(res);
+        return;
+      }
+      1
+      const result = await this.auth.verifyAccessToken(accessToken);
+      result.send(res);
+    } catch (error: any) {
+      console.error("🔄 Token access failed:", error);
+      ApiResult.error(error.message || 'Token access failed', 401).send(res);
+    }
+  }
+
 }
