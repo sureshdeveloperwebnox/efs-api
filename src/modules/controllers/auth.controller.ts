@@ -33,10 +33,8 @@ export class AuthController {
   // GET Google User Registration API
   @GET("/google")
   public initiateGoogleAuth(req: RequestX, res: Response, next: NextFunction) {
-    const state =
-      typeof req.query.redirectUrl === "string"
-        ? req.query.redirectUrl
-        : undefined;
+    const state = typeof req.query.redirectUrl === "string" ? req.query.redirectUrl : '/dashboard'; // Default to home if no redirectUrl
+
 
     return passport.authenticate("google", {
       scope: ["profile", "email"],

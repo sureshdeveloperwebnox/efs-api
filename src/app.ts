@@ -22,6 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: 'http://localhost:9875', //only allow http://localhost:8081 to make requests
+  credentials: true, // 👈 Important for cookie/session sharing
+
 };
 app.use(cors(corsOptions));
 
