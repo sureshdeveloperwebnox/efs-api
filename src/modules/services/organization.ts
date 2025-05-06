@@ -249,4 +249,33 @@ export class Organization {
       );
     }
   }
+
+  public async getAllOrganization(data: any): Promise<ApiResult> {
+    try {
+      const result = await prisma.organizations.findMany();
+
+      if (!result) {
+        return ApiResult.success({}, "No data retrieved", 409);
+      }
+
+      // Convert BigInt values to string (if needed) without deep clone
+      const formattedResult = await stringifyBigInts(result);
+
+      console.log("formattedResult", result);
+      
+
+      if (!formattedResult) {
+        return ApiResult.success({}, "No data retrieved", 409);
+      }
+
+      return ApiResult.success(formattedResult, "Organization data rerieved successful", 200)
+
+    } catch (error: any) {
+      console.log("getAllOrganization Error", error);
+      return ApiResult.error(
+        error.message || "Failed to fetch organization",
+        500
+      );
+    }
+  }
 }

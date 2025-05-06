@@ -83,4 +83,20 @@ export class OrganizationController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }
+
+
+    // GET All Organization API endpoint
+    @POST("/getAllOrganization")
+    // @AccessTokenGuard()
+    public async getAllOrganization(req: RequestX, res: Response): Promise<void> {
+      try {
+        const result = await this.organization.getAllOrganization(req.body);
+        result.send(res);
+      } catch (error: any) {
+        console.log('getOrganization error', error);
+        ApiResult.error(error.message || "Internal server error", 500);
+      }
+    }
+  
+
 }
