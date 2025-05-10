@@ -66,13 +66,17 @@ export const CreateOrganizationValidation = {
     created_at: Joi.optional().messages({
       "any.required": "Created at is required",
       "string.base": "Created at must be a string",
-    })
+    }),
   }),
 };
 
 // Update Organization Validation Schema
 export const UpdateOrganizationValidation = {
   body: Joi.object({
+    id: Joi.string().required().messages({
+      "any.required": "ID is required",
+      "number.base": "ID must be a number",
+    }),
     name: Joi.string().required().messages({
       "any.required": "Name is required",
     }),
@@ -103,10 +107,10 @@ export const UpdateOrganizationValidation = {
     plan_type: Joi.string().required().messages({
       "any.required": "Plan type is required",
     }),
-    subscription_start_date: Joi.string().required().messages({
+    subscription_start_date: Joi.optional().messages({
       "any.required": "Subscription start date is required",
     }),
-    subscription_end_date: Joi.string().required().messages({
+    subscription_end_date: Joi.optional().messages({
       "any.required": "Subscription end date is required",
     }),
     currencyid: Joi.number().required().messages({

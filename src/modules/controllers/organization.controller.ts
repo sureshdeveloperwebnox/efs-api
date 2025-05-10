@@ -1,6 +1,6 @@
 // Importing the custom Request interface
 import { RequestX } from "../../utils/request.interface";
-import { Controller, POST, GET, Validate, PUT, DELETE } from "../../decorators";
+import { Controller, POST, GET, Validate, PUT, DELETE, PUTPayloadDecorator } from "../../decorators";
 import {
   CreateOrganizationValidation,
   UpdateOrganizationValidation,
@@ -52,17 +52,18 @@ export class OrganizationController {
 
   // UPDATE Organization API endpoint
   @PUT("/:id")
-  @Validate([ValidateParamsID, UpdateOrganizationValidation])
+  @Validate([UpdateOrganizationValidation])
   @AccessTokenGuard()
-  public async updateOrganization(req: RequestX, res: Response): Promise<void> {
+  @PUTPayloadDecorator()
+  public async updateOrganization(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const id = req.params.id;
-      const body = req.body;
-      const data = { ...body, id };
+      // const id = req.params.id;
+      // const body = req.body;
+      // const data = { ...body, id };
       const result = await this.organization.updateOrganization(data);
       result.send(res);
     } catch (error: any) {
-      console.log('updateOrganization error', error);
+      console.log('updateOrganization error', error); 
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }
@@ -87,7 +88,7 @@ export class OrganizationController {
 
     // GET All Organization API endpoint
     @POST("/getAllOrganization")
-    // @AccessTokenGuard()
+    @AccessTokenGuard()
     public async getAllOrganization(req: RequestX, res: Response): Promise<void> {
       try {
         const result = await this.organization.getAllOrganization(req.body);

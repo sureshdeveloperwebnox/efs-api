@@ -120,4 +120,27 @@ export class Company {
       return ApiResult.error("Failed to update company", 500);
     }
   };
+
+  //Get All Company API Service
+  public async getAllCompany(): Promise<ApiResult> {
+    try {
+
+      // Only select required fields instead of entire row (better performance)
+      const result = await prisma.companies.findMany();
+
+      if (!result) {
+        return ApiResult.success({}, "No data retrieved", 409);
+      }
+
+      // Convert BigInt values to string (if needed) without deep clone
+      const formattedResult = await stringifyBigInts(result);
+      return ApiResult.success(
+        formattedResult,
+        "Successfully fetched companies"
+      );
+    } catch (error: any) {
+      console.error("getCompanyByID Error:", error.message);
+      return ApiResult.error(error.message || "Failed to fetch companies", 500);
+    }
+  };
 }

@@ -71,4 +71,19 @@ export class CompanyController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };
+
+
+
+    // GET Company By ID API
+  @POST("/getAllCompany")
+  @AccessTokenGuard()
+  public async getAllCompany(req: RequestX, res: Response): Promise<void> {
+    try {
+      const result = await this.company.getAllCompany();
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllCompany Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 }

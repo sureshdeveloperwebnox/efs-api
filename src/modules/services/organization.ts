@@ -130,6 +130,7 @@ export class Organization {
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.organizations.findFirst({
         where: { id: BigInt(data.id) },
+       
       });
 
       if (!result) {
@@ -173,15 +174,14 @@ export class Organization {
       currencyid,
       file_storage_limit,
       data_storage_limit,
-      created_at,
-      updated_at,
+      date_time
     } = data;
 
     try {
       // Perform update in a transaction
-      const result = await prisma.$transaction(async (trx: any) => {
+      const result = await prisma.$transaction(async (trx) => {
         // Update organization record matching the ID
-        const org = await trx.organizations.updateMany({
+         await trx.organizations.update({
           where: {
             id: BigInt(id),
           },
@@ -201,8 +201,7 @@ export class Organization {
             currencyid,
             file_storage_limit,
             data_storage_limit,
-            created_at,
-            updated_at,
+            updated_at: date_time
           },
         });
 
@@ -210,6 +209,8 @@ export class Organization {
         return ApiResult.success({}, "Successfully updated organization", 202);
       });
 
+      console.log("result", result);
+      
       // Return the result of transaction
       return result;
     } catch (error: any) {
