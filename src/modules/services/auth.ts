@@ -155,6 +155,7 @@ export class Auth {
 
     const userData = {
       id: Number(user.id),
+      organization_id: Number(user?.organization_id),
       name: user?.first_name,
       email: user?.email,
       category: user?.user_type,
@@ -508,7 +509,6 @@ export class Auth {
       return ApiResult.error("Failed to sign up", 401);
     }
   }
-
   public async checkAlreadyExistUser(email: string) {
     try {
       const userExist = await prisma.users.findFirst({
@@ -522,7 +522,6 @@ export class Auth {
       console.log("checkAlreadyExistUser Error", error);
     }
   }
-
 
   public async googleSignUp(data: any) {
     const { first_name, last_name, email } = data;

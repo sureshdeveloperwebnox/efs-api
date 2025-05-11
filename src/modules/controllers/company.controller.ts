@@ -1,5 +1,5 @@
 import { AccessTokenGuard } from "../../middlewares";
-import { Controller, GET, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
+import { Controller, GET, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, PUTPayloadDecorator, Validate } from "../../decorators";
 import { Company } from "../services";
 import { RequestX } from "../../utils/request.interface";
 import { ApiResult } from "../../utils/api-result";
@@ -38,13 +38,8 @@ export class CompanyController {
   @Validate([ValidateParamsID])
   public async getCompanyByID(req: RequestX, res: Response): Promise<void> {
     try {
-      const id = req.params.id;
-
-      const body = req.body;
-
-      const data = { ...body, id };
-
-      const result = await this.company.getCompanyByID(data);
+      const id = req?.params?.id;
+      const result = await this.company.getCompanyByID({id});
       result.send(res);
     } catch (error: any) {
       console.log("getCompanyByID Controller Error", error);

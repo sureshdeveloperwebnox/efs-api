@@ -14,10 +14,14 @@ const REFRESH_TOKEN_EXPIRES_IN = envConfig.REFRESH_TOKEN_EXPIRES_IN || '7d';
  */
 export async function generateJWTToken(data: any): Promise<string> {
   const payload: jwt.JwtPayload = {
-    id: Number(data.id),
-    name: data.name || data.first_name, // Handle both name formats
-    email: data.email,
-    phone: data.phone
+    user_id: Number(data.id),
+    organization_id: Number(data.organization_id),
+    name: data?.name || data.first_name, // Handle both name formats
+    email: data?.email,
+    phone: data?.phone,
+    category: data?.user_type,
+    provider: data?.provider
+
   };
 
   console.log('ACCESS_TOKEN_EXPIRES_IN', ACCESS_TOKEN_EXPIRES_IN);
