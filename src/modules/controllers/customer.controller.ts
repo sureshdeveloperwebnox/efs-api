@@ -1,11 +1,21 @@
 import { RequestX } from "../../utils/request.interface";
-import { Controller, GET, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
+import {
+  Controller,
+  GET,
+  GETPayloadDecorator,
+  POST,
+  POSTPayloadDecorator,
+  PUT,
+  PUTPayloadDecorator,
+  Validate,
+} from "../../decorators";
 import { Customers } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { AccessTokenGuard } from "../../middlewares";
 import {
   CreateCustomerValidation,
   UpdateCompanyValidation,
+  UpdateCustomerValidation,
   ValidateDateTime,
   ValidateParamsID,
 } from "../rules";
@@ -20,10 +30,14 @@ export class CustomerController {
 
   // Create Customer API Endpoint
   @POST("")
+  @Validate([CreateCustomerValidation, ValidateDateTime])
   @AccessTokenGuard()
   @POSTPayloadDecorator()
-  @Validate([CreateCustomerValidation, ValidateDateTime])
-  public async createCustomer(req: RequestX, res: Response, data: any): Promise<void> {
+  public async createCustomer(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
     try {
       const result = await this.customers.createCustomer(data);
       result.send(res);
@@ -37,14 +51,13 @@ export class CustomerController {
   @GET("/:id")
   @AccessTokenGuard()
   @Validate([ValidateParamsID])
-  public async getCustomerByID(req: RequestX, res: Response): Promise<void> {
+  @GETPayloadDecorator()
+  public async getCustomerByID(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
     try {
-      const id = req.params.id;
-
-      const body = req.body;
-
-      const data = { ...body, id };
-
       const result = await this.customers.getCustomerByID(data);
       result.send(res);
     } catch (error: any) {
@@ -56,15 +69,14 @@ export class CustomerController {
   // Update Customer API
   @PUT("/:id")
   @AccessTokenGuard()
-  @Validate([ValidateParamsID, UpdateCompanyValidation])
-  public async updateCustomer(req: RequestX, res: Response): Promise<void> {
+  @PUTPayloadDecorator()
+  @Validate([ValidateParamsID, UpdateCustomerValidation])
+  public async updateCustomer(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
     try {
-      const id = req.params.id;
-
-      const body = req.body;
-
-      const data = { ...body, id };
-
       const result = await this.customers.updateCustomer(data);
       result.send(res);
     } catch (error: any) {
@@ -72,4 +84,37 @@ export class CustomerController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }
+
+  // Get All Customer API
+  @POST("/getAllCustomer")
+  @AccessTokenGuard()
+  public async getAllCustomer(req: RequestX, res: Response): Promise<void> {
+    try {
+      const result = await this.customers.getAllCustomer();
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllCustomer Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
+
+  @PUT("/updateCustomerStatus/:id")
+  @AccessTokenGuard()
+  @PUTPayloadDecorator()
+  @Validate([ValidateParamsID, UpdateCustomerValidation])
+  public async updateCustomerStatusChange(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
+    try {
+      const result = await this.customers.updateCustomerStatusChange(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("updateCustomerStatusChange Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
 }

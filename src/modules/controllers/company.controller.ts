@@ -69,7 +69,7 @@ export class CompanyController {
 
 
 
-    // GET Company By ID API
+    // GET All Company API
   @POST("/getAllCompany")
   @AccessTokenGuard()
   public async getAllCompany(req: RequestX, res: Response): Promise<void> {

@@ -27,13 +27,13 @@ export const CreateCustomerValidation = {
       "any.required": "Phone is required",
       "string.base": "Phone must be a string",
     }),
+    password: Joi.string().required().messages({
+      "any.required": "Password is required",
+      "string.base": "Password must be a string",
+    }),
     address: Joi.string().required().messages({
       "any.required": "Address is required",
       "string.base": "Address must be a string",
-    }),
-    is_active: Joi.number().required().messages({
-      "any.required": "Is active ID is required",
-      "number.base": "Is active must be a number",
     }),
     created_at: Joi.string().required().messages({
       "any.required": "Created at is required",
@@ -73,13 +73,9 @@ export const UpdateCustomerValidation = {
       "any.required": "Address is required",
       "string.base": "Address must be a string",
     }),
-    is_active: Joi.number().required().messages({
-      "any.required": "Is active ID is required",
-      "number.base": "Is active must be a number",
-    }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Created at is required",
-      "string.base": "Created at must be a string",
+    date_time: Joi.string().required().messages({
+      "any.required": "Date time is required",
+      "string.base": "Date time must be a string",
     }),
   }),
 };
