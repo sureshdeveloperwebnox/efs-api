@@ -31,7 +31,7 @@ export const CreateAssetValidation = {
       "any.required": "Status is required",
       "string.base": "Status must be a string",
     }),
-    location: Joi.string().required().messages({
+    location: Joi.optional().messages({
       "any.required": "Location is required",
       "string.base": "Location must be a string",
     }),

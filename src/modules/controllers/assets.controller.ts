@@ -31,8 +31,8 @@ export class AssetController {
 
   // Create Asset API
   @POST("")
-  @AccessTokenGuard()
   @Validate([ValidateDateTime, CreateAssetValidation])
+  @AccessTokenGuard()
   @POSTPayloadDecorator()
   public async createAsset(
     req: RequestX,

@@ -242,4 +242,60 @@ export class Customers {
       return ApiResult.error("Failed to update customer status change", 500);
     }
   }
+
+public async getAllCustomerByID(data?: any): Promise<ApiResult> {
+  const { company_id, organization_id } = data || {};
+
+  try {
+    // Return nothing if neither ID is provided
+    if (!company_id && !organization_id) {
+      return ApiResult.success({}, "No data retrieved", 200);
+    }
+
+    // Build where clause based on provided IDs
+    const whereClause: any = {};
+    if (company_id) {
+      whereClause.company_id = company_id;
+    }
+    if (organization_id) {
+      whereClause.organization_id = organization_id;
+    }
+
+    const result = await prisma.customers.findMany({
+      where: whereClause,
+      include: {
+        users: {
+          select: {
+            id: true,
+            job_title: true,
+            user_type: true,
+          },
+        },
+        companies: {
+          select: {
+            name: true,
+          },
+        },
+        organizations: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!result || result.length === 0) {
+      return ApiResult.success({}, "No data retrieved", 409);
+    }
+
+    const formattedResult = await stringifyBigInts(result);
+    return ApiResult.success(formattedResult, "Successfully fetched customers");
+  } catch (error: any) {
+    console.error("getAllCustomer Error:", error.message);
+    return ApiResult.error(error.message || "Failed to fetch customers", 500);
+  }
+}
+
+
+
 }

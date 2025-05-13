@@ -117,4 +117,23 @@ export class CustomerController {
     }
   }
 
+
+  @POST("/getAllCustomerByID")
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async getAllCustomerByID(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
+    try {
+      const result = await this.customers.getAllCustomerByID(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllCustomerByID Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
+
 }
