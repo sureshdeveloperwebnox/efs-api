@@ -6,7 +6,6 @@ import { ICreateAsset, IIDModel, IUpdateAsset } from "../model";
 // Assets API Service
 
 export class Assets {
-
   // Create Asset
   public async createAsset(data: ICreateAsset): Promise<ApiResult> {
     // Destructure the data
@@ -51,13 +50,12 @@ export class Assets {
   }
 
   // Get Asset details by ID Service
-  public async getAssetByID(data: IIDModel ): Promise<ApiResult> {
+  public async getAssetByID(data: IIDModel): Promise<ApiResult> {
     const { id } = data;
     try {
-      
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.assets.findFirst({
-        where: { id: BigInt(id) }
+        where: { id: BigInt(id) },
       });
 
       if (!result) {
@@ -121,6 +119,50 @@ export class Assets {
     } catch (error: any) {
       console.log("updateAsset Error", error);
       return ApiResult.error("Failed to update asset", 500);
+    }
+  }
+
+  // Get All Assets Service
+  public async getAllAssets(): Promise<ApiResult> {
+    try {
+      // Only select required fields instead of entire row (better performance)
+      const result = await prisma.assets.findMany({
+        include: {
+          organizations: {
+            select: {
+              id: true,
+              name: true,
+              organization_name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          customers: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
+      });
+
+      if (!result) {
+        return ApiResult.success({}, "No data retrieved", 202);
+      }
+
+      // Convert BigInt values to string (if needed) without deep clone
+      const formattedResult = await stringifyBigInts(result);
+      return ApiResult.success(
+        formattedResult,
+        "Successfully fetched assets",
+        200
+      );
+    } catch (error: any) {
+      console.error("getAllAsset", error);
+      return ApiResult.error(error.message || "Failed to fetch assets", 500);
     }
   }
 }
