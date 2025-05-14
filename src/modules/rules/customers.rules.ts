@@ -45,6 +45,10 @@ export const CreateCustomerValidation = {
 // Update Customer Validation
 export const UpdateCustomerValidation = {
   body: Joi.object({
+    id: Joi.number().required().messages({
+      "any.required": "ID is required",
+      "number.base": "ID must be a number",
+    }),
     organization_id: Joi.number().required().messages({
       "any.required": "Organization ID is required",
       "number.base": "Organization ID must be a number",

@@ -56,6 +56,27 @@ export class Assets {
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.assets.findFirst({
         where: { id: BigInt(id) },
+        include: {
+          organizations: {
+            select: {
+              id: true,
+              name: true,
+              organization_name: true,
+              email: true,
+              phone: true,
+              website: true
+            }
+          },
+          customers: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
       });
 
       if (!result) {

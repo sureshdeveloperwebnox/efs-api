@@ -63,4 +63,17 @@ export class ServiceController {
         ApiResult.error(error.message || "Internal server error", 500);
       }
     }
+
+  // Get All Service API Endpoint
+  @POST("/getAllService")
+  @AccessTokenGuard()
+  public async getAllService(req: RequestX, res: Response): Promise<void> {
+    try {
+      const result = await this.service.getAllService();
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllService Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
 }

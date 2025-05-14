@@ -53,6 +53,10 @@ export const CreateAssetValidation = {
 // Update Asset Validation
 export const UpdateAssetValidation = {
   body: Joi.object({
+    id: Joi.number().required().messages({
+      "any.required": "ID is required",
+      "number.base": "ID must be a number",
+    }),
     organization_id: Joi.number().required().messages({
       "any.required": "Organization id is required",
       "number.base": "Organization id must be a number",

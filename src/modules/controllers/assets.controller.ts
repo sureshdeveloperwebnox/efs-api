@@ -69,7 +69,7 @@ export class AssetController {
 
   // Update Asset Type API
   @PUT("/:id")
-  @Validate([UpdateAssetValidation, ValidateParamsID, ValidateDateTime])
+  @Validate([UpdateAssetValidation, ValidateDateTime])
   @AccessTokenGuard()
   @PUTPayloadDecorator()
   public async updateAsset(

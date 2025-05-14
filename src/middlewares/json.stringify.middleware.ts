@@ -6,9 +6,21 @@ export async function stringifyBigInts<T>(obj: T): Promise<T> {
   // Detect Decimal.js-like instances
   if (obj !== null && typeof obj === 'object' && typeof (obj as any).toString === 'function') {
     const str = obj.toString();
-    // Optional: check for actual Decimal instance (e.g., via constructor name or custom marker)
     if (!isNaN(str as any)) {
       return str as unknown as T;
+    }
+  }
+
+  // Detect and parse stringified arrays like '["Beginner"]'
+  if (typeof obj === 'string') {
+    try {
+      const parsed = JSON.parse(obj);
+      if (Array.isArray(parsed)) {
+        const result = await Promise.all(parsed.map(item => stringifyBigInts(item)));
+        return result as unknown as T;
+      }
+    } catch {
+      // Not a valid JSON string — ignore
     }
   }
 
