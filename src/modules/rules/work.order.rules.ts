@@ -156,6 +156,10 @@ export const CreateWorkOrderValidation = {
 // Update Work Order Validation
 export const UpdateWorkOrderValidation = {
   body: Joi.object({
+       id: Joi.number().required().messages({
+      "any.required": "ID is required",
+      "number.base": "ID must be a number",
+    }),
     organization_id: Joi.number().required().messages({
       "any.required": "Organization ID is required",
       "number.base": "Organization ID must be a number",
@@ -172,7 +176,7 @@ export const UpdateWorkOrderValidation = {
       "any.required": "Asset ID is required",
       "number.base": "Asset ID must be a number",
     }),
-    maintenance_plan_id: Joi.number().required().messages({
+    maintenance_plan_id: Joi.optional().messages({
       "any.required": "Maintenance plan ID is required",
       "number.base": "Maintenance plan ID must be a number",
     }),
@@ -192,11 +196,11 @@ export const UpdateWorkOrderValidation = {
       "any.required": "Status is required",
       "string.base": "Status must be a string",
     }),
-    assigned_to: Joi.number().required().messages({
+    assigned_to: Joi.optional().messages({
       "any.required": "Status is required",
       "number.base": "Status must be a number",
     }),
-    assigned_crew_id: Joi.number().required().messages({
+    assigned_crew_id: Joi.optional().messages({
       "any.required": "Assigned crew id is required",
       "number.base": "Assigned crew id must be a number",
     }),
@@ -216,7 +220,7 @@ export const UpdateWorkOrderValidation = {
       "any.required": "Actual end date is required",
       "string.base": "Actual end date must be a string",
     }),
-    currency_id: Joi.number().required().messages({
+    currency_id: Joi.optional().messages({
       "any.required": "Currency ID is required",
       "number.base": "Currency ID must be a number",
     }),
@@ -248,26 +252,27 @@ export const UpdateWorkOrderValidation = {
       "any.required": "Country is required",
       "string.base": "Country must be a string",
     }),
-    is_multi_day: Joi.number().required().messages({
+    is_multi_day: Joi.optional().messages({
       "any.required": "Is multi day is required",
       "number.base": "Is multi day must be a number",
     }),
-    services: Joi.array().items(
-      Joi.object({
-        service_id: Joi.number().required().messages({
-          "any.required": "Service id is required",
-          "number.base": "Service id must be a number",
-        }),
-        quantity: Joi.number().required().messages({
-          "any.required": "Quantity is required",
-          "number.base": "Quantity id must be a number",
-        }),
-        service_cost: Joi.number().required().messages({
-          "any.required": "Service cost is required",
-          "number.base": "Service cost id must be a number",
-        }),
-      })
-    ),
+    services: Joi.optional(),
+    // Joi.array().items(
+    //   Joi.object({
+    //     service_id: Joi.number().required().messages({
+    //       "any.required": "Service id is required",
+    //       "number.base": "Service id must be a number",
+    //     }),
+    //     quantity: Joi.number().required().messages({
+    //       "any.required": "Quantity is required",
+    //       "number.base": "Quantity id must be a number",
+    //     }),
+    //     service_cost: Joi.number().required().messages({
+    //       "any.required": "Service cost is required",
+    //       "number.base": "Service cost id must be a number",
+    //     }),
+    //   })
+    // ),
     tasks: Joi.array().items(Joi.object({
       task_name: Joi.string().required().messages({
         "any.required": "Task name is required",

@@ -47,7 +47,7 @@ export class WorkOrderController {
 
   // Update Work Order API
   @PUT("/:id")
-  @Validate([ValidateParamsID, ValidateDateTime, UpdateWorkOrderValidation])
+  // @Validate([ValidateParamsID, ValidateDateTime, UpdateWorkOrderValidation])
   @AccessTokenGuard()
   @PUTPayloadDecorator()
   public async updateWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
