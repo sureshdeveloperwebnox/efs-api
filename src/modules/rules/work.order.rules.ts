@@ -19,7 +19,7 @@ export const CreateWorkOrderValidation = {
       "any.required": "Asset ID is required",
       "number.base": "Asset ID must be a number",
     }),
-    maintenance_plan_id: Joi.number().required().messages({
+    maintenance_plan_id: Joi.optional().messages({
       "any.required": "Maintenance plan ID is required",
       "number.base": "Maintenance plan ID must be a number",
     }),
@@ -39,11 +39,11 @@ export const CreateWorkOrderValidation = {
       "any.required": "Status is required",
       "string.base": "Status must be a string",
     }),
-    assigned_to: Joi.number().required().messages({
+    assigned_to: Joi.optional().messages({
       "any.required": "Status is required",
       "number.base": "Status must be a number",
     }),
-    assigned_crew_id: Joi.number().required().messages({
+    assigned_crew_id: Joi.optional().messages({
       "any.required": "Assigned crew id is required",
       "number.base": "Assigned crew id must be a number",
     }),
@@ -63,7 +63,7 @@ export const CreateWorkOrderValidation = {
       "any.required": "Actual end date is required",
       "string.base": "Actual end date must be a string",
     }),
-    currency_id: Joi.number().required().messages({
+    currency_id: Joi.optional().messages({
       "any.required": "Currency ID is required",
       "number.base": "Currency ID must be a number",
     }),
@@ -95,7 +95,7 @@ export const CreateWorkOrderValidation = {
       "any.required": "Country is required",
       "string.base": "Country must be a string",
     }),
-    is_multi_day: Joi.number().required().messages({
+    is_multi_day: Joi.optional().messages({
       "any.required": "Is multi day is required",
       "number.base": "Is multi day must be a number",
     }),
@@ -124,7 +124,7 @@ export const CreateWorkOrderValidation = {
         "any.required": "Task description is required",
         "string.base": "Task description must be a string",
       }),
-      assigned_to: Joi.number().required().messages({
+      assigned_to: Joi.optional().messages({
         "any.required": "Assigned to is required",
         "number.base": "Assigned to must be a number",
       }),

@@ -59,4 +59,20 @@ export class MaintenancePlanController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };
+
+
+   // Get All Maintenance Plan By ID API 
+  @POST("")
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  @Validate([CreateMaintenancePlanAssetValidation, ValidateDateTime])
+  public async getAllMaintenancePlanByID(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.maintenance_plan.getAllMaintenancePlanByID(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllMaintenancePlanByID Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 }

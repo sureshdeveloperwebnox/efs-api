@@ -1,5 +1,13 @@
 import { RequestX } from "../../utils/request.interface";
-import { Controller, GET, POSTPayloadDecorator, POST, PUT, Validate, PUTPayloadDecorator } from "../../decorators";
+import {
+  Controller,
+  GET,
+  POSTPayloadDecorator,
+  POST,
+  PUT,
+  Validate,
+  PUTPayloadDecorator,
+} from "../../decorators";
 import { Service } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { AccessTokenGuard } from "../../middlewares";
@@ -47,22 +55,24 @@ export class ServiceController {
     }
   }
 
-
-    // Update Service API
-    @PUT("/:id")
-    @AccessTokenGuard()
-    @Validate([ValidateParamsID])
-    @PUTPayloadDecorator()
-    public async updateService(req: RequestX, res: Response, data: any): Promise<void> {
-      try {
-        
-        const result = await this.service.updateService(data);
-        result.send(res);
-      } catch (error: any) {
-        console.log("updateService Controller Error", error);
-        ApiResult.error(error.message || "Internal server error", 500);
-      }
+  // Update Service API
+  @PUT("/:id")
+  @AccessTokenGuard()
+  @Validate([ValidateParamsID])
+  @PUTPayloadDecorator()
+  public async updateService(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
+    try {
+      const result = await this.service.updateService(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("updateService Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
     }
+  }
 
   // Get All Service API Endpoint
   @POST("/getAllService")
@@ -73,6 +83,19 @@ export class ServiceController {
       result.send(res);
     } catch (error: any) {
       console.log("getAllService Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
+  @POST("/getAllServiceByID")
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async getAllServiceByID(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.service.getAllServiceByID(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllServiceByID Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }

@@ -64,8 +64,8 @@ export class Assets {
               organization_name: true,
               email: true,
               phone: true,
-              website: true
-            }
+              website: true,
+            },
           },
           customers: {
             select: {
@@ -183,6 +183,39 @@ export class Assets {
       );
     } catch (error: any) {
       console.error("getAllAsset", error);
+      return ApiResult.error(error.message || "Failed to fetch assets", 500);
+    }
+  }
+
+  // Get All Assets Service
+  public async getAllAssetByID(data?: any): Promise<ApiResult> {
+    const { organization_id } = data || {};
+
+    try {
+      // Return nothing if neither ID is provided
+      if (!organization_id) {
+        return ApiResult.success({}, "No data retrieved", 200);
+      }
+
+      // Build where clause based on provided IDs
+      const whereClause: any = {};
+
+      if (organization_id) {
+        whereClause.organization_id = organization_id;
+      }
+
+      const result = await prisma.assets.findMany({
+        where: whereClause,
+      });
+
+      if (!result || result.length === 0) {
+        return ApiResult.success({}, "No data retrieved", 409);
+      }
+
+      const formattedResult = await stringifyBigInts(result);
+      return ApiResult.success(formattedResult, "Successfully fetched assets");
+    } catch (error: any) {
+      console.error("getAllAssetByID Error:", error.message);
       return ApiResult.error(error.message || "Failed to fetch assets", 500);
     }
   }

@@ -86,12 +86,26 @@ export class AssetController {
     }
   }
 
-  // GET All Assets By ID API
+  // GET All Assets API
   @POST("/getAllAssets")
   @AccessTokenGuard()
   public async getAllAssets(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.assets.getAllAssets();
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllAssets Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
+  // GET All Assets By ID API
+  @POST("/getAllAssetByID")
+  @POSTPayloadDecorator()
+  @AccessTokenGuard()
+  public async getAllAssetByID(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.assets.getAllAssetByID(data);
       result.send(res);
     } catch (error: any) {
       console.log("getAllAssets Controller Error", error);

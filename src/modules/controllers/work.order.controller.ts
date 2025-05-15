@@ -61,7 +61,7 @@ export class WorkOrderController {
   };
 
   // Get Work Orders API
-  @GET("/get_all_orders")
+  @POST("/getAllOrder")
   @AccessTokenGuard()
   @GETPayloadDecorator()
   public async getAllWorkOrder(req: RequestX, res: Response): Promise<void> {

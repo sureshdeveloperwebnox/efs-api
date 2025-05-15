@@ -137,4 +137,41 @@ export class Service {
       return ApiResult.error(error.message || "Failed to fetch services", 500);
     }
   }
+
+
+  public async getAllServiceByID(data?: any): Promise<ApiResult> {
+    const { company_id, organization_id } = data || {};
+  
+    try {
+      // Return nothing if neither ID is provided
+      if (!company_id && !organization_id) {
+        return ApiResult.success({}, "No data retrieved", 200);
+      }
+  
+      // Build where clause based on provided IDs
+      const whereClause: any = {};
+      if (company_id) {
+        whereClause.company_id = company_id;
+      }
+      if (organization_id) {
+        whereClause.organization_id = organization_id;
+      }
+  
+      const result = await prisma.services.findMany({
+        where: whereClause
+      });
+  
+      if (!result || result.length === 0) {
+        return ApiResult.success({}, "No data retrieved", 409);
+      }
+  
+      const formattedResult = await stringifyBigInts(result);
+      return ApiResult.success(formattedResult, "Successfully fetched services");
+    } catch (error: any) {
+      console.error("getAllServiceByID Error:", error.message);
+      return ApiResult.error(error.message || "Failed to fetch services", 500);
+    }
+  }
+  
+  
 }
