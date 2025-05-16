@@ -35,9 +35,9 @@ export const CreateCustomerValidation = {
       "any.required": "Address is required",
       "string.base": "Address must be a string",
     }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Created at is required",
-      "string.base": "Created at must be a string",
+   job_title: Joi.string().required().messages({
+      "any.required": "Job title is required",
+      "string.base": "Job title must be a string",
     }),
   }),
 };
