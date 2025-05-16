@@ -18,3 +18,4 @@ __exportStar(require("./controller.decorator"), exports);
 __exportStar(require("./method.decorator"), exports);
 __exportStar(require("./middleware.decorator"), exports);
 __exportStar(require("./authenticate.decorator"), exports);
+__exportStar(require("./inject.payload.decorator"), exports);

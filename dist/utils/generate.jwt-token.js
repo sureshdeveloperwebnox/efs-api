@@ -21,10 +21,13 @@ const REFRESH_TOKEN_EXPIRES_IN = env_config_1.default.REFRESH_TOKEN_EXPIRES_IN |
  */
 async function generateJWTToken(data) {
     const payload = {
-        id: Number(data.id),
-        name: data.name || data.first_name, // Handle both name formats
-        email: data.email,
-        phone: data.phone
+        user_id: Number(data.id),
+        organization_id: Number(data.organization_id),
+        name: (data === null || data === void 0 ? void 0 : data.name) || data.first_name, // Handle both name formats
+        email: data === null || data === void 0 ? void 0 : data.email,
+        phone: data === null || data === void 0 ? void 0 : data.phone,
+        category: data === null || data === void 0 ? void 0 : data.user_type,
+        provider: data === null || data === void 0 ? void 0 : data.provider
     };
     console.log('ACCESS_TOKEN_EXPIRES_IN', ACCESS_TOKEN_EXPIRES_IN);
     const signOptions = {

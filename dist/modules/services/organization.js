@@ -14,7 +14,7 @@ class Organization {
         // Destructure organization data
         const { name, email, phone, address, organization_name, industry_name, pincode, website, timezone, plan_type, subscription_start_date, subscription_end_date, currencyid, file_storage_limit, data_storage_limit, created_at, updated_at, } = orgData;
         // Check if email already exists in the database
-        const existingEmail = await db_1.default.organizations.findFirst({
+        const existingEmail = await db_1.default.users.findFirst({
             where: { email },
         });
         // If email exists, return error
@@ -22,7 +22,7 @@ class Organization {
             return api_result_1.ApiResult.error("Email is already registered.", 400);
         }
         // Check if phone number already exists in the database
-        const existingPhone = await db_1.default.organizations.findFirst({
+        const existingPhone = await db_1.default.users.findFirst({
             where: { phone },
         });
         // If phone exists, return error
@@ -98,7 +98,7 @@ class Organization {
             const start = performance.now();
             // Only select required fields instead of entire row (better performance)
             const result = await db_1.default.organizations.findFirst({
-                where: { id: BigInt(data.id) }
+                where: { id: BigInt(data.id) },
             });
             if (!result) {
                 return api_result_1.ApiResult.success({}, "No data retrieved", 409);
@@ -117,12 +117,12 @@ class Organization {
     // Update organization details by ID
     async updateOrganization(data) {
         // Destructure organization data
-        const { id, name, email, phone, address, organization_name, industry_name, pincode, website, timezone, plan_type, subscription_start_date, subscription_end_date, currencyid, file_storage_limit, data_storage_limit, created_at, updated_at, } = data;
+        const { id, name, email, phone, address, organization_name, industry_name, pincode, website, timezone, plan_type, subscription_start_date, subscription_end_date, currencyid, file_storage_limit, data_storage_limit, date_time } = data;
         try {
             // Perform update in a transaction
             const result = await db_1.default.$transaction(async (trx) => {
                 // Update organization record matching the ID
-                const org = await trx.organizations.updateMany({
+                await trx.organizations.update({
                     where: {
                         id: BigInt(id),
                     },
@@ -142,13 +142,13 @@ class Organization {
                         currencyid,
                         file_storage_limit,
                         data_storage_limit,
-                        created_at,
-                        updated_at,
+                        updated_at: date_time
                     },
                 });
                 // Return success after update
                 return api_result_1.ApiResult.success({}, "Successfully updated organization", 202);
             });
+            console.log("result", result);
             // Return the result of transaction
             return result;
         }
@@ -179,6 +179,25 @@ class Organization {
         catch (error) {
             // Return error response if deletion fails
             return api_result_1.ApiResult.error(error.message || "Failed to delete organization", 500);
+        }
+    }
+    async getAllOrganization(data) {
+        try {
+            const result = await db_1.default.organizations.findMany();
+            if (!result) {
+                return api_result_1.ApiResult.success({}, "No data retrieved", 409);
+            }
+            // Convert BigInt values to string (if needed) without deep clone
+            const formattedResult = await (0, middlewares_1.stringifyBigInts)(result);
+            console.log("formattedResult", result);
+            if (!formattedResult) {
+                return api_result_1.ApiResult.success({}, "No data retrieved", 409);
+            }
+            return api_result_1.ApiResult.success(formattedResult, "Organization data rerieved successful", 200);
+        }
+        catch (error) {
+            console.log("getAllOrganization Error", error);
+            return api_result_1.ApiResult.error(error.message || "Failed to fetch organization", 500);
         }
     }
 }

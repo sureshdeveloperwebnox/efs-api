@@ -8,6 +8,7 @@ require("reflect-metadata");
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
+const cors_1 = __importDefault(require("cors")); // 👈 Added
 const routes_1 = require("./routes");
 const response_generator_1 = require("./utils/response-generator");
 const auth_1 = require("./modules/services/auth"); // ✅ Corrected import
@@ -20,6 +21,11 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+const corsOptions = {
+    origin: 'http://localhost:9875', //only allow http://localhost:8081 to make requests
+    credentials: true, // 👈 Important for cookie/session sharing
+};
+app.use((0, cors_1.default)(corsOptions));
 // 🛡️ Setup session (required for passport)
 app.use((0, express_session_1.default)({
     secret: env_config_1.default.GOOGLE_CLIENT_SECRET || 'your_session_secret',

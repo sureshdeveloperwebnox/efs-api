@@ -27,7 +27,18 @@ const combineRouters = (app) => {
         controllers_1.TimeOffRequestController,
         controllers_1.CrewController,
         controllers_1.CrewMemberController,
-        controllers_1.EquipmentController
+        controllers_1.EquipmentController,
+        controllers_1.CompanyController,
+        controllers_1.CustomerController,
+        controllers_1.ServiceController,
+        controllers_1.PartController,
+        controllers_1.ServiceTypeController,
+        controllers_1.AssetController,
+        controllers_1.MaintenancePlanController,
+        controllers_1.MaintenancePlanAssetController,
+        controllers_1.WorkOrderController,
+        controllers_1.WorkOrderCrewController,
+        controllers_1.WorkOrderApprovalController
     ], {
         middleware: {
             auth: middlewares_1.createRoleMiddleware,

@@ -16,6 +16,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const env_config_1 = __importDefault(require("../../config/env.config"));
 const generate_jwt_token_1 = require("../../utils/generate.jwt-token");
 const middlewares_1 = require("../../middlewares");
+const utils_1 = require("../../utils");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 dotenv_1.default.config();
 // JWT Config Credentials
 const ACCESS_TOKEN_SECRET = env_config_1.default.ACCESS_TOKEN_SECRET || "";
@@ -67,6 +69,8 @@ class Auth {
                         const response = {
                             ...userData,
                             provider,
+                            accessToken,
+                            refreshToken,
                         };
                         return done(null, response);
                     }
@@ -125,13 +129,14 @@ class Auth {
         const token = await (0, generate_jwt_token_1.generateTokenPair)(user);
         const userData = {
             id: Number(user.id),
+            organization_id: Number(user === null || user === void 0 ? void 0 : user.organization_id),
             name: user === null || user === void 0 ? void 0 : user.first_name,
             email: user === null || user === void 0 ? void 0 : user.email,
             category: user === null || user === void 0 ? void 0 : user.user_type,
             provider: "jwt",
         };
         return api_result_1.ApiResult.success({
-            ...userData,
+            user: userData,
             ...token,
         }, "Login successful");
     }
@@ -141,8 +146,18 @@ class Auth {
      * @returns ApiResult with user data
      */
     async handleGoogleAuthSuccess(data) {
+        const { email } = data;
+        const checkUser = await this.checkAlreadyExistUser(email);
+        if (!checkUser) {
+            const createGoogleSignUp = await this.googleSignUp(data);
+            return api_result_1.ApiResult.success({
+                ...data,
+                userid: createGoogleSignUp === null || createGoogleSignUp === void 0 ? void 0 : createGoogleSignUp.user_id
+            }, "Google authentication successful", 200);
+        }
         return api_result_1.ApiResult.success({
             ...data,
+            user_id: checkUser.id
         }, "Google authentication successful", 200);
     }
     /**
@@ -346,6 +361,122 @@ class Auth {
         catch (error) {
             console.error("Token refresh error:", error);
             return api_result_1.ApiResult.error(error instanceof Error ? error.message : "Invalid refresh token", 401);
+        }
+    }
+    /**
+     * Generate a Sign Up
+     * @param data Token
+     * @returns ApiResult with organization and user info
+     */
+    async authRegister(data) {
+        const { first_name, last_name, email, phone, password } = data;
+        try {
+            await db_1.default.$transaction(async (trx) => {
+                const organization = await trx.organizations.create({
+                    data: {
+                        name: first_name + last_name,
+                        email,
+                        phone,
+                    },
+                });
+                const { hashedPassword } = await (0, utils_1.getHashPassword)(password);
+                await trx.users.create({
+                    data: {
+                        organization_id: organization.id,
+                        email,
+                        phone,
+                        user_type: "ADMIN",
+                        password_hash: hashedPassword,
+                    },
+                });
+            });
+            return api_result_1.ApiResult.success({}, "Signup successful", 201);
+        }
+        catch (error) {
+            console.log("signUp Error", error);
+            return api_result_1.ApiResult.error("Failed to sign up", 401);
+        }
+    }
+    async checkAlreadyExistUser(email) {
+        try {
+            const userExist = await db_1.default.users.findFirst({
+                where: {
+                    email: email
+                }
+            });
+            const stringifyData = await (0, middlewares_1.stringifyBigInts)(userExist);
+            return stringifyData;
+        }
+        catch (error) {
+            console.log("checkAlreadyExistUser Error", error);
+        }
+    }
+    async googleSignUp(data) {
+        const { first_name, last_name, email } = data;
+        try {
+            const result = await db_1.default.$transaction(async (trx) => {
+                // Insert Organization
+                const organization = await trx.organizations.create({
+                    data: {
+                        name: first_name + last_name,
+                        email
+                    },
+                });
+                // Insert Users
+                const users = await trx.users.create({
+                    data: {
+                        organization_id: organization.id,
+                        first_name,
+                        last_name,
+                        email
+                    }
+                });
+                const user_id = users.id;
+                return { user_id };
+            });
+            return result;
+        }
+        catch (error) {
+            console.log('googleSignUp Error', error);
+        }
+    }
+    async organizationRegister(data) {
+        const { organization_name, industry_name, email, pincode, website, address } = data;
+        // Basic validation
+        if (!organization_name || !industry_name || !pincode) {
+            return api_result_1.ApiResult.error("Required fields are missing", 400);
+        }
+        try {
+            // Using transaction is good practice, though for a single operation it's not strictly necessary
+            await db_1.default.$transaction(async (trx) => {
+                return await trx.organizations.create({
+                    data: {
+                        name: organization_name,
+                        email: email,
+                        organization_name,
+                        industry_name,
+                        pincode,
+                        website: website || null, // Convert empty string to null
+                        address: address || null // Convert empty string to null
+                    }
+                });
+            });
+            return api_result_1.ApiResult.success({}, // Return at least the ID for reference
+            'Organization registration successful');
+        }
+        catch (error) {
+            console.error("Organization registration error:", error);
+            return api_result_1.ApiResult.error("Failed to register organization", 500); // 500 for server errors
+        }
+    }
+    async verifyAccessToken(token) {
+        try {
+            // verify token 
+            const decoded = jsonwebtoken_1.default.verify(token, ACCESS_TOKEN_SECRET);
+            return api_result_1.ApiResult.success({ decoded }, "Token verified successful", 200);
+        }
+        catch (error) {
+            return api_result_1.ApiResult.error("Failed to verify token", 200);
         }
     }
 }

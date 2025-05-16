@@ -47,8 +47,7 @@ class EditOrganization {
         this.currencyid = data.currencyid;
         this.file_storage_limit = data.file_storage_limit;
         this.data_storage_limit = data.data_storage_limit;
-        this.created_at = data.created_at;
-        this.updated_at = data.updated_at;
+        this.date_time = data.date_time;
     }
 }
 exports.EditOrganization = EditOrganization;

@@ -71,12 +71,16 @@ exports.CreateOrganizationValidation = {
         created_at: joi_1.default.optional().messages({
             "any.required": "Created at is required",
             "string.base": "Created at must be a string",
-        })
+        }),
     }),
 };
 // Update Organization Validation Schema
 exports.UpdateOrganizationValidation = {
     body: joi_1.default.object({
+        id: joi_1.default.string().required().messages({
+            "any.required": "ID is required",
+            "number.base": "ID must be a number",
+        }),
         name: joi_1.default.string().required().messages({
             "any.required": "Name is required",
         }),
@@ -107,10 +111,10 @@ exports.UpdateOrganizationValidation = {
         plan_type: joi_1.default.string().required().messages({
             "any.required": "Plan type is required",
         }),
-        subscription_start_date: joi_1.default.string().required().messages({
+        subscription_start_date: joi_1.default.optional().messages({
             "any.required": "Subscription start date is required",
         }),
-        subscription_end_date: joi_1.default.string().required().messages({
+        subscription_end_date: joi_1.default.optional().messages({
             "any.required": "Subscription end date is required",
         }),
         currencyid: joi_1.default.number().required().messages({

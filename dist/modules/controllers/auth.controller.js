@@ -37,9 +37,7 @@ let AuthController = class AuthController {
     }
     // GET Google User Registration API
     initiateGoogleAuth(req, res, next) {
-        const state = typeof req.query.redirectUrl === "string"
-            ? req.query.redirectUrl
-            : undefined;
+        const state = typeof req.query.redirectUrl === "string" ? req.query.redirectUrl : '/dashboard'; // Default to home if no redirectUrl
         return passport_1.default.authenticate("google", {
             scope: ["profile", "email"],
             state: state,
@@ -113,6 +111,46 @@ let AuthController = class AuthController {
             api_result_1.ApiResult.error(error.message || 'Token refresh failed', 401).send(res);
         }
     }
+    //POST Sign UP Generation API
+    async authRegister(req, res) {
+        try {
+            const result = await this.auth.authRegister(req.body);
+            result.send(res);
+        }
+        catch (error) {
+            console.error("authRegister controller", error);
+            api_result_1.ApiResult.error(error.message || 'Internal server error', 401);
+        }
+    }
+    // POST Organization User Register API
+    async organizationRegister(req, res) {
+        try {
+            const result = await this.auth.organizationRegister(req.body);
+            result.send(res);
+        }
+        catch (error) {
+            console.log('organizationRegister error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 400);
+        }
+    }
+    async verifyAccessToken(req, res) {
+        var _a;
+        try {
+            // Get refresh token from cookie or request body
+            const accessToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.accessToken;
+            if (!accessToken) {
+                api_result_1.ApiResult.error('Access token is required', 401).send(res);
+                return;
+            }
+            1;
+            const result = await this.auth.verifyAccessToken(accessToken);
+            result.send(res);
+        }
+        catch (error) {
+            console.error("🔄 Token access failed:", error);
+            api_result_1.ApiResult.error(error.message || 'Token access failed', 401).send(res);
+        }
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -155,6 +193,26 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refreshToken", null);
+__decorate([
+    (0, decorators_1.POST)("/authRegister")
+    //  @POSTPayloadDecorator()
+    ,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "authRegister", null);
+__decorate([
+    (0, decorators_1.POST)('/organizationRegister'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "organizationRegister", null);
+__decorate([
+    (0, decorators_1.POST)("/verify-access-token"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyAccessToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, decorators_1.Controller)("/auth"),
     __metadata("design:paramtypes", [])

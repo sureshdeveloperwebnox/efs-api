@@ -46,11 +46,11 @@ let OrganizationController = class OrganizationController {
         }
     }
     // UPDATE Organization API endpoint
-    async updateOrganization(req, res) {
+    async updateOrganization(req, res, data) {
         try {
-            const id = req.params.id;
-            const body = req.body;
-            const data = { ...body, id };
+            // const id = req.params.id;
+            // const body = req.body;
+            // const data = { ...body, id };
             const result = await this.organization.updateOrganization(data);
             result.send(res);
         }
@@ -73,11 +73,22 @@ let OrganizationController = class OrganizationController {
             api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
+    // GET All Organization API endpoint
+    async getAllOrganization(req, res) {
+        try {
+            const result = await this.organization.getAllOrganization(req.body);
+            result.send(res);
+        }
+        catch (error) {
+            console.log('getOrganization error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
+        }
+    }
 };
 exports.OrganizationController = OrganizationController;
 __decorate([
     (0, decorators_1.POST)(""),
-    (0, decorators_1.Validate)([rules_1.ValidateParamsID, rules_1.CreateOrganizationValidation]),
+    (0, decorators_1.Validate)([rules_1.CreateOrganizationValidation]),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
@@ -92,10 +103,11 @@ __decorate([
 ], OrganizationController.prototype, "getOrganization", null);
 __decorate([
     (0, decorators_1.PUT)("/:id"),
-    (0, decorators_1.Validate)([rules_1.ValidateParamsID, rules_1.UpdateOrganizationValidation]),
+    (0, decorators_1.Validate)([rules_1.UpdateOrganizationValidation]),
     (0, token_guard_1.AccessTokenGuard)(),
+    (0, decorators_1.PUTPayloadDecorator)(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "updateOrganization", null);
 __decorate([
@@ -106,6 +118,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "deleteOrganization", null);
+__decorate([
+    (0, decorators_1.POST)("/getAllOrganization"),
+    (0, token_guard_1.AccessTokenGuard)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], OrganizationController.prototype, "getAllOrganization", null);
 exports.OrganizationController = OrganizationController = __decorate([
     (0, decorators_1.Controller)("/organization"),
     __metadata("design:paramtypes", [])

@@ -24,3 +24,14 @@ __exportStar(require("./time.off.request"), exports); // Time Off Request Servic
 __exportStar(require("./business.hours"), exports); // Buinsess Hours Service
 __exportStar(require("./crew.members"), exports); // Crew Members
 __exportStar(require("./equipments"), exports); // Equipments
+__exportStar(require("./company"), exports); // Company
+__exportStar(require("./customers"), exports); // Customer
+__exportStar(require("./services"), exports); // Services
+__exportStar(require("./parts"), exports); // Parts
+__exportStar(require("./service.types"), exports); // Service Types
+__exportStar(require("./assets"), exports); // Assets
+__exportStar(require("./maintenance.plan"), exports); // Maintenance Plans
+__exportStar(require("./maintenance.plan.asset"), exports); // Maintenance Plans Asset
+__exportStar(require("./work.order"), exports); // Work Order
+__exportStar(require("./work.order.crew"), exports); // Work Order Crew
+__exportStar(require("./work_order_approval"), exports); // Work Order Approval
