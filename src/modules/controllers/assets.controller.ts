@@ -8,6 +8,7 @@ import {
   Controller,
   PUTPayloadDecorator,
   GETPayloadDecorator,
+  GETALLPayloadDecorator,
 } from "../../decorators";
 import { Assets } from "../services";
 import { ApiResult } from "../../utils/api-result";
@@ -89,9 +90,10 @@ export class AssetController {
   // GET All Assets API
   @POST("/getAllAssets")
   @AccessTokenGuard()
-  public async getAllAssets(req: RequestX, res: Response): Promise<void> {
+  @GETALLPayloadDecorator()
+  public async getAllAssets(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.assets.getAllAssets();
+      const result = await this.assets.getAllAssets(data);
       result.send(res);
     } catch (error: any) {
       console.log("getAllAssets Controller Error", error);

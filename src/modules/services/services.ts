@@ -116,10 +116,15 @@ export class Service {
   }
 
   // Get All Service By ID API
-  public async getAllService(): Promise<ApiResult> {
+  public async getAllService(data: any): Promise<ApiResult> {
+    const { organization_id } = data;
     try {
       // Only select required fields instead of entire row (better performance)
-      const result = await prisma.services.findMany();
+      const result = await prisma.services.findMany({
+        where: {
+          organization_id: organization_id
+        }
+      });
 
       if (!result) {
         return ApiResult.success({}, "No data retrieved", 409);
@@ -141,13 +146,13 @@ export class Service {
 
   public async getAllServiceByID(data?: any): Promise<ApiResult> {
     const { company_id, organization_id } = data || {};
-  
+
     try {
       // Return nothing if neither ID is provided
       if (!company_id && !organization_id) {
         return ApiResult.success({}, "No data retrieved", 200);
       }
-  
+
       // Build where clause based on provided IDs
       const whereClause: any = {};
       if (company_id) {
@@ -156,15 +161,15 @@ export class Service {
       if (organization_id) {
         whereClause.organization_id = organization_id;
       }
-  
+
       const result = await prisma.services.findMany({
         where: whereClause
       });
-  
+
       if (!result || result.length === 0) {
         return ApiResult.success({}, "No data retrieved", 409);
       }
-  
+
       const formattedResult = await stringifyBigInts(result);
       return ApiResult.success(formattedResult, "Successfully fetched services");
     } catch (error: any) {
@@ -172,6 +177,6 @@ export class Service {
       return ApiResult.error(error.message || "Failed to fetch services", 500);
     }
   }
-  
-  
+
+
 }

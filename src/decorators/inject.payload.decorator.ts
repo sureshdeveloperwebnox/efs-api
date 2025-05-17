@@ -97,3 +97,30 @@ export function PUTPayloadDecorator() {
   };
 }
 
+// GET ALL Get Payload Decorator
+export function GETALLPayloadDecorator() {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const originalMethod = descriptor.value;
+
+    descriptor.value = async function (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) {
+      try {
+        const body = req.body;
+        // Call the original method with injected `data`
+        return await originalMethod.call(this, req, res, body);
+      } catch (error) {
+        console.error("InjectPayload Error:", error);
+        next(error);
+      }
+    };
+
+    return descriptor;
+  };
+}

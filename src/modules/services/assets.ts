@@ -144,10 +144,14 @@ export class Assets {
   }
 
   // Get All Assets Service
-  public async getAllAssets(): Promise<ApiResult> {
+  public async getAllAssets(data:any): Promise<ApiResult> {
+    const { organization_id } = data
     try {
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.assets.findMany({
+        where: {
+          organization_id: organization_id
+        },
         include: {
           organizations: {
             select: {

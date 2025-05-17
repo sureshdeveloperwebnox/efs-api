@@ -1,5 +1,5 @@
 import { AccessTokenGuard } from "../../middlewares";
-import { Controller, GET, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, PUTPayloadDecorator, Validate } from "../../decorators";
+import { Authenticate, Controller, GET, GETALLPayloadDecorator, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, PUTPayloadDecorator, Validate } from "../../decorators";
 import { Company } from "../services";
 import { RequestX } from "../../utils/request.interface";
 import { ApiResult } from "../../utils/api-result";
@@ -8,6 +8,7 @@ import {
   UpdateCompanyValidation,
   ValidateParamsID,
 } from "../rules";
+import { UserCategory } from "../../utils/user-category.enum";
 
 @Controller("/company")
 export class CompanyController {
@@ -69,12 +70,13 @@ export class CompanyController {
 
 
 
-    // GET All Company API
+  // GET All Company API
   @POST("/getAllCompany")
+  @GETALLPayloadDecorator()
   @AccessTokenGuard()
-  public async getAllCompany(req: RequestX, res: Response): Promise<void> {
+  public async getAllCompany(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.company.getAllCompany();
+      const result = await this.company.getAllCompany(data);
       result.send(res);
     } catch (error: any) {
       console.log("getAllCompany Controller Error", error);

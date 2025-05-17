@@ -7,6 +7,7 @@ import {
   PUT,
   Validate,
   PUTPayloadDecorator,
+  GETALLPayloadDecorator,
 } from "../../decorators";
 import { Service } from "../services";
 import { ApiResult } from "../../utils/api-result";
@@ -77,9 +78,10 @@ export class ServiceController {
   // Get All Service API Endpoint
   @POST("/getAllService")
   @AccessTokenGuard()
-  public async getAllService(req: RequestX, res: Response): Promise<void> {
+  @GETALLPayloadDecorator()
+  public async getAllService(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.service.getAllService();
+      const result = await this.service.getAllService(data);
       result.send(res);
     } catch (error: any) {
       console.log("getAllService Error", error);

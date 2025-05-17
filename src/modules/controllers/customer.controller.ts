@@ -2,6 +2,7 @@ import { RequestX } from "../../utils/request.interface";
 import {
   Controller,
   GET,
+  GETALLPayloadDecorator,
   GETPayloadDecorator,
   POST,
   POSTPayloadDecorator,
@@ -88,7 +89,8 @@ export class CustomerController {
   // Get All Customer API
   @POST("/getAllCustomer")
   @AccessTokenGuard()
-  public async getAllCustomer(req: RequestX, res: Response): Promise<void> {
+  @GETALLPayloadDecorator()
+  public async getAllCustomer(req: RequestX, res: Response, data: any): Promise<void> {
     try {
       const result = await this.customers.getAllCustomer();
       result.send(res);

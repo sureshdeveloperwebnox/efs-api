@@ -122,11 +122,16 @@ export class Company {
   };
 
   //Get All Company API Service
-  public async getAllCompany(): Promise<ApiResult> {
+  public async getAllCompany(data: any): Promise<ApiResult> {
+    const { organization_id } = data
     try {
 
       // Only select required fields instead of entire row (better performance)
-      const result = await prisma.companies.findMany();
+      const result = await prisma.companies.findMany({
+        where: {
+          organization_id: organization_id
+        }
+      });
 
       if (!result) {
         return ApiResult.success({}, "No data retrieved", 409);

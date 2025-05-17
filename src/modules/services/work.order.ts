@@ -130,10 +130,12 @@ export class WorkOrder {
       tasks
     } = data;
     try {
+      console.log("data❤️❤️❤️", data);
+      
 
          // Using the safer $queryRaw with template literals
          const result = await prisma.$queryRaw`
-         CALL update_work_order_new(
+         CALL update_work_order_prc(
            ${id}::bigint,
            ${organization_id}::bigint, 
            ${customer_id}::bigint, 
