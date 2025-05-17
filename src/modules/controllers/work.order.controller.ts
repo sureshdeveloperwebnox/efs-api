@@ -1,5 +1,5 @@
 import { AccessTokenGuard } from "../../middlewares";
-import { GET, POST, PUT, Validate, POSTPayloadDecorator, Controller, PUTPayloadDecorator, GETPayloadDecorator } from "../../decorators";
+import { GET, POST, PUT, Validate, POSTPayloadDecorator, Controller, PUTPayloadDecorator, GETPayloadDecorator, GETALLPayloadDecorator } from "../../decorators";
 import { WorkOrder } from "../services";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
@@ -47,7 +47,7 @@ export class WorkOrderController {
 
   // Update Work Order API
   @PUT("/:id")
-  // @Validate([ValidateParamsID, ValidateDateTime, UpdateWorkOrderValidation])
+  @Validate([ValidateParamsID, ValidateDateTime, UpdateWorkOrderValidation])
   @AccessTokenGuard()
   @PUTPayloadDecorator()
   public async updateWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
@@ -63,10 +63,10 @@ export class WorkOrderController {
   // Get Work Orders API
   @POST("/getAllOrder")
   @AccessTokenGuard()
-  @GETPayloadDecorator()
-  public async getAllWorkOrder(req: RequestX, res: Response): Promise<void> {
+  @GETALLPayloadDecorator()
+  public async getAllWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.work_order.getAllWorkOrder();
+      const result = await this.work_order.getAllWorkOrder(data);
       result.send(res);
     } catch (error: any) {
       console.log("getAllWorkOrder Controller Error", error);

@@ -44,19 +44,23 @@ export class WorkOrder {
     try {
       // Using the safer $queryRaw with template literals
       const result = await prisma.$queryRaw<{ p_work_order_id: bigint }[]>`
-      CALL create_work_order_procs(
+      CALL create_work_order_procedure(
         ${organization_id}::bigint, 
         ${customer_id}::bigint, 
         ${company_id}::bigint, 
-        ${asset_id}::bigint, 
+        ${asset_id}::bigint,
+        ${maintenance_plan_id}::bigint,
         ${title}::text, 
         ${description}::text, 
         ${priority}::text, 
         ${status}::text, 
+        ${assigned_to}::bigint,
+        ${assigned_crew_id}::bigint,
         ${scheduled_start_date}::text, 
         ${scheduled_end_date}::text, 
         ${actual_start_date}::text, 
         ${actual_end_date}::text,
+        ${currency_id}::int,
         ${estimated_cost}::numeric(10,2), 
         ${actual_cost}::numeric(10,2), 
         ${address}::text, 
@@ -64,6 +68,7 @@ export class WorkOrder {
         ${state}::text, 
         ${postal_code}::text, 
         ${country}::text, 
+        ${is_multi_day}::int,
         ${date_time}::text,
         ${services ? JSON.stringify(services) : null}::jsonb, 
         ${tasks ? JSON.stringify(tasks) : null}::jsonb, 
@@ -135,20 +140,24 @@ export class WorkOrder {
 
          // Using the safer $queryRaw with template literals
          const result = await prisma.$queryRaw`
-         CALL update_work_order_prc(
+         CALL update_work_order_procedure(
            ${id}::bigint,
            ${organization_id}::bigint, 
            ${customer_id}::bigint, 
            ${company_id}::bigint, 
            ${asset_id}::bigint, 
+           ${maintenance_plan_id}::bigint,
            ${title}::text, 
            ${description}::text, 
            ${priority}::text, 
            ${status}::text, 
+           ${assigned_to}::bigint,
+           ${assigned_crew_id}::bigint,
            ${scheduled_start_date}::text, 
            ${scheduled_end_date}::text, 
            ${actual_start_date}::text, 
            ${actual_end_date}::text,
+           ${currency_id}::int, 
            ${estimated_cost}::numeric(10,2), 
            ${actual_cost}::numeric(10,2), 
            ${address}::text, 
@@ -156,6 +165,7 @@ export class WorkOrder {
            ${state}::text, 
            ${postal_code}::text, 
            ${country}::text, 
+           ${is_multi_day}::int,
            ${date_time}::text,
            ${services ? JSON.stringify(services) : null}::jsonb, 
            ${tasks ? JSON.stringify(tasks) : null}::jsonb, 
@@ -181,17 +191,17 @@ export class WorkOrder {
 
   // get All Work Order Service
   // Note: Use Get All Work Order Procedure
-  public async getAllWorkOrder(): Promise<ApiResult> {
+  public async getAllWorkOrder(data: any): Promise<ApiResult> {
     console.log("*****");
-    
+    const { organization_id } = data;
     try {
       // For a function that returns JSON:
-      const result = await prisma.$queryRaw<{ get_all_work_orders: any }[]>
-        `SELECT get_all_work_orders()`;
-      console.log("result", result[0].get_all_work_orders);
+      const result = await prisma.$queryRaw<{ get_all_work_order_by_id: any }[]>
+        `SELECT get_all_work_order_by_id(${organization_id})`;
+      console.log("result", result[0].get_all_work_order_by_id);
       
   
-      return ApiResult.success(result[0].get_all_work_orders, "Work order data retrieved", 200);
+      return ApiResult.success(result[0].get_all_work_order_by_id, "Work order data retrieved", 200);
     } catch (error: any) {
       return ApiResult.error(
         error.message.includes('Error fetching work order')
