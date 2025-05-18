@@ -31,101 +31,6 @@ const GOOGLE_CLIENT_SECRET = envConfig.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL = envConfig.GOOGLE_CALLBACK_URL;
 
 export class Auth {
-  constructor() {
-    this.initializePassport();
-  }
-
-  private initializePassport(): void {
-    const jwtOptions = {
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: ACCESS_TOKEN_SECRET,
-    };
-
-    passport.use(
-      new JwtStrategy(jwtOptions, async (jwtPayload, done) => {
-        try {
-          const user = await prisma.users.findUnique({
-            where: { id: jwtPayload.id },
-          });
-
-          if (user) {
-            return done(null, user);
-          }
-          return done(null, false);
-        } catch (error) {
-          return done(error, false);
-        }
-      })
-    );
-
-    if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_CALLBACK_URL) {
-      passport.use(
-        new GoogleStrategy(
-          {
-            clientID: GOOGLE_CLIENT_ID,
-            clientSecret: GOOGLE_CLIENT_SECRET,
-            callbackURL: GOOGLE_CALLBACK_URL,
-            passReqToCallback: true,
-          },
-          async (req, accessToken, refreshToken, profile, done) => {
-            try {
-              // Fix incorrect assignment of name fields
-              const first_name = profile._json.given_name || "";
-              const last_name = profile._json.family_name || "";
-              const email = profile._json.email || "";
-              const provider = profile.provider;
-
-              let userData = await prisma.users.findFirst({
-                where: { email },
-              });
-
-              if (!_.isEmpty(userData)) {
-                const response = {
-                  ...userData,
-                  provider,
-                  accessToken,
-                  refreshToken,
-                };
-                return done(null, response);
-              }
-
-              const data = {
-                email,
-                first_name,
-                last_name,
-                provider,
-                accessToken,
-                refreshToken,
-              };
-
-              return done(null, data);
-            } catch (error) {
-              return done(error);
-            }
-          }
-        )
-      );
-    } else {
-      console.warn(
-        "Google OAuth credentials missing. Google authentication strategy not initialized."
-      );
-    }
-
-    passport.serializeUser((data: any, done) => {
-      done(null, data);
-    });
-
-    passport.deserializeUser(async (id: number, done) => {
-      try {
-        const user = await prisma.users.findFirst({
-          where: { id },
-        });
-        done(null, user);
-      } catch (error) {
-        done(error, null);
-      }
-    });
-  }
 
   /**
    * User Login API
@@ -169,107 +74,6 @@ export class Auth {
       },
       "Login successful"
     );
-  }
-
-  /**
-   * Handle successful Google authentication
-   * @param data Google user data
-   * @returns ApiResult with user data
-   */
-  public async handleGoogleAuthSuccess(data: any): Promise<ApiResult> {
-
-    const { email } = data;
-
-    const checkUser = await this.checkAlreadyExistUser(email);
-    if (!checkUser) {
-      const createGoogleSignUp = await this.googleSignUp(data);
-      return ApiResult.success(
-        {
-          ...data,
-          userid: createGoogleSignUp?.user_id
-        },
-        "Google authentication successful",
-        200
-      );
-    }
-
-    return ApiResult.success(
-      {
-        ...data,
-        user_id: checkUser.id
-      },
-      "Google authentication successful",
-      200
-    );
-  }
-
-  /**
-   * Authenticate JWT token
-   * @returns Passport JWT authentication middleware
-   */
-  public authenticateJwt() {
-    return passport.authenticate("jwt", { session: false });
-  }
-
-  /**
-   * Authenticate with Google
-   * @param options Google authentication options
-   * @returns Google authentication middleware
-   */
-  public authenticateGoogle(options = { scope: ["profile", "email"] }) {
-    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
-      return (req: Request, res: Response) => {
-        return ApiResult.error(
-          "Google authentication is not configured",
-          501
-        ).send(res);
-      };
-    }
-    return passport.authenticate("google", options);
-  }
-
-  /**
-   * Google authentication callback
-   * @returns Google callback middleware
-   */
-  public googleCallback() {
-    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
-      return (req: Request, res: Response) => {
-        return ApiResult.error(
-          "Google authentication is not configured",
-          501
-        ).send(res);
-      };
-    }
-    return passport.authenticate("google", {
-      session: false,
-      failureRedirect: "/login",
-    });
-  }
-
-  /**
-   * Protect routes with JWT authentication
-   * @param customHandler Optional custom handler after authentication
-   * @returns JWT protection middleware
-   */
-  public jwtProtect(
-    customHandler?: (req: Request, res: Response, next: NextFunction) => void
-  ) {
-    return (req: Request, res: Response, next: NextFunction) => {
-      passport.authenticate(
-        "jwt",
-        { session: false },
-        (err: any, user: any, info: any) => {
-          if (err) return next(err);
-          if (!user)
-            return ApiResult.error("Unauthorized access", 401).send(res);
-
-          req.user = user;
-          if (customHandler) return customHandler(req, res, next);
-          return next();
-        }
-      )(req, res, next);
-    };
   }
 
   /**
@@ -652,6 +456,69 @@ export class Auth {
     } catch (error: any) {
       return ApiResult.error("Failed to verify token", 200)
 
+    }
+  }
+
+  public async handleGoogleUser(data: any) {
+    const { email, first_name, last_name, provider } = data;
+    console.log("Google user data:", data);
+
+    try {
+      // Check if user exists
+      const existingUser = await prisma.users.findFirst({
+        where: { email }
+      });
+
+      if (existingUser) {
+        const userData = {
+          id: Number(existingUser.id),
+          organization_id: Number(existingUser.organization_id),
+          name: `${existingUser.first_name || ""} ${existingUser.last_name || ""}`.trim(),
+          email: existingUser.email,
+          category: existingUser.user_type,
+          provider: provider,
+        };
+        return await generateTokenPair(userData);
+      }
+
+      // Create new user and organization if user doesn't exist
+      const result = await prisma.$transaction(async (trx) => {
+        // Create organization
+        const organization = await trx.organizations.create({
+          data: {
+            name: `${first_name} ${last_name}`.trim(),
+            email
+          }
+        });
+
+        // Create user
+        const user = await trx.users.create({
+          data: {
+            organization_id: organization.id,
+            first_name,
+            last_name,
+            email,
+            user_type: 'ADMIN' // Added default user type
+          }
+        });
+
+        const userData = {
+          id: Number(user.id),
+          organization_id: Number(user.organization_id),
+          name: `${user.first_name} ${user.last_name}`.trim(),
+          email: user.email,
+          category: user.user_type,
+          provider: provider,
+        };
+
+        return await generateTokenPair(userData);
+      });
+
+      return result;
+
+    } catch (error) {
+      console.error("Error in handleGoogleUser:", error);
+      throw error; // Re-throw the error to handle it in the calling function
     }
   }
 

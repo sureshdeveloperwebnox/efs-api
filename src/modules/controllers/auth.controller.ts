@@ -5,82 +5,126 @@ import { Auth } from "../services/auth";
 import { ApiResult } from "../../utils/api-result";
 import passport from "passport";
 import { NextFunction, Response } from "express";
-import { stringifyBigInts } from "../../middlewares";
-import { POSTPayloadDecorator } from '../../decorators/inject.payload.decorator';
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import envConfig from "../../config/env.config";
 
-// Auth Cotroller
+// Types
+interface GoogleProfile {
+  id: string;
+  displayName: string;
+  name?: { givenName?: string; familyName?: string };
+  emails?: { value: string; verified?: boolean }[];
+  photos?: { value: string }[];
+  provider: string;
+}
+
+
+// Google OAuth Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: envConfig.GOOGLE_CLIENT_ID,
+      clientSecret: envConfig.GOOGLE_CLIENT_SECRET,
+      callbackURL: envConfig.GOOGLE_CALLBACK_URL,
+      passReqToCallback: true,
+      proxy: true
+    },
+    async (request: RequestX, accessToken: string, refreshToken: string, profile: GoogleProfile, done: Function) => {
+      try {
+        // Here you would typically find or create a user in your database
+        const user = {
+          googleId: profile.id,
+          email: profile.emails?.[0]?.value,
+          firstName: profile.name?.givenName,
+          lastName: profile.name?.familyName,
+          avatar: profile.photos?.[0]?.value
+        };
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
+
 @Controller("/auth")
 export class AuthController {
-  private auth!: Auth;
+  private auth: Auth;
 
   constructor() {
-    this.auth = new Auth(); 
+    this.auth = new Auth();
   }
 
-  // POST Organization User Register API
+  private handleError(error: any, res: Response, defaultMessage: string = "Internal server error", statusCode: number = 500): void {
+    console.error(error);
+    const message = error.message || defaultMessage;
+    const status = error.statusCode || statusCode;
+    ApiResult.error(message, status).send(res);
+  }
+
   @POST('/register')
-  @Validate([OrganizationUserRegisterValidation]) // Organization Admin User Validation Schema
+  @Validate([OrganizationUserRegisterValidation])
   public async register(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.auth.register(req.body);
       result.send(res);
-    } catch (error: any) {
-      console.log('register error', error);
-      ApiResult.error(error.message || "Internal server error", 400);
+    } catch (error) {
+      this.handleError(error, res, "Registration failed", 400);
     }
   }
 
-  // GET Google User Registration API
   @GET("/google")
-  public initiateGoogleAuth(req: RequestX, res: Response, next: NextFunction) {
-    const state = typeof req.query.redirectUrl === "string" ? req.query.redirectUrl : '/dashboard'; // Default to home if no redirectUrl
+  public initiateGoogleAuth(req: RequestX, res: Response, next: NextFunction): void {
+    const state = req.query.redirectUrl
+      ? Buffer.from(JSON.stringify({ redirectUrl: req.query.redirectUrl })).toString('base64')
+      : undefined;
 
-
-    return passport.authenticate("google", {
+    const authenticator = passport.authenticate("google", {
       scope: ["profile", "email"],
-      state: state,
-      accessType: 'offline',  // Add this to request refresh token
-      prompt: 'consent'       //
-    })(req, res, next);
+      state,
+      // prompt: 'consent',       
+      session: false
+    });
+    authenticator(req, res, next);
   }
 
-  // Get Google User Regisration Callback API
   @GET("/google/callback")
-  public handleGoogleCallback(
-    req: RequestX,
-    res: Response,
-    next: NextFunction
-  ) {
+  public async handleGoogleCallback(req: RequestX, res: Response, next: NextFunction): Promise<void> {
     passport.authenticate(
       "google",
-      {
-        failureRedirect: "/login",
-        session: false,
-      },
+      { session: false },
       async (err: Error | null, user: any, info?: any) => {
         try {
-          if (err) {
-            console.error("🚨 Passport Error:", err);
-            throw err;
+          if (err || !user) {
+            console.error("Google auth failed:", err || info);
+            return res.redirect(`${envConfig.FRONTEND_LOGIN_URL}?error=authentication_failed`);
           }
 
-          if (!user) {
-            console.error(
-              "🚫 No user returned from Google Strategy. Info:",
-              info
-            );
-            throw new Error("Authentication failed: No user returned");
-          }
+          // Process user registration/login
+          const tokens = await this.auth.handleGoogleUser(user);
+console.log("tokens", tokens);
 
-          console.log("✅ Authenticated User:", user);
+          // Set secure cookies
+          res.cookie('accessToken', tokens?.accessToken, {
+            path: '/',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+          });
 
-          const stringifydata = await stringifyBigInts(user)
+          res.cookie('refreshToken', tokens?.refreshToken, {
+            path: '/',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+          });
 
-          const result = await this.auth.handleGoogleAuthSuccess(stringifydata);
-          result.send(res);
-        } catch (error: any) {
-          console.error("🔥 Google login failed:", error);
-          ApiResult.error("Google login failed", 500).send(res);
+          // Handle redirect
+          const state = req.query.state ? JSON.parse(Buffer.from(req.query.state as string, 'base64').toString()) : {};
+          const redirectUrl = envConfig.FRONTEND_DASHBOARD_URL;
+          return res.redirect(redirectUrl);
+
+        } catch (error) {
+          console.error("Google callback error:", error);
+          return res.redirect(`${envConfig.FRONTEND_LOGIN_URL}?error=server_error`);
         }
       }
     )(req, res, next);
@@ -99,82 +143,54 @@ export class AuthController {
     }
   }
 
-  //GET Me User Info API
+
   @GET('/me')
   public async me(req: RequestX, res: Response): Promise<void> {
     try {
-      const result = await this.auth.me(req.body);
+      const result = await this.auth.me(req.user); // Assuming req.user is set by auth middleware
       result.send(res);
-    } catch (error: any) {
-      console.log('me error', error);
-      ApiResult.error(error.message || "Internal server error", 400);
+    } catch (error) {
+      this.handleError(error, res, "Failed to fetch user data", 401);
     }
   }
 
-  //POST Refresh Token Generation API
-   @POST("/refresh-token")
-   public async refreshToken(req: RequestX, res: Response): Promise<void> {
-     try {
-       // Get refresh token from cookie or request body
-       const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
-       
-       if (!refreshToken) {
-         ApiResult.error('Refresh token is required', 401).send(res);
-         return;
-       }
-       
-       const result = await this.auth.refreshAccessToken(refreshToken);
-       result.send(res);
-     } catch (error: any) {
-       console.error("🔄 Token refresh failed:", error);
-       ApiResult.error(error.message || 'Token refresh failed', 401).send(res);
-     }
-   }
+  
+  @POST("/authRegister")
+  public async authRegister(req: RequestX, res: Response): Promise<void> {
+    try {
+      const result = await this.auth.authRegister(req.body);
+      result.send(res);
+    } catch (error) {
+      this.handleError(error, res, 'Registration failed', 400);
+    }
+  }
 
-  //POST Sign UP Generation API
-   @POST("/authRegister")
-  //  @POSTPayloadDecorator()
-   public async authRegister(req: RequestX, res: Response): Promise<void> {
-     try {
-       const result = await this.auth.authRegister(req.body);
-       result.send(res);
-     } catch (error: any) {
-       console.error("authRegister controller", error);
-       ApiResult.error(error.message || 'Internal server error', 401)
-     }
-   }
-
-
-     // POST Organization User Register API
   @POST('/organizationRegister')
   public async organizationRegister(req: RequestX, res: Response): Promise<void> {
     try {
       const result = await this.auth.organizationRegister(req.body);
       result.send(res);
-    } catch (error: any) {
-      console.log('organizationRegister error', error);
-      ApiResult.error(error.message || "Internal server error", 400);
+    } catch (error) {
+      this.handleError(error, res, "Organization registration failed", 400);
     }
   }
-
 
   @POST("/verify-access-token")
   public async verifyAccessToken(req: RequestX, res: Response): Promise<void> {
     try {
-      // Get refresh token from cookie or request body
-      const accessToken = req.cookies?.accessToken 
-      
+      const accessToken = req.cookies?.accessToken || req.headers.authorization?.split(' ')[1];
+
       if (!accessToken) {
-        ApiResult.error('Access token is required', 401).send(res);
-        return;
+        return ApiResult.error('Access token is required', 401).send(res);
       }
-      1
+
       const result = await this.auth.verifyAccessToken(accessToken);
       result.send(res);
-    } catch (error: any) {
-      console.error("🔄 Token access failed:", error);
-      ApiResult.error(error.message || 'Token access failed', 401).send(res);
+    } catch (error) {
+      this.handleError(error, res, 'Token verification failed', 401);
     }
   }
 
+  
 }
+

@@ -21,6 +21,7 @@ BEGIN
                 '[]'::json
             ) AS assets
         FROM work_orders wo
+WHERE wo.organization_id = p_organization_id
     ) t; -- <== You MUST have an alias here, "t" or "_"
 
     RETURN result;

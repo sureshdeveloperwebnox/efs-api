@@ -192,8 +192,9 @@ export class WorkOrder {
   // get All Work Order Service
   // Note: Use Get All Work Order Procedure
   public async getAllWorkOrder(data: any): Promise<ApiResult> {
-    console.log("*****");
     const { organization_id } = data;
+        console.log("***** organization_id",organization_id);
+
     try {
       // For a function that returns JSON:
       const result = await prisma.$queryRaw<{ get_all_work_order_by_id: any }[]>
