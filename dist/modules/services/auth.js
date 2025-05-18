@@ -4,10 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authService = exports.Auth = void 0;
-// src/services/auth-service.ts
-const passport_1 = __importDefault(require("passport"));
-const passport_jwt_1 = require("passport-jwt");
-const passport_google_oauth20_1 = require("passport-google-oauth20");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const db_1 = __importDefault(require("../../config/db"));
 const api_result_1 = require("../../utils/api-result");
@@ -27,86 +23,6 @@ const GOOGLE_CLIENT_ID = env_config_1.default.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = env_config_1.default.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL = env_config_1.default.GOOGLE_CALLBACK_URL;
 class Auth {
-    constructor() {
-        this.initializePassport();
-    }
-    initializePassport() {
-        const jwtOptions = {
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: ACCESS_TOKEN_SECRET,
-        };
-        passport_1.default.use(new passport_jwt_1.Strategy(jwtOptions, async (jwtPayload, done) => {
-            try {
-                const user = await db_1.default.users.findUnique({
-                    where: { id: jwtPayload.id },
-                });
-                if (user) {
-                    return done(null, user);
-                }
-                return done(null, false);
-            }
-            catch (error) {
-                return done(error, false);
-            }
-        }));
-        if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_CALLBACK_URL) {
-            passport_1.default.use(new passport_google_oauth20_1.Strategy({
-                clientID: GOOGLE_CLIENT_ID,
-                clientSecret: GOOGLE_CLIENT_SECRET,
-                callbackURL: GOOGLE_CALLBACK_URL,
-                passReqToCallback: true,
-            }, async (req, accessToken, refreshToken, profile, done) => {
-                try {
-                    // Fix incorrect assignment of name fields
-                    const first_name = profile._json.given_name || "";
-                    const last_name = profile._json.family_name || "";
-                    const email = profile._json.email || "";
-                    const provider = profile.provider;
-                    let userData = await db_1.default.users.findFirst({
-                        where: { email },
-                    });
-                    if (!lodash_1.default.isEmpty(userData)) {
-                        const response = {
-                            ...userData,
-                            provider,
-                            accessToken,
-                            refreshToken,
-                        };
-                        return done(null, response);
-                    }
-                    const data = {
-                        email,
-                        first_name,
-                        last_name,
-                        provider,
-                        accessToken,
-                        refreshToken,
-                    };
-                    return done(null, data);
-                }
-                catch (error) {
-                    return done(error);
-                }
-            }));
-        }
-        else {
-            console.warn("Google OAuth credentials missing. Google authentication strategy not initialized.");
-        }
-        passport_1.default.serializeUser((data, done) => {
-            done(null, data);
-        });
-        passport_1.default.deserializeUser(async (id, done) => {
-            try {
-                const user = await db_1.default.users.findFirst({
-                    where: { id },
-                });
-                done(null, user);
-            }
-            catch (error) {
-                done(error, null);
-            }
-        });
-    }
     /**
      * User Login API
      * @param data Login credentials
@@ -130,7 +46,7 @@ class Auth {
         const userData = {
             id: Number(user.id),
             organization_id: Number(user === null || user === void 0 ? void 0 : user.organization_id),
-            name: user === null || user === void 0 ? void 0 : user.first_name,
+            name: (user === null || user === void 0 ? void 0 : user.first_name) + (user === null || user === void 0 ? void 0 : user.last_name),
             email: user === null || user === void 0 ? void 0 : user.email,
             category: user === null || user === void 0 ? void 0 : user.user_type,
             provider: "jwt",
@@ -139,80 +55,6 @@ class Auth {
             user: userData,
             ...token,
         }, "Login successful");
-    }
-    /**
-     * Handle successful Google authentication
-     * @param data Google user data
-     * @returns ApiResult with user data
-     */
-    async handleGoogleAuthSuccess(data) {
-        const { email } = data;
-        const checkUser = await this.checkAlreadyExistUser(email);
-        if (!checkUser) {
-            const createGoogleSignUp = await this.googleSignUp(data);
-            return api_result_1.ApiResult.success({
-                ...data,
-                userid: createGoogleSignUp === null || createGoogleSignUp === void 0 ? void 0 : createGoogleSignUp.user_id
-            }, "Google authentication successful", 200);
-        }
-        return api_result_1.ApiResult.success({
-            ...data,
-            user_id: checkUser.id
-        }, "Google authentication successful", 200);
-    }
-    /**
-     * Authenticate JWT token
-     * @returns Passport JWT authentication middleware
-     */
-    authenticateJwt() {
-        return passport_1.default.authenticate("jwt", { session: false });
-    }
-    /**
-     * Authenticate with Google
-     * @param options Google authentication options
-     * @returns Google authentication middleware
-     */
-    authenticateGoogle(options = { scope: ["profile", "email"] }) {
-        if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
-            return (req, res) => {
-                return api_result_1.ApiResult.error("Google authentication is not configured", 501).send(res);
-            };
-        }
-        return passport_1.default.authenticate("google", options);
-    }
-    /**
-     * Google authentication callback
-     * @returns Google callback middleware
-     */
-    googleCallback() {
-        if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
-            return (req, res) => {
-                return api_result_1.ApiResult.error("Google authentication is not configured", 501).send(res);
-            };
-        }
-        return passport_1.default.authenticate("google", {
-            session: false,
-            failureRedirect: "/login",
-        });
-    }
-    /**
-     * Protect routes with JWT authentication
-     * @param customHandler Optional custom handler after authentication
-     * @returns JWT protection middleware
-     */
-    jwtProtect(customHandler) {
-        return (req, res, next) => {
-            passport_1.default.authenticate("jwt", { session: false }, (err, user, info) => {
-                if (err)
-                    return next(err);
-                if (!user)
-                    return api_result_1.ApiResult.error("Unauthorized access", 401).send(res);
-                req.user = user;
-                if (customHandler)
-                    return customHandler(req, res, next);
-                return next();
-            })(req, res, next);
-        };
     }
     /**
      * Register a new organization admin user
@@ -441,24 +283,56 @@ class Auth {
         }
     }
     async organizationRegister(data) {
-        const { organization_name, industry_name, email, pincode, website, address } = data;
-        // Basic validation
-        if (!organization_name || !industry_name || !pincode) {
-            return api_result_1.ApiResult.error("Required fields are missing", 400);
+        const { first_name, last_name, organization_name, industry_name, email, phone, pincode, password, job_title, website, address, date_time } = data;
+        // Check if email already exists in the database
+        const existingEmail = await db_1.default.users.findFirst({
+            where: { email },
+        });
+        // If email exists, return error
+        if (existingEmail) {
+            return api_result_1.ApiResult.error("Email is already registered.", 400);
+        }
+        // Check if phone number already exists in the database
+        const existingPhone = await db_1.default.users.findFirst({
+            where: { phone },
+        });
+        // If phone exists, return error
+        if (existingPhone) {
+            return api_result_1.ApiResult.error("Phone number is already registered.", 400);
         }
         try {
             // Using transaction is good practice, though for a single operation it's not strictly necessary
             await db_1.default.$transaction(async (trx) => {
-                return await trx.organizations.create({
+                // Create a new organization record
+                const organization = await trx.organizations.create({
                     data: {
-                        name: organization_name,
-                        email: email,
+                        name: first_name + last_name,
+                        email,
+                        phone,
+                        address,
                         organization_name,
                         industry_name,
                         pincode,
-                        website: website || null, // Convert empty string to null
-                        address: address || null // Convert empty string to null
-                    }
+                        plan_type: "FREE",
+                        website,
+                        created_at: date_time,
+                    },
+                });
+                //Generate hashed password
+                const { hashedPassword } = await (0, utils_1.getHashPassword)(password);
+                // Create a new user record linked to the organization
+                const user = await trx.users.create({
+                    data: {
+                        organization_id: organization.id,
+                        email: organization.email,
+                        password_hash: hashedPassword,
+                        first_name: first_name,
+                        last_name: last_name,
+                        phone: phone,
+                        user_type: "ADMIN",
+                        job_title: job_title,
+                        created_at: date_time
+                    },
                 });
             });
             return api_result_1.ApiResult.success({}, // Return at least the ID for reference
@@ -477,6 +351,61 @@ class Auth {
         }
         catch (error) {
             return api_result_1.ApiResult.error("Failed to verify token", 200);
+        }
+    }
+    async handleGoogleUser(data) {
+        const { email, first_name, last_name, provider } = data;
+        console.log("Google user data:", data);
+        try {
+            // Check if user exists
+            const existingUser = await db_1.default.users.findFirst({
+                where: { email }
+            });
+            if (existingUser) {
+                const userData = {
+                    id: Number(existingUser.id),
+                    organization_id: Number(existingUser.organization_id),
+                    name: `${existingUser.first_name || ""} ${existingUser.last_name || ""}`.trim(),
+                    email: existingUser.email,
+                    category: existingUser.user_type,
+                    provider: provider,
+                };
+                return await (0, generate_jwt_token_1.generateTokenPair)(userData);
+            }
+            // Create new user and organization if user doesn't exist
+            const result = await db_1.default.$transaction(async (trx) => {
+                // Create organization
+                const organization = await trx.organizations.create({
+                    data: {
+                        name: `${first_name} ${last_name}`.trim(),
+                        email
+                    }
+                });
+                // Create user
+                const user = await trx.users.create({
+                    data: {
+                        organization_id: organization.id,
+                        first_name,
+                        last_name,
+                        email,
+                        user_type: 'ADMIN' // Added default user type
+                    }
+                });
+                const userData = {
+                    id: Number(user.id),
+                    organization_id: Number(user.organization_id),
+                    name: `${user.first_name} ${user.last_name}`.trim(),
+                    email: user.email,
+                    category: user.user_type,
+                    provider: provider,
+                };
+                return await (0, generate_jwt_token_1.generateTokenPair)(userData);
+            });
+            return result;
+        }
+        catch (error) {
+            console.error("Error in handleGoogleUser:", error);
+            throw error; // Re-throw the error to handle it in the calling function
         }
     }
 }

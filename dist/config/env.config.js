@@ -14,5 +14,7 @@ const envConfig = {
     ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN || '3h',
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || '',
     REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN || '9d',
+    FRONTEND_DASHBOARD_URL: process.env.FRONTEND_DASHBOARD_URL || '',
+    FRONTEND_LOGIN_URL: process.env.FRONTEND_LOGIN_URL || ''
 };
 exports.default = envConfig;
