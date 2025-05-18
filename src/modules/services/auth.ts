@@ -156,7 +156,7 @@ export class Auth {
     const userData = {
       id: Number(user.id),
       organization_id: Number(user?.organization_id),
-      name: user?.first_name,
+      name: user?.first_name + user?.last_name,
       email: user?.email,
       category: user?.user_type,
       provider: "jwt",
@@ -509,6 +509,7 @@ export class Auth {
       return ApiResult.error("Failed to sign up", 401);
     }
   }
+
   public async checkAlreadyExistUser(email: string) {
     try {
       const userExist = await prisma.users.findFirst({
@@ -554,39 +555,87 @@ export class Auth {
       console.log('googleSignUp Error', error);
     }
   }
+
   public async organizationRegister(data: any): Promise<ApiResult> {
     const {
+      first_name,
+      last_name,
       organization_name,
       industry_name,
       email,
+      phone,
       pincode,
+      password,
+      job_title,
       website,
-      address
+      address,
+      date_time
     } = data;
-  
-    // Basic validation
-    if (!organization_name || !industry_name || !pincode) {
-      return ApiResult.error("Required fields are missing", 400);
+
+    // Check if email already exists in the database
+    const existingEmail = await prisma.users.findFirst({
+      where: { email },
+    });
+
+    // If email exists, return error
+    if (existingEmail) {
+      return ApiResult.error("Email is already registered.", 400);
     }
-  
+
+    // Check if phone number already exists in the database
+    const existingPhone = await prisma.users.findFirst({
+      where: { phone },
+    });
+
+    // If phone exists, return error
+    if (existingPhone) {
+      return ApiResult.error("Phone number is already registered.", 400);
+    }
+
+
     try {
       // Using transaction is good practice, though for a single operation it's not strictly necessary
       await prisma.$transaction(async (trx) => {
-        return await trx.organizations.create({
+
+        // Create a new organization record
+        const organization = await trx.organizations.create({
           data: {
-            name: organization_name,
-            email: email,
+            name: first_name + last_name,
+            email,
+            phone,
+            address,
             organization_name,
             industry_name,
             pincode,
-            website: website || null, // Convert empty string to null
-            address: address || null  // Convert empty string to null
-          }
+            plan_type: "FREE",
+            website,
+            created_at: date_time,
+          },
         });
+
+        //Generate hashed password
+        const { hashedPassword } = await getHashPassword(password);
+
+
+        // Create a new user record linked to the organization
+        const user = await trx.users.create({
+          data: {
+            organization_id: organization.id,
+            email: organization.email,
+            password_hash: hashedPassword,
+            first_name: first_name,
+            last_name: last_name,
+            phone: phone,
+            user_type: "ADMIN",
+            job_title: job_title,
+            created_at: date_time
+          },
+        });
+
       });
-  
+
       return ApiResult.success(
-        {  }, // Return at least the ID for reference
+        {}, // Return at least the ID for reference
         'Organization registration successful'
       );
     } catch (error: any) {
@@ -597,9 +646,9 @@ export class Auth {
 
   public async verifyAccessToken(token: string): Promise<ApiResult> {
     try {
-    // verify token 
-    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
-    return ApiResult.success({decoded}, "Token verified successful", 200)
+      // verify token 
+      const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+      return ApiResult.success({ decoded }, "Token verified successful", 200)
     } catch (error: any) {
       return ApiResult.error("Failed to verify token", 200)
 

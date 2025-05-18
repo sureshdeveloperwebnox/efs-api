@@ -92,7 +92,7 @@ export class CustomerController {
   @GETALLPayloadDecorator()
   public async getAllCustomer(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.customers.getAllCustomer();
+      const result = await this.customers.getAllCustomer(data);
       result.send(res);
     } catch (error: any) {
       console.log("getAllCustomer Controller Error", error);

@@ -178,10 +178,14 @@ export class Customers {
   }
 
   // Get All Customer API Service
-  public async getAllCustomer(): Promise<ApiResult> {
+  public async getAllCustomer(data: any): Promise<ApiResult> {
+    const { organization_id } = data;
     try {
       // Only select required fields instead of entire row (better performance)
       const result = await prisma.customers.findMany({
+        where: {
+          organization_id: organization_id
+        },
         include: {
           users: {
             select: {
