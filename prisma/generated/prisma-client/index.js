@@ -706,7 +706,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\Projects\\efs-api\\prisma\\generated\\prisma-client",
+      "value": "D:\\Suresh\\efs-api\\prisma\\generated\\prisma-client",
       "fromEnvVar": null
     },
     "config": {
@@ -720,7 +720,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\Projects\\efs-api\\prisma\\schema.prisma",
+    "sourceFilePath": "D:\\Suresh\\efs-api\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

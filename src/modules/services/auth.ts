@@ -285,7 +285,7 @@ export class Auth {
     const { first_name, last_name, email, phone, password } = data;
 
     try {
-      await prisma.$transaction(async (trx) => {
+      await prisma.$transaction(async (trx: any) => {
         const organization = await trx.organizations.create({
           data: {
             name: first_name + last_name,
@@ -331,7 +331,7 @@ export class Auth {
   public async googleSignUp(data: any) {
     const { first_name, last_name, email } = data;
     try {
-      const result = await prisma.$transaction(async (trx) => {
+      const result = await prisma.$transaction(async (trx: any) => {
         // Insert Organization
         const organization = await trx.organizations.create({
           data: {
@@ -399,7 +399,7 @@ export class Auth {
 
     try {
       // Using transaction is good practice, though for a single operation it's not strictly necessary
-      await prisma.$transaction(async (trx) => {
+      await prisma.$transaction(async (trx: any) => {
 
         // Create a new organization record
         const organization = await trx.organizations.create({
@@ -482,7 +482,7 @@ export class Auth {
       }
 
       // Create new user and organization if user doesn't exist
-      const result = await prisma.$transaction(async (trx) => {
+      const result = await prisma.$transaction(async (trx: any) => {
         // Create organization
         const organization = await trx.organizations.create({
           data: {
