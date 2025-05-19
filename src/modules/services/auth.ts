@@ -32,12 +32,7 @@ const GOOGLE_CALLBACK_URL = envConfig.GOOGLE_CALLBACK_URL;
 
 export class Auth {
 
-  /**
-   * User Login API
-   * @param data Login credentials
-   * @returns ApiResult with user data and token
-   */
-  public async login(data: IUserLogin): Promise<ApiResult> {
+   public async login(data: IUserLogin): Promise<ApiResult> {
     const { email, password } = data;
 
     const user = await prisma.users.findFirst({
@@ -75,6 +70,7 @@ export class Auth {
       "Login successful"
     );
   }
+  
 
   /**
    * Register a new organization admin user
@@ -196,6 +192,8 @@ export class Auth {
       return ApiResult.error(`Registration failed: ${error.message}`, 500);
     }
   }
+
+  
 
   /**
    * Fetch a user details
