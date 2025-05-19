@@ -215,10 +215,10 @@ model users {
 
 model user_role {
   id            BigInt @id @default(autoincrement())
-  name          String @db.VarChar(50)
-  access_rights Json
-  created_at    String @db.VarChar(50)
-  updated_at    String @db.VarChar(50)
+  name          String @db.VarChar(50) @default("")
+  access_rights Json  @default("{}")
+  created_at    String @db.VarChar(50) @default("")
+  updated_at    String @db.VarChar(50) @default("")
 }
 
 model currencies {
@@ -226,18 +226,18 @@ model currencies {
   code          String  @db.VarChar(10)
   name          String  @db.VarChar(50)
   exchange_rate Decimal @db.Decimal(10, 4)
-  is_default    Boolean
-  created_at    String  @db.VarChar(50)
-  updated_at    String  @db.VarChar(50)
+  is_default    Boolean @default(true)
+  created_at    String  @db.VarChar(50) @default("")
+  updated_at    String  @db.VarChar(50) @default("")
 }
 
 model user_role_assignments {
   id          BigInt @id @default(autoincrement())
-  user_id     BigInt
-  profile_id  BigInt
-  assigned_at String @db.VarChar(50)
-  created_at  String @db.VarChar(50)
-  updated_at  String @db.VarChar(50)
+  user_id     BigInt    @default(0)
+  profile_id  BigInt    @default(0)
+  assigned_at String @db.VarChar(50) @default("")
+  created_at  String @db.VarChar(50) @default("")
+  updated_at  String @db.VarChar(50) @default("")
 
   @@index([user_id], name: "users_user_idx")
   @@map("user_role_assignments")
@@ -245,8 +245,8 @@ model user_role_assignments {
 
 model skills {
   id          BigInt        @id @default(autoincrement())
-  name        String        @db.VarChar(50)
-  description String        @db.Text
+  name        String        @db.VarChar(50) @default("")
+  description String        @db.Text @default("")
   created_at  String        @default("") @db.VarChar(50)
   updated_at  String        @default("") @db.VarChar(50)
   user_skills user_skills[]
@@ -255,7 +255,7 @@ model skills {
 model user_skills {
   id                BigInt           @id @default(autoincrement())
   user_id           BigInt
-  skill_id          BigInt
+  skill_id          BigInt           @default(0)
   organization_id   BigInt
   proficiency_level ProficiencyLevel @default(BEGINNER)
   created_at        String           @default("")
@@ -307,7 +307,7 @@ model holidays {
 
 model time_off_requests {
   id         BigInt        @id @default(autoincrement())
-  user_id    BigInt
+  user_id    BigInt        @default(0)
   start_date String        @db.VarChar(20)
   end_date   String        @db.VarChar(20)
   reason     String        @db.Text
@@ -323,9 +323,9 @@ model time_off_requests {
 
 model crews {
   id              BigInt            @id @default(autoincrement())
-  organization_id BigInt
+  organization_id BigInt        
   name            String            @db.VarChar(50)
-  leader_id       BigInt
+  leader_id       BigInt            @default(0)
   created_at      String            @db.VarChar(50)
   updated_at      String            @default("") @db.VarChar(50)
   crew_members    crew_members[]
@@ -335,8 +335,8 @@ model crews {
 model crew_members {
   id              BigInt        @id @default(autoincrement())
   organization_id BigInt
-  crew_id         BigInt
-  user_id         BigInt
+  crew_id         BigInt        @default(0)
+  user_id         BigInt        @default(0)
   role            String        @db.VarChar(50)
   created_at      String        @db.VarChar(50)
   updated_at      String        @default("") @db.VarChar(50)
@@ -353,10 +353,10 @@ model crew_members {
 model equipments {
   id                BigInt          @id @default(autoincrement())
   organization_id   BigInt
-  name              String          @db.VarChar(100)
+  name              String          @db.VarChar(100)  @default("")
   equipment_type    String          @db.VarChar(100)
-  status            EquipmentStatus
-  location          String          @db.Text
+  status            EquipmentStatus @default(AVAILABLE)
+  location          String          @db.Text  @default("")
   availability_date String          @db.VarChar(20)
   created_at        String          @db.VarChar(50)
   updated_at        String          @default("") @db.VarChar(50)
@@ -388,9 +388,9 @@ model companies {
 
 model customers {
   id              BigInt        @id @default(autoincrement())
-  organization_id BigInt
-  user_id         BigInt
-  company_id      BigInt
+  organization_id BigInt        @default(0)
+  user_id         BigInt        @default(0)
+  company_id      BigInt        @default(0)
   first_name      String        @db.VarChar(100)
   last_name       String        @db.VarChar(100)
   email           String        @unique @db.VarChar(100)
@@ -414,9 +414,9 @@ model customers {
 model services {
   id                  BigInt                @id @default(autoincrement())
   organization_id     BigInt
-  name                String
+  name                String                @default("")
   description         String                @db.Text
-  duration            Int
+  duration            Int                   @default(0)
   price               Decimal               @db.Decimal(10, 2)
   required_skills     Json                  @default("{}")
   created_at          String                @default("") @db.VarChar(50)
@@ -445,12 +445,12 @@ model service_types {
 model assets {
   id              BigInt        @id @default(autoincrement())
   organization_id BigInt
-  customer_id     BigInt
+  customer_id     BigInt        @default(0)
   asset_name      String        @db.VarChar(100)
   serial_number   String        @db.VarChar(50)
   model           String        @db.VarChar(100)
   manufacturer    String        @db.VarChar(100)
-  status          AssetStatus
+  status          AssetStatus   @default(OPERATIONAL)
   location        String        @db.Text
   notes           String        @db.Text
   purchase_date   String        @db.VarChar(50)
@@ -490,9 +490,9 @@ model maintenance_plans {
   description             String                    @db.Text
   start_date              String                    @db.VarChar(50)
   end_date                String                    @db.VarChar(50)
-  frequency               Frequency
-  frequency_unit          Int
-  frequency_unit_type     FrequencyUnitType
+  frequency               Frequency                 @default(DAILY)
+  frequency_unit          Int                       @default(0)
+  frequency_unit_type     FrequencyUnitType         @default(DAYS)
   is_active               Int                       @db.SmallInt
   created_at              String                    @default("") @db.VarChar(50)
   updated_at              String                    @default("") @db.VarChar(50)
@@ -506,8 +506,8 @@ model maintenance_plans {
 
 model maintenance_plan_assets {
   id                  BigInt            @id @default(autoincrement())
-  maintenance_plan_id BigInt
-  asset_id            BigInt
+  maintenance_plan_id BigInt            @default(0)
+  asset_id            BigInt            @default(0)
   assigned_at         String            @db.VarChar(50)
   created_at          String            @default("") @db.VarChar(50)
   updated_at          String            @default("") @db.VarChar(50)
@@ -519,22 +519,22 @@ model maintenance_plan_assets {
 
 model work_orders {
   id                   BigInt                 @id @default(autoincrement())
-  organization_id      BigInt
-  customer_id          BigInt
-  company_id           BigInt
-  asset_id             BigInt
-  maintenance_plan_id  BigInt
+  organization_id      BigInt                 @default(0)
+  customer_id          BigInt                 @default(0)
+  company_id           BigInt                 @default(0)
+  asset_id             BigInt                 @default(0)
+  maintenance_plan_id  BigInt                 @default(0)
   title                String                 @db.VarChar(255)
   description          String                 @db.Text
   priority             Priority               @default(HIGH)
   status               WorkOrderStatus        @default(DRAFT)
-  assigned_to          BigInt
-  assigned_crew_id     Int
+  assigned_to          BigInt                 @default(0)
+  assigned_crew_id     Int                    @default(0)
   scheduled_start_date String                 @db.VarChar(50)
   scheduled_end_date   String                 @db.VarChar(50)
   actual_start_date    String                 @db.VarChar(50)
   actual_end_date      String                 @db.VarChar(50)
-  currency_id          Int
+  currency_id          Int                    @default(0)
   estimated_cost       Decimal                @db.Decimal(10, 2)
   actual_cost          Decimal                @db.Decimal(10, 2)
   address              String                 @db.Text
@@ -542,7 +542,7 @@ model work_orders {
   state                String                 @db.VarChar(50)
   postal_code          String                 @db.VarChar(20)
   country              String                 @db.VarChar(50)
-  is_multi_day         Int                    @db.SmallInt
+  is_multi_day         Int                    @db.SmallInt @default(0)
   created_at           String                 @default("") @db.VarChar(50)
   updated_at           String                 @default("") @db.VarChar(50)
   organizations        organizations          @relation(fields: [organization_id], references: [id])
@@ -567,9 +567,9 @@ model work_orders {
 
 model work_order_services {
   id            BigInt      @id @default(autoincrement())
-  work_order_id BigInt
-  service_id    BigInt
-  quantity      Int
+  work_order_id BigInt      @default(0)
+  service_id    BigInt      @default(0)
+  quantity      Int         @default(0)
   service_cost  Decimal     @db.Decimal(10, 2)
   created_at    String      @default("") @db.VarChar(50)
   updated_at    String      @default("") @db.VarChar(50)
@@ -583,10 +583,10 @@ model work_order_services {
 
 model work_order_tasks {
   id               BigInt              @id @default(autoincrement())
-  work_order_id    BigInt
+  work_order_id    BigInt              @default(0)
   task_name        String              @db.VarChar(255)
   task_description String              @db.Text
-  assigned_to      BigInt
+  assigned_to      BigInt              @default(0)
   status           WorkOrderTaskStatus @default(NOT_STARTED)
   due_date         String              @db.VarChar(50)
   created_at       String              @default("") @db.VarChar(50)
@@ -599,9 +599,9 @@ model work_order_tasks {
 
 model work_order_assets {
   id            BigInt      @id @default(autoincrement())
-  work_order_id BigInt
-  asset_id      BigInt
-  quantity      Int
+  work_order_id BigInt      @default(0)
+  asset_id      BigInt      @default(0)
+  quantity      Int         @default(0)
   created_at    String      @default("") @db.VarChar(50)
   updated_at    String      @default("") @db.VarChar(50)
   work_orders   work_orders @relation(fields: [work_order_id], references: [id])
@@ -612,8 +612,8 @@ model work_order_assets {
 
 model work_order_crew {
   id            BigInt      @id @default(autoincrement())
-  work_order_id BigInt
-  crew_id       BigInt
+  work_order_id BigInt      @default(0)
+  crew_id       BigInt      @default(0)
   assigned_at   String      @db.VarChar(50)
   created_at    String      @db.VarChar(50) @default("")
   updated_at    String      @db.VarChar(50) @default("")
@@ -627,9 +627,9 @@ model work_order_crew {
 
 model work_order_approvals {
   id              BigInt         @id @default(autoincrement())
-  work_order_id   BigInt
-  approved_by     BigInt
-  approval_status ApprovalStatus
+  work_order_id   BigInt         @default(0)
+  approved_by     BigInt         @default(0)
+  approval_status ApprovalStatus @default(PENDING)
   approved_at     String         @db.VarChar(50)
   created_at      String         @db.VarChar(50) @default("")
   updated_at      String         @db.VarChar(50) @default("")
@@ -641,13 +641,13 @@ model work_order_approvals {
 
 model invoices {
   id             BigInt          @id @default(autoincrement())
-  work_order_id  BigInt
+  work_order_id  BigInt          @default(0)
   invoice_number String          @db.VarChar(50)
   invoice_date   String          @db.VarChar(50)
   due_date       String          @db.VarChar(50)
   total_amount   Decimal         @db.Decimal(10, 2)
-  status         InvoiceStatus
-  currency_id    Int
+  status         InvoiceStatus   @default(PENDING)
+  currency_id    Int             @default(0)
   created_at     String          @db.VarChar(50)
   updated_at     String          @db.VarChar(50)
   work_orders    work_orders     @relation(fields: [work_order_id], references: [id])
@@ -660,10 +660,10 @@ model invoices {
 
 model invoice_items {
   id          BigInt   @id @default(autoincrement())
-  invoice_id  BigInt
-  service_id  BigInt
-  part_id     BigInt
-  quantity    Int
+  invoice_id  BigInt   @default(0)
+  service_id  BigInt   @default(0)
+  part_id     BigInt   @default(0)
+  quantity    Int      @default(0)
   unit_price  Decimal  @db.Decimal(10, 2)
   total_price Decimal  @db.Decimal(10, 2)
   description String   @db.Text
