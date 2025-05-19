@@ -1,8 +1,21 @@
 import { ApiResult } from "../../utils/api-result";
-import { Controller, GET, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, PUTPayloadDecorator, Validate } from "../../decorators";
+import {
+  Controller,
+  GET,
+  GETPayloadDecorator,
+  POST,
+  POSTPayloadDecorator,
+  PUT,
+  PUTPayloadDecorator,
+  Validate,
+} from "../../decorators";
 import { Equipments } from "../services/equipments";
 import { RequestX } from "../../utils/request.interface";
-import { CreateEquipmentValidation, UpdateEquipmentValidation, ValidateParamsID } from "../rules";
+import {
+  CreateEquipmentValidation,
+  UpdateEquipmentValidation,
+  ValidateParamsID,
+} from "../rules";
 import { AccessTokenGuard } from "../../middlewares";
 
 @Controller("/equipments")
@@ -54,13 +67,35 @@ export class EquipmentController {
   @AccessTokenGuard()
   @Validate([ValidateParamsID, UpdateEquipmentValidation])
   @PUTPayloadDecorator()
-  public async updateEquipment(req: RequestX, res: Response, data: any): Promise<void> {
+  public async updateEquipment(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
     try {
       const result = await this.equipments.updateEquipment(data);
       result.send(res);
     } catch (error: any) {
       console.log("updateEquipment Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
+  // Get Equipment API
+  @POST("/getAllEquipment")
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async getAllEquipment(
+    req: RequestX,
+    res: Response,
+    data: any
+  ): Promise<void> {
+    try {
+      const result = await this.equipments.getAllEquipment(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("createEquipment Error", error);
+      ApiResult.error(error.message + "Internal server error", 500);
     }
   }
 }

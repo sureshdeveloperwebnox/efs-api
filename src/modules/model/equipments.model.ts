@@ -8,7 +8,7 @@ export interface ICreateEquipmentModel {
   status: EquipmentStatus;
   location: string;
   availability_date: string;
-  created_at: string;
+  date_time: string;
 }
 
 
@@ -19,7 +19,7 @@ export class CreateEquipmentModel implements ICreateEquipmentModel {
   status: EquipmentStatus;
   location: string;
   availability_date: string;
-  created_at: string;
+  date_time: string;
 
   constructor (data: ICreateEquipmentModel) {
     this.organization_id = data.organization_id;
@@ -28,7 +28,7 @@ export class CreateEquipmentModel implements ICreateEquipmentModel {
     this.status = data.status
     this.location = data.location;
     this.availability_date = data.availability_date;
-    this.created_at = data.created_at;
+    this.date_time = data.date_time;
   }
 }
 
@@ -42,7 +42,7 @@ export interface IUpdateEquipmentModel {
   status: EquipmentStatus;
   location: string;
   availability_date: string;
-  created_at: string;
+  date_time: string;
 }
 
 
@@ -54,7 +54,7 @@ export class UpdateEquipmentModel implements IUpdateEquipmentModel {
   status: EquipmentStatus;
   location: string;
   availability_date: string;
-  created_at: string;
+  date_time: string;
 
   constructor (data: IUpdateEquipmentModel) {
     this.id = data.id;
@@ -64,6 +64,6 @@ export class UpdateEquipmentModel implements IUpdateEquipmentModel {
     this.status = data.status
     this.location = data.location;
     this.availability_date = data.availability_date;
-    this.created_at = data.created_at;
+    this.date_time = data.date_time;
   }
 }

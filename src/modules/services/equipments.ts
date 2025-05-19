@@ -15,12 +15,15 @@ export class Equipments {
       status,
       location,
       availability_date,
-      created_at,
+      date_time,
     } = data;
+
+    console.log("equipment data", data);
+    
 
     try {
       await prisma.$transaction(async (trx) => {
-        return await trx.equipments.createMany({
+        return await trx.equipments.create({
           data: {
             organization_id,
             name,
@@ -28,11 +31,12 @@ export class Equipments {
             status,
             location,
             availability_date,
-            created_at,
+            created_at: date_time,
+            updated_at: date_time
           },
         });
       });
-      return ApiResult.success("Equipments created successful");
+      return ApiResult.success({}, "Equipments created successful", 200);
     } catch (error: any) {
       console.log("createEquipments service Error", error);
       return ApiResult.error("Failed to create equipments", 500);
@@ -80,7 +84,7 @@ export class Equipments {
       status,
       location,
       availability_date,
-      created_at,
+      date_time,
     } = data;
 
     try {
@@ -96,7 +100,7 @@ export class Equipments {
                 status,
                 location,
                 availability_date,
-                created_at,
+                updated_at: date_time,
               },
         });
       });
@@ -106,5 +110,44 @@ export class Equipments {
       return ApiResult.error("Failed to update equipments", 500);
     }
   };
-  
+
+  // Get All Equipment API Service
+   public async getAllEquipment(data?: any): Promise<ApiResult> {
+  const { company_id, organization_id } = data || {};
+
+  try {
+    // Return nothing if neither ID is provided
+    if (!company_id && !organization_id) {
+      return ApiResult.success({}, "No data retrieved", 200);
+    }
+
+    // Build where clause based on provided IDs
+    const whereClause: any = {};
+    if (company_id) {
+      whereClause.company_id = company_id;
+    }
+    if (organization_id) {
+      whereClause.organization_id = organization_id;
+    }
+
+    const result = await prisma.equipments.findMany({
+      where: whereClause,
+      include: {
+        organizations: true
+      }
+    });
+
+    if (!result || result.length === 0) {
+      return ApiResult.success({}, "No data retrieved", 409);
+    }
+
+    const formattedResult = await stringifyBigInts(result);
+    return ApiResult.success(formattedResult, "Successfully fetched equipments");
+  } catch (error: any) {
+    console.error("getAllCustomer Error:", error.message);
+    return ApiResult.error(error.message || "Failed to fetch equipments", 500);
+  }
+}
+
+
 }

@@ -1,7 +1,7 @@
 generator client {
   provider = "prisma-client-js"
+  // output   = "./generated/prisma-client" // specify the output directory
 }
-
 
 datasource db {
   provider = "postgresql"
@@ -150,8 +150,8 @@ enum LogType {
 
 model organizations {
   id                      BigInt              @id @default(autoincrement())
-  name                    String              @db.VarChar(100) @default("")
-  email                   String              @db.VarChar(100) @default("")
+  name                    String              @default("") @db.VarChar(100)
+  email                   String              @default("") @db.VarChar(100)
   address                 String              @default("") @db.Text
   phone                   String              @default("") @db.VarChar(20)
   organization_name       String              @default("") @db.VarChar(100)
@@ -215,10 +215,10 @@ model users {
 
 model user_role {
   id            BigInt @id @default(autoincrement())
-  name          String @db.VarChar(50) @default("")
-  access_rights Json  @default("{}")
-  created_at    String @db.VarChar(50) @default("")
-  updated_at    String @db.VarChar(50) @default("")
+  name          String @default("") @db.VarChar(50)
+  access_rights Json   @default("{}")
+  created_at    String @default("") @db.VarChar(50)
+  updated_at    String @default("") @db.VarChar(50)
 }
 
 model currencies {
@@ -227,17 +227,17 @@ model currencies {
   name          String  @db.VarChar(50)
   exchange_rate Decimal @db.Decimal(10, 4)
   is_default    Boolean @default(true)
-  created_at    String  @db.VarChar(50) @default("")
-  updated_at    String  @db.VarChar(50) @default("")
+  created_at    String  @default("") @db.VarChar(50)
+  updated_at    String  @default("") @db.VarChar(50)
 }
 
 model user_role_assignments {
   id          BigInt @id @default(autoincrement())
-  user_id     BigInt    @default(0)
-  profile_id  BigInt    @default(0)
-  assigned_at String @db.VarChar(50) @default("")
-  created_at  String @db.VarChar(50) @default("")
-  updated_at  String @db.VarChar(50) @default("")
+  user_id     BigInt @default(0)
+  profile_id  BigInt @default(0)
+  assigned_at String @default("") @db.VarChar(50)
+  created_at  String @default("") @db.VarChar(50)
+  updated_at  String @default("") @db.VarChar(50)
 
   @@index([user_id], name: "users_user_idx")
   @@map("user_role_assignments")
@@ -245,8 +245,8 @@ model user_role_assignments {
 
 model skills {
   id          BigInt        @id @default(autoincrement())
-  name        String        @db.VarChar(50) @default("")
-  description String        @db.Text @default("")
+  name        String        @default("") @db.VarChar(50)
+  description String        @default("") @db.Text
   created_at  String        @default("") @db.VarChar(50)
   updated_at  String        @default("") @db.VarChar(50)
   user_skills user_skills[]
@@ -323,7 +323,7 @@ model time_off_requests {
 
 model crews {
   id              BigInt            @id @default(autoincrement())
-  organization_id BigInt        
+  organization_id BigInt
   name            String            @db.VarChar(50)
   leader_id       BigInt            @default(0)
   created_at      String            @db.VarChar(50)
@@ -353,17 +353,17 @@ model crew_members {
 model equipments {
   id                BigInt          @id @default(autoincrement())
   organization_id   BigInt
-  name              String          @db.VarChar(100)  @default("")
+  name              String          @default("") @db.VarChar(100)
   equipment_type    String          @db.VarChar(100)
   status            EquipmentStatus @default(AVAILABLE)
-  location          String          @db.Text  @default("")
+  location          String          @default("") @db.Text
   availability_date String          @db.VarChar(20)
   created_at        String          @db.VarChar(50)
   updated_at        String          @default("") @db.VarChar(50)
   organizations     organizations   @relation(fields: [organization_id], references: [id])
 
-  @@index([organization_id], name: "equipments_organization_idx")
-  @@map("equipments_organization")
+@@index([organization_id], name: "equipments_organization_idx")
+@@map("equipments")
 }
 
 model companies {
@@ -542,7 +542,7 @@ model work_orders {
   state                String                 @db.VarChar(50)
   postal_code          String                 @db.VarChar(20)
   country              String                 @db.VarChar(50)
-  is_multi_day         Int                    @db.SmallInt @default(0)
+  is_multi_day         Int                    @default(0) @db.SmallInt
   created_at           String                 @default("") @db.VarChar(50)
   updated_at           String                 @default("") @db.VarChar(50)
   organizations        organizations          @relation(fields: [organization_id], references: [id])
@@ -615,8 +615,8 @@ model work_order_crew {
   work_order_id BigInt      @default(0)
   crew_id       BigInt      @default(0)
   assigned_at   String      @db.VarChar(50)
-  created_at    String      @db.VarChar(50) @default("")
-  updated_at    String      @db.VarChar(50) @default("")
+  created_at    String      @default("") @db.VarChar(50)
+  updated_at    String      @default("") @db.VarChar(50)
   work_orders   work_orders @relation(fields: [work_order_id], references: [id])
   crews         crews       @relation(fields: [crew_id], references: [id])
 
@@ -631,8 +631,8 @@ model work_order_approvals {
   approved_by     BigInt         @default(0)
   approval_status ApprovalStatus @default(PENDING)
   approved_at     String         @db.VarChar(50)
-  created_at      String         @db.VarChar(50) @default("")
-  updated_at      String         @db.VarChar(50) @default("")
+  created_at      String         @default("") @db.VarChar(50)
+  updated_at      String         @default("") @db.VarChar(50)
   work_orders     work_orders    @relation(fields: [work_order_id], references: [id])
 
   @@index([work_order_id], name: "work_order_approvals_work_order_idx")

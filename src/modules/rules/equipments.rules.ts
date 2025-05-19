@@ -29,9 +29,9 @@ export const CreateEquipmentValidation = {
       "any.required": "Availablity date is required",
       "string.base": "Availablity date must be a string",
     }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Availablity date is required",
-      "string.base": "Availablity date must be a string",
+    date_time: Joi.string().required().messages({
+      "any.required": "Date Time is required",
+      "string.base": "Date Time date must be a string",
     }),
   }),
 };
@@ -67,9 +67,9 @@ export const UpdateEquipmentValidation = {
       "any.required": "Availablity date is required",
       "string.base": "Availablity date must be a string",
     }),
-    created_at: Joi.string().required().messages({
-      "any.required": "Availablity date is required",
-      "string.base": "Availablity date must be a string",
+    date_time: Joi.string().required().messages({
+      "any.required": "Date Time is required",
+      "string.base": "Date Time date must be a string",
     }),
   }),
 };
