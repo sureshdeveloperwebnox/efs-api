@@ -31,8 +31,7 @@ export class Equipments {
             status,
             location,
             availability_date,
-            created_at: date_time,
-            updated_at: date_time
+            created_at: date_time
           },
         });
       });
@@ -104,7 +103,7 @@ export class Equipments {
               },
         });
       });
-      return ApiResult.success("Equipments updated successful");
+      return ApiResult.success({}, "Equipments updated successful", 201);
     } catch (error: any) {
       console.log("updateEquipment service Error", error);
       return ApiResult.error("Failed to update equipments", 500);

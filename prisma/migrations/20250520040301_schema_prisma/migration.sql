@@ -228,7 +228,7 @@ CREATE TABLE "crew_members" (
 );
 
 -- CreateTable
-CREATE TABLE "equipments_tb" (
+CREATE TABLE "equipments" (
     "id" BIGSERIAL NOT NULL,
     "organization_id" BIGINT NOT NULL,
     "name" VARCHAR(100) NOT NULL DEFAULT '',
@@ -239,7 +239,7 @@ CREATE TABLE "equipments_tb" (
     "created_at" VARCHAR(50) NOT NULL,
     "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
-    CONSTRAINT "equipments_tb_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "equipments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -604,7 +604,7 @@ CREATE INDEX "crew_members_crew_idx" ON "crew_members"("crew_id");
 CREATE INDEX "crew_members_user_idx" ON "crew_members"("user_id");
 
 -- CreateIndex
-CREATE INDEX "equipments_tb_organization_id" ON "equipments_tb"("organization_id");
+CREATE INDEX "equipments_organization_idx" ON "equipments"("organization_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "companies_phone_key" ON "companies"("phone");
@@ -745,7 +745,7 @@ ALTER TABLE "crew_members" ADD CONSTRAINT "crew_members_crew_id_fkey" FOREIGN KE
 ALTER TABLE "crew_members" ADD CONSTRAINT "crew_members_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "equipments_tb" ADD CONSTRAINT "equipments_tb_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "equipments" ADD CONSTRAINT "equipments_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "companies" ADD CONSTRAINT "companies_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
