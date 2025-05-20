@@ -362,8 +362,8 @@ model equipments {
   updated_at        String          @default("") @db.VarChar(50)
   organizations     organizations   @relation(fields: [organization_id], references: [id])
 
-@@index([organization_id], name: "equipments_organization_idx")
-@@map("equipments")
+  @@index([organization_id], name: "equipments_organization_idx")
+  @@map("equipments")
 }
 
 model companies {
@@ -443,23 +443,24 @@ model service_types {
 }
 
 model assets {
-  id              BigInt        @id @default(autoincrement())
-  organization_id BigInt
-  customer_id     BigInt        @default(0)
-  asset_name      String        @db.VarChar(100)
-  serial_number   String        @db.VarChar(50)
-  model           String        @db.VarChar(100)
-  manufacturer    String        @db.VarChar(100)
-  status          AssetStatus   @default(OPERATIONAL)
-  location        String        @db.Text
-  notes           String        @db.Text
-  purchase_date   String        @db.VarChar(50)
-  warranty_expiry String        @db.VarChar(50)
-  created_at      String        @default("") @db.VarChar(50)
-  updated_at      String        @default("") @db.VarChar(50)
-  organizations   organizations @relation(fields: [organization_id], references: [id])
-  customers       customers     @relation(fields: [customer_id], references: [id])
-  work_orders     work_orders[]
+  id                BigInt              @id @default(autoincrement())
+  organization_id   BigInt
+  customer_id       BigInt              @default(0)
+  asset_name        String              @db.VarChar(100)
+  serial_number     String              @db.VarChar(50)
+  model             String              @db.VarChar(100)
+  manufacturer      String              @db.VarChar(100)
+  status            AssetStatus         @default(OPERATIONAL)
+  location          String              @db.Text
+  notes             String              @db.Text
+  purchase_date     String              @db.VarChar(50)
+  warranty_expiry   String              @db.VarChar(50)
+  created_at        String              @default("") @db.VarChar(50)
+  updated_at        String              @default("") @db.VarChar(50)
+  organizations     organizations       @relation(fields: [organization_id], references: [id])
+  customers         customers           @relation(fields: [customer_id], references: [id])
+  work_orders       work_orders[]
+  work_order_assets work_order_assets[]
 
   @@index([organization_id], name: "assets_organization_idx")
   @@index([customer_id], name: "assets_customer_idx")
@@ -522,7 +523,7 @@ model work_orders {
   organization_id      BigInt                 @default(0)
   customer_id          BigInt                 @default(0)
   company_id           BigInt                 @default(0)
-  asset_id             BigInt                 @default(0)
+  asset_id             BigInt?                @default(0)
   maintenance_plan_id  BigInt                 @default(0)
   title                String                 @db.VarChar(255)
   description          String                 @db.Text
@@ -548,7 +549,7 @@ model work_orders {
   organizations        organizations          @relation(fields: [organization_id], references: [id])
   customers            customers              @relation(fields: [customer_id], references: [id])
   companies            companies              @relation(fields: [company_id], references: [id])
-  assets               assets                 @relation(fields: [asset_id], references: [id])
+  assets               assets?                @relation(fields: [asset_id], references: [id])
   maintenance_plans    maintenance_plans      @relation(fields: [maintenance_plan_id], references: [id])
   work_order_services  work_order_services[]
   work_order_tasks     work_order_tasks[]
@@ -605,8 +606,10 @@ model work_order_assets {
   created_at    String      @default("") @db.VarChar(50)
   updated_at    String      @default("") @db.VarChar(50)
   work_orders   work_orders @relation(fields: [work_order_id], references: [id])
+  assets        assets      @relation(fields: [asset_id], references: [id])
 
   @@index([work_order_id], name: "work_order_assets_work_order_idx")
+  @@index([asset_id], name: "work_order_assets_asset_idx")
   @@map("work_order_assets")
 }
 

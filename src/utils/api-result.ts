@@ -8,7 +8,7 @@ export class ApiResult {
   }
 
   public static success(data: any, message = 'Success', statusCode = 200): ApiResult {
-    console.log('data', data);
+    console.log('APIresult data', data);
     
     const response = ResponseGenerator.generate(statusCode, data, message);
     return new ApiResult(response);

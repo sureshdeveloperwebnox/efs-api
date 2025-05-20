@@ -1,5 +1,5 @@
 import { RequestX } from "../../utils/request.interface";
-import { Controller, POST, GET, Validate, DELETE } from "../../decorators";
+import { Controller, POST, GET, Validate, DELETE, POSTPayloadDecorator } from "../../decorators";
 import { Login, OrganizationUserRegisterValidation } from "../rules";
 import { Auth } from "../services/auth";
 import { ApiResult } from "../../utils/api-result";
@@ -62,16 +62,16 @@ export class AuthController {
     ApiResult.error(message, status).send(res);
   }
 
-  @POST('/register')
-  @Validate([OrganizationUserRegisterValidation])
-  public async register(req: RequestX, res: Response): Promise<void> {
-    try {
-      const result = await this.auth.register(req.body);
-      result.send(res);
-    } catch (error) {
-      this.handleError(error, res, "Registration failed", 400);
-    }
-  }
+  // @POST('/register')
+  // @Validate([OrganizationUserRegisterValidation])
+  // public async register(req: RequestX, res: Response): Promise<void> {
+  //   try {
+  //     const result = await this.auth.register(req.body);
+  //     result.send(res);
+  //   } catch (error) {
+  //     this.handleError(error, res, "Registration failed", 400);
+  //   }
+  // }
 
   @GET("/google")
   public initiateGoogleAuth(req: RequestX, res: Response, next: NextFunction): void {
@@ -102,7 +102,7 @@ export class AuthController {
 
           // Process user registration/login
           const tokens = await this.auth.handleGoogleUser(user);
-console.log("tokens", tokens);
+          console.log("tokens", tokens);
 
           // Set secure cookies
           res.cookie('accessToken', tokens?.accessToken, {
@@ -154,11 +154,12 @@ console.log("tokens", tokens);
     }
   }
 
-  
-  @POST("/authRegister")
-  public async authRegister(req: RequestX, res: Response): Promise<void> {
+
+  @POST("/register")
+  // @POSTPayloadDecorator()
+  public async register(req: RequestX, res: Response): Promise<void> {
     try {
-      const result = await this.auth.authRegister(req.body);
+      const result = await this.auth.register(req.body);
       result.send(res);
     } catch (error) {
       this.handleError(error, res, 'Registration failed', 400);
@@ -191,6 +192,6 @@ console.log("tokens", tokens);
     }
   }
 
-  
+
 }
 

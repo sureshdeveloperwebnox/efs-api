@@ -58,6 +58,50 @@ export class WorkOrderCrew {
         where: {
           id: BigInt(id)
         },
+        select: {
+          id: true,
+          crews: true,
+          work_orders: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              scheduled_start_date: true,
+              scheduled_end_date: true,
+              actual_start_date: true,
+              actual_end_date: true,
+              estimated_cost: true,
+              actual_cost: true,
+              address: true,
+              city: true,
+              state: true,
+              postal_code: true,
+              country: true,
+              companies: true,
+              customers: true,
+              work_order_assets: {
+                select: {
+                  assets: true
+                }
+              },
+              work_order_tasks: {
+                select: {
+                  id: true,
+                  task_name: true,
+                  task_description: true,
+                  due_date: true,
+                  status: true
+                }
+              },
+              work_order_services: {
+                select: {
+                  id: true,
+                  services: true
+                }
+              }
+            }
+          }
+        }
       });
 
       if (!result) {

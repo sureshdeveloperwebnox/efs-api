@@ -68,7 +68,7 @@ export enum AssetStatus {
 
 // Frequency
 export enum Frequency {
-  DAILY =  "DAILY",
+  DAILY = "DAILY",
   WEEKLY = "WEEKLY",
   BIWEEKLY = "BIWEEKLY",
   MONTHLY = "MONTHLY",
@@ -94,23 +94,25 @@ export enum Priority {
 }
 
 // Work Order Status
-  export enum WorkOrderStatus {
-    DRAFT = "DRAFT",
-    OPEN = "OPEN",
-    SCHEDULED = "SCHEDULED",
-    IN_PROGRESS = "IN_PROGRESS",
-    ON_HOLD = "ON_HOLD",
-    COMPLETED = "COMPLETED",
-    CANCELLED = "CANCELLED"
-  }
+export enum WorkOrderStatus {
+  DRAFT = "DRAFT",
+  OPEN = "OPEN",
+  SCHEDULED = "SCHEDULED",
+  IN_PROGRESS = "IN_PROGRESS",
+  ON_HOLD = "ON_HOLD",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED"
+}
 
 
-  // Approval Status
-  export enum ApprovalStatus {
-    PENDING = "PENDING",
-    APPROVED = "APPROVED",
-    REJECTED = "REJECTED"
-  }
+// Approval Status
+export enum ApprovalStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED"
+}
+
+
 
 
 // Date Time
