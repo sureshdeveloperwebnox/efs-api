@@ -14,9 +14,6 @@
         "@/*": ["./*"]
       }
     },
-"compilerOptions": {
-    "noImplicitAny": false
-  },
     "include": ["src/**/*"],
     "exclude": ["node_modules"],
     "exec": "ts-node -r tsconfig-paths/register src/app.ts"
