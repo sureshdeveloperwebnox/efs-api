@@ -31,9 +31,9 @@ export class EquipmentController {
   @Validate([CreateEquipmentValidation])
   @AccessTokenGuard()
   @POSTPayloadDecorator()
-  public async createEquipment(req: RequestX, res: Response): Promise<void> {
+  public async createEquipment(req: RequestX, res: Response, data: any): Promise<void> {
     try {
-      const result = await this.equipments.createEquipment(req.body);
+      const result = await this.equipments.createEquipment(data);
       result.send(res);
     } catch (error: any) {
       console.log("createEquipment Error", error);

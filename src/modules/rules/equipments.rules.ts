@@ -28,11 +28,7 @@ export const CreateEquipmentValidation = {
     availability_date: Joi.string().required().messages({
       "any.required": "Availablity date is required",
       "string.base": "Availablity date must be a string",
-    }),
-    date_time: Joi.string().required().messages({
-      "any.required": "Date Time is required",
-      "string.base": "Date Time date must be a string",
-    }),
+    })
   }),
 };
 

@@ -141,7 +141,7 @@ export class Equipments {
     }
 
     const formattedResult = await stringifyBigInts(result);
-    return ApiResult.success(formattedResult, "Successfully fetched equipments");
+    return ApiResult.success(formattedResult, "Successfully fetched equipments", 200);
   } catch (error: any) {
     console.error("getAllCustomer Error:", error.message);
     return ApiResult.error(error.message || "Failed to fetch equipments", 500);
