@@ -9,6 +9,8 @@ import { NextFunction, Request, Response } from "express";
 import _ from "lodash";
 import dotenv from "dotenv";
 import envConfig from "../../config/env.config";
+import { Prisma } from '@prisma/client';
+
 import {
   generateJWTToken,
   generateTokenPair,
@@ -130,7 +132,7 @@ export class Auth {
 
     // Perform database operations in a transaction
     try {
-      const result = await prisma.$transaction(async (trx: any) => {
+      const result = await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
         // Create a new organization record
         const org = await trx.organizations.create({
           data: {
@@ -203,7 +205,7 @@ export class Auth {
   public async me(userData: any): Promise<ApiResult> {
     const { id } = userData;
     try {
-      const result = await prisma.$transaction(async (trx: any) => {
+      const result = await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
         const user = await trx.users.findFirst({
           where: {
             id: Number(id),
@@ -283,7 +285,7 @@ export class Auth {
     const { first_name, last_name, email, phone, password } = data;
 
     try {
-      await prisma.$transaction(async (trx: any) => {
+      await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
         const organization = await trx.organizations.create({
           data: {
             name: first_name + last_name,
@@ -329,7 +331,7 @@ export class Auth {
   public async googleSignUp(data: any) {
     const { first_name, last_name, email } = data;
     try {
-      const result = await prisma.$transaction(async (trx: any) => {
+      const result = await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
         // Insert Organization
         const organization = await trx.organizations.create({
           data: {
@@ -480,7 +482,7 @@ export class Auth {
       }
 
       // Create new user and organization if user doesn't exist
-      const result = await prisma.$transaction(async (trx: any) => {
+      const result = await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
         // Create organization
         const organization = await trx.organizations.create({
           data: {
