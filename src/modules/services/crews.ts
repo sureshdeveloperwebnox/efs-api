@@ -49,4 +49,28 @@ export class Crew {
       return ApiResult.error("Failed to fetch crew data", 500);
     }
   };
+
+  // Get All Crew
+  public async getAllCrew(data: any): Promise<ApiResult> {
+    const { organization_id } = data;
+    try {
+      const crew = await prisma.crews.findMany({
+        where: {
+          organization_id: Number(organization_id),
+        },
+        select: {
+          organizations: true
+        }
+      });
+      const result = await stringifyBigInts(crew); 
+
+      if (_.isEmpty(crew)) {
+        return ApiResult.success({}, "No crew found", 202);
+      }
+      return ApiResult.success(result, "Crew data fetched successfully", 200);
+    } catch (error: any) {
+      console.log("getCrew Service Error", error);
+      return ApiResult.error("Failed to fetch crew data", 500);
+    }
+  };
 }

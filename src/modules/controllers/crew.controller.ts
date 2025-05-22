@@ -1,4 +1,4 @@
-import { Controller, GET, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
+import { Controller, GET, GETALLPayloadDecorator, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
@@ -41,6 +41,21 @@ export class CrewController {
       result.send(res);
     } catch (error: any) {
       console.log("getCrew Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
+
+
+  // Get All Crew API
+  @POST("/getAllCrew")
+  @AccessTokenGuard()
+  @GETALLPayloadDecorator()
+  public async getAllCrew(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.crew.getAllCrew(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllCrew Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };

@@ -193,4 +193,28 @@ export class User {
       return ApiResult.error("Failed to fetch user profiles", 500);
     }
   }
+
+  // Get All Users API
+   public async getAllUser(data: any): Promise<ApiResult> {
+
+    const { user_type, organization_id } = data;
+
+    try {
+      const user = await prisma.users.findMany({
+        where: {
+          user_type,
+          organization_id
+        },
+      });
+
+      if (!user) {
+        return ApiResult.error("User not found", 404);
+      }
+
+      const result = await stringifyBigInts(user);
+      return ApiResult.success(result, "Successfully fetched user");
+    } catch (error) {
+      return ApiResult.error("Failed to fetch user data", 500);
+    }
+  }
 }  

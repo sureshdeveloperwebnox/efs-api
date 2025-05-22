@@ -181,6 +181,7 @@ model organizations {
   maintenance_plans       maintenance_plans[]
   work_orders             work_orders[]
   service_types           service_types[]
+  crews                   crews[]
 }
 
 model users {
@@ -208,6 +209,7 @@ model users {
   notifications          notifications[]
   audit_logs             audit_logs[]
   customers              customers[]
+  crews                  crews[]
 
   @@index([organization_id], name: "users_organization_idx")
   @@map("users")
@@ -328,8 +330,13 @@ model crews {
   leader_id       BigInt            @default(0)
   created_at      String            @db.VarChar(50)
   updated_at      String            @default("") @db.VarChar(50)
+  organizations   organizations     @relation(fields: [organization_id], references: [id])
+  users           users             @relation(fields: [leader_id], references: [id])
   crew_members    crew_members[]
   work_order_crew work_order_crew[]
+
+  @@index([organization_id], name: "crew_organization_idx")
+  @@index([leader_id], name: "crew_leader_idx")
 }
 
 model crew_members {
@@ -524,7 +531,7 @@ model work_orders {
   customer_id          BigInt                 @default(0)
   company_id           BigInt                 @default(0)
   asset_id             BigInt?                @default(0)
-  maintenance_plan_id  BigInt                 @default(0)
+  maintenance_plan_id  BigInt?                @default(0)
   title                String                 @db.VarChar(255)
   description          String                 @db.Text
   priority             Priority               @default(HIGH)
@@ -550,7 +557,7 @@ model work_orders {
   customers            customers              @relation(fields: [customer_id], references: [id])
   companies            companies              @relation(fields: [company_id], references: [id])
   assets               assets?                @relation(fields: [asset_id], references: [id])
-  maintenance_plans    maintenance_plans      @relation(fields: [maintenance_plan_id], references: [id])
+  maintenance_plans    maintenance_plans?     @relation(fields: [maintenance_plan_id], references: [id])
   work_order_services  work_order_services[]
   work_order_tasks     work_order_tasks[]
   work_order_assets    work_order_assets[]

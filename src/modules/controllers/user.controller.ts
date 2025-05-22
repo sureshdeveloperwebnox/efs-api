@@ -1,5 +1,5 @@
 import { RequestX } from "../../utils/request.interface";
-import { Controller, POST, GET, Validate, DELETE, PUT } from "../../decorators";
+import { Controller, POST, GET, Validate, DELETE, PUT, GETALLPayloadDecorator } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { NextFunction, Response } from "express";
 import { User } from "../services/users";
@@ -94,6 +94,20 @@ export class UserController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   }
-  
+
+
+  @POST('/getAllUser')
+  @AccessTokenGuard()
+  @GETALLPayloadDecorator()
+  public async getAllUser(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.user.getAllUser(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log('getAllUser error', error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  }
+
 
 }
