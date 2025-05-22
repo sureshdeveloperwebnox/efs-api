@@ -23,11 +23,6 @@ const GOOGLE_CLIENT_ID = env_config_1.default.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = env_config_1.default.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL = env_config_1.default.GOOGLE_CALLBACK_URL;
 class Auth {
-    /**
-     * User Login API
-     * @param data Login credentials
-     * @returns ApiResult with user data and token
-     */
     async login(data) {
         const { email, password } = data;
         const user = await db_1.default.users.findFirst({
@@ -56,95 +51,112 @@ class Auth {
             ...token,
         }, "Login successful");
     }
-    /**
-     * Register a new organization admin user
-     * @param orgData Organization and user data
-     * @returns ApiResult with organization and user info
-     */
-    async register(orgData) {
-        const { name, email, phone, address, organization_name, industry_name, pincode, website, timezone, plan_type, subscription_start_date, subscription_end_date, currencyid, file_storage_limit, data_storage_limit, created_at, updated_at, first_name, last_name, job_title, } = orgData;
-        // Check if email already exists in the database
-        const existingEmail = await db_1.default.organizations.findFirst({
-            where: { email },
-        });
-        if (existingEmail) {
-            return api_result_1.ApiResult.error("Email is already registered.", 400);
-        }
-        // Check if phone number already exists in the database
-        const existingPhone = await db_1.default.organizations.findFirst({
-            where: { phone },
-        });
-        if (existingPhone) {
-            return api_result_1.ApiResult.error("Phone number is already registered.", 400);
-        }
-        // Generate salt for hashing password
-        const salt = await bcrypt_1.default.genSalt(10);
-        // Generate a random 4-digit password
-        const password = Math.floor(Math.random() * 9000 + 1000).toString();
-        // Hash the generated password
-        const hashedPassword = await bcrypt_1.default.hash(password, salt);
-        // Perform database operations in a transaction
-        try {
-            const result = await db_1.default.$transaction(async (trx) => {
-                // Create a new organization record
-                const org = await trx.organizations.create({
-                    data: {
-                        name,
-                        email,
-                        phone,
-                        address,
-                        organization_name,
-                        industry_name,
-                        pincode,
-                        plan_type,
-                        website,
-                        timezone,
-                        subscription_start_date,
-                        subscription_end_date,
-                        currencyid,
-                        file_storage_limit,
-                        data_storage_limit,
-                        created_at,
-                        updated_at,
-                    },
-                });
-                // Create a new user record linked to the organization
-                const user = await trx.users.create({
-                    data: {
-                        organization_id: org.id,
-                        email,
-                        password_hash: hashedPassword,
-                        first_name,
-                        last_name,
-                        phone,
-                        user_type: "ADMIN",
-                        job_title,
-                        created_at,
-                        updated_at,
-                    },
-                });
-                // Return organization and user info
-                return {
-                    organization: {
-                        id: Number(org.id),
-                        name: org.name,
-                        organization_name: org.organization_name,
-                        industry_name: org.industry_name,
-                    },
-                    user: {
-                        id: Number(user.id),
-                        email: user.email,
-                        first_name: user.first_name,
-                        last_name: user.last_name,
-                    },
-                };
-            });
-            return api_result_1.ApiResult.success(result, "Registration successful", 201);
-        }
-        catch (error) {
-            return api_result_1.ApiResult.error(`Registration failed: ${error.message}`, 500);
-        }
-    }
+    // /**
+    //  * Register a new organization admin user
+    //  * @param orgData Organization and user data
+    //  * @returns ApiResult with organization and user info
+    //  */
+    // public async register(orgData: IRegisterModel): Promise<ApiResult> {
+    //   const {
+    //     name,
+    //     email,
+    //     phone,
+    //     address,
+    //     organization_name,
+    //     industry_name,
+    //     pincode,
+    //     website,
+    //     timezone,
+    //     plan_type,
+    //     subscription_start_date,
+    //     subscription_end_date,
+    //     currencyid,
+    //     file_storage_limit,
+    //     data_storage_limit,
+    //     date_time,
+    //     first_name,
+    //     last_name,
+    //     job_title,
+    //   } = orgData;
+    //   // Check if email already exists in the database
+    //   const existingEmail = await prisma.organizations.findFirst({
+    //     where: { email },
+    //   });
+    //   if (existingEmail) {
+    //     return ApiResult.error("Email is already registered.", 400);
+    //   }
+    //   // Check if phone number already exists in the database
+    //   const existingPhone = await prisma.organizations.findFirst({
+    //     where: { phone },
+    //   });
+    //   if (existingPhone) {
+    //     return ApiResult.error("Phone number is already registered.", 400);
+    //   }
+    //   // Generate salt for hashing password
+    //   const salt = await bcrypt.genSalt(10);
+    //   // Generate a random 4-digit password
+    //   const password = Math.floor(Math.random() * 9000 + 1000).toString();
+    //   // Hash the generated password
+    //   const hashedPassword = await bcrypt.hash(password, salt);
+    //   // Perform database operations in a transaction
+    //   try {
+    //     const result = await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
+    //       // Create a new organization record
+    //       const org = await trx.organizations.create({
+    //         data: {
+    //           name,
+    //           email,
+    //           phone,
+    //           address,
+    //           organization_name,
+    //           industry_name,
+    //           pincode,
+    //           plan_type,
+    //           website,
+    //           timezone,
+    //           subscription_start_date,
+    //           subscription_end_date,
+    //           currencyid,
+    //           file_storage_limit,
+    //           data_storage_limit,
+    //           created_at: date_time,
+    //         },
+    //       });
+    //       // Create a new user record linked to the organization
+    //       const user = await trx.users.create({
+    //         data: {
+    //           organization_id: org.id,
+    //           email,
+    //           password_hash: hashedPassword,
+    //           first_name,
+    //           last_name,
+    //           phone,
+    //           user_type: "ADMIN",
+    //           job_title,
+    //           created_at: date_time,
+    //         },
+    //       });
+    //       // Return organization and user info
+    //       return {
+    //         organization: {
+    //           id: Number(org.id),
+    //           name: org.name,
+    //           organization_name: org.organization_name,
+    //           industry_name: org.industry_name,
+    //         },
+    //         user: {
+    //           id: Number(user.id),
+    //           email: user.email,
+    //           first_name: user.first_name,
+    //           last_name: user.last_name,
+    //         },
+    //       };
+    //     });
+    //     return ApiResult.success(result, "Registration successful", 201);
+    //   } catch (error: any) {
+    //     return ApiResult.error(`Registration failed: ${error.message}`, 500);
+    //   }
+    // }
     /**
      * Fetch a user details
      * @param userData user id
@@ -206,19 +218,36 @@ class Auth {
         }
     }
     /**
-     * Generate a Sign Up
+     * Generate a Register
      * @param data Token
-     * @returns ApiResult with organization and user info
+     * @returns ApiResult with Register and Register
      */
-    async authRegister(data) {
-        const { first_name, last_name, email, phone, password } = data;
+    async register(data) {
+        const { first_name, last_name, email, phone, password, user_type, date_time } = data;
         try {
+            // Check if email already exists in the database
+            const existingEmail = await db_1.default.users.findFirst({
+                where: { email },
+            });
+            // If email exists, return error
+            if (existingEmail) {
+                return api_result_1.ApiResult.error("Email is already registered.", 400);
+            }
+            // Check if phone number already exists in the database
+            const existingPhone = await db_1.default.users.findFirst({
+                where: { phone },
+            });
+            // If phone exists, return error
+            if (existingPhone) {
+                return api_result_1.ApiResult.error("Phone number is already registered.", 400);
+            }
             await db_1.default.$transaction(async (trx) => {
                 const organization = await trx.organizations.create({
                     data: {
                         name: first_name + last_name,
                         email,
                         phone,
+                        created_at: date_time
                     },
                 });
                 const { hashedPassword } = await (0, utils_1.getHashPassword)(password);
@@ -227,8 +256,9 @@ class Auth {
                         organization_id: organization.id,
                         email,
                         phone,
-                        user_type: "ADMIN",
+                        user_type: user_type,
                         password_hash: hashedPassword,
+                        created_at: date_time
                     },
                 });
             });

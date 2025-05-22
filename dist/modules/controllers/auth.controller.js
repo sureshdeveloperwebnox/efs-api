@@ -22,9 +22,9 @@ const passport_google_oauth20_1 = require("passport-google-oauth20");
 const env_config_1 = __importDefault(require("../../config/env.config"));
 // Google OAuth Strategy
 passport_1.default.use(new passport_google_oauth20_1.Strategy({
-    clientID: env_config_1.default.GOOGLE_CLIENT_ID,
-    clientSecret: env_config_1.default.GOOGLE_CLIENT_SECRET,
-    callbackURL: env_config_1.default.GOOGLE_CALLBACK_URL,
+    clientID: env_config_1.default === null || env_config_1.default === void 0 ? void 0 : env_config_1.default.GOOGLE_CLIENT_ID,
+    clientSecret: env_config_1.default === null || env_config_1.default === void 0 ? void 0 : env_config_1.default.GOOGLE_CLIENT_SECRET,
+    callbackURL: env_config_1.default === null || env_config_1.default === void 0 ? void 0 : env_config_1.default.GOOGLE_CALLBACK_URL,
     passReqToCallback: true,
     proxy: true
 }, async (request, accessToken, refreshToken, profile, done) => {
@@ -54,15 +54,16 @@ let AuthController = class AuthController {
         const status = error.statusCode || statusCode;
         api_result_1.ApiResult.error(message, status).send(res);
     }
-    async register(req, res) {
-        try {
-            const result = await this.auth.register(req.body);
-            result.send(res);
-        }
-        catch (error) {
-            this.handleError(error, res, "Registration failed", 400);
-        }
-    }
+    // @POST('/register')
+    // @Validate([OrganizationUserRegisterValidation])
+    // public async register(req: RequestX, res: Response): Promise<void> {
+    //   try {
+    //     const result = await this.auth.register(req.body);
+    //     result.send(res);
+    //   } catch (error) {
+    //     this.handleError(error, res, "Registration failed", 400);
+    //   }
+    // }
     initiateGoogleAuth(req, res, next) {
         const state = req.query.redirectUrl
             ? Buffer.from(JSON.stringify({ redirectUrl: req.query.redirectUrl })).toString('base64')
@@ -127,9 +128,9 @@ let AuthController = class AuthController {
             this.handleError(error, res, "Failed to fetch user data", 401);
         }
     }
-    async authRegister(req, res) {
+    async register(req, res) {
         try {
-            const result = await this.auth.authRegister(req.body);
+            const result = await this.auth.register(req.body);
             result.send(res);
         }
         catch (error) {
@@ -162,13 +163,6 @@ let AuthController = class AuthController {
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, decorators_1.POST)('/register'),
-    (0, decorators_1.Validate)([rules_1.OrganizationUserRegisterValidation]),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "register", null);
-__decorate([
     (0, decorators_1.GET)("/google"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Function]),
@@ -195,11 +189,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "me", null);
 __decorate([
-    (0, decorators_1.POST)("/authRegister"),
+    (0, decorators_1.POST)("/register")
+    // @POSTPayloadDecorator()
+    ,
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "authRegister", null);
+], AuthController.prototype, "register", null);
 __decorate([
     (0, decorators_1.POST)('/organizationRegister'),
     __metadata("design:type", Function),

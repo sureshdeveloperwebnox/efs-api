@@ -148,5 +148,25 @@ class User {
             return api_result_1.ApiResult.error("Failed to fetch user profiles", 500);
         }
     }
+    // Get All Users API
+    async getAllUser(data) {
+        const { user_type, organization_id } = data;
+        try {
+            const user = await db_1.default.users.findMany({
+                where: {
+                    user_type,
+                    organization_id
+                },
+            });
+            if (!user) {
+                return api_result_1.ApiResult.error("User not found", 404);
+            }
+            const result = await (0, middlewares_1.stringifyBigInts)(user);
+            return api_result_1.ApiResult.success(result, "Successfully fetched user");
+        }
+        catch (error) {
+            return api_result_1.ApiResult.error("Failed to fetch user data", 500);
+        }
+    }
 }
 exports.User = User;

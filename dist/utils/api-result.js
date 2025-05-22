@@ -7,7 +7,7 @@ class ApiResult {
         this.apiResponse = apiResponse;
     }
     static success(data, message = 'Success', statusCode = 200) {
-        console.log('data', data);
+        console.log('APIresult data', data);
         const response = response_generator_1.ResponseGenerator.generate(statusCode, data, message);
         return new ApiResult(response);
     }

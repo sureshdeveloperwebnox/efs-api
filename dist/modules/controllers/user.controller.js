@@ -81,6 +81,16 @@ let UserController = class UserController {
             api_result_1.ApiResult.error(error.message || "Internal server error", 500);
         }
     }
+    async getAllUser(req, res, data) {
+        try {
+            const result = await this.user.getAllUser(data);
+            result.send(res);
+        }
+        catch (error) {
+            console.log('getAllUser error', error);
+            api_result_1.ApiResult.error(error.message || "Internal server error", 500);
+        }
+    }
 };
 exports.UserController = UserController;
 __decorate([
@@ -119,6 +129,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserProfiles", null);
+__decorate([
+    (0, decorators_1.POST)('/getAllUser'),
+    (0, token_guard_1.AccessTokenGuard)(),
+    (0, decorators_1.GETALLPayloadDecorator)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUser", null);
 exports.UserController = UserController = __decorate([
     (0, decorators_1.Controller)('/user'),
     __metadata("design:paramtypes", [])
