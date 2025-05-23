@@ -2,7 +2,7 @@ import prisma from "../../config/db";
 import _ from "lodash";
 import { stringifyBigInts } from "../../middlewares";
 import { ApiResult } from "../../utils/api-result";
-import { ICreateCrew, IIDModel } from "../model";
+import { ICreateCrew, IIDModel, IUpdateCrew } from "../model";
 
 // Crew API Service
 
@@ -37,8 +37,11 @@ export class Crew {
         where: {
           id: Number(id),
         },
+        include: {
+          users: true
+        }
       });
-      const result = await stringifyBigInts(crew); 
+      const result = await stringifyBigInts(crew);
 
       if (_.isEmpty(crew)) {
         return ApiResult.success({}, "No crew found", 202);
@@ -50,6 +53,38 @@ export class Crew {
     }
   };
 
+  // Update Crew API Service
+  public async updateCrew(data: IUpdateCrew): Promise<ApiResult> {
+    const {
+      id,
+      leader_id,
+      name,
+      date_time,
+    } = data;
+
+    try {
+      await prisma.$transaction(async (trx) => {
+        await trx.crews.update({
+          data: {
+            name,
+            leader_id: leader_id,
+            updated_at: date_time,
+          },
+
+          where: {
+            id: id,
+          },
+        });
+
+
+      });
+      return ApiResult.success({}, "Customer updated successful", 202);
+    } catch (error: any) {
+      console.log("updateCustomer service Error", error);
+      return ApiResult.error("Failed to update customer", 500);
+    }
+  }
+
   // Get All Crew
   public async getAllCrew(data: any): Promise<ApiResult> {
     const { organization_id } = data;
@@ -58,11 +93,11 @@ export class Crew {
         where: {
           organization_id: Number(organization_id),
         },
-        select: {
-          organizations: true
+        include: {
+          users: true
         }
       });
-      const result = await stringifyBigInts(crew); 
+      const result = await stringifyBigInts(crew);
 
       if (_.isEmpty(crew)) {
         return ApiResult.success({}, "No crew found", 202);

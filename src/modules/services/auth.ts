@@ -319,6 +319,8 @@ export class Auth {
         await trx.users.create({
           data: {
             organization_id: organization.id,
+            first_name,
+            last_name,
             email,
             phone,
             user_type: user_type,
@@ -481,7 +483,7 @@ export class Auth {
   }
 
   public async handleGoogleUser(data: any) {
-    const { email, first_name, last_name, provider } = data;
+    const { email, firstName, lastName, provider } = data;
     console.log("Google user data:", data);
 
     try {
@@ -502,13 +504,16 @@ export class Auth {
         return await generateTokenPair(userData);
       }
 
+      const date_time = new Date().toISOString()
+
       // Create new user and organization if user doesn't exist
       const result = await prisma.$transaction(async (trx: Prisma.TransactionClient) => {
         // Create organization
         const organization = await trx.organizations.create({
           data: {
-            name: `${first_name} ${last_name}`.trim(),
-            email
+            name: `${firstName} ${lastName}`.trim(),
+            email: email,
+            created_at: date_time
           }
         });
 
@@ -516,10 +521,11 @@ export class Auth {
         const user = await trx.users.create({
           data: {
             organization_id: organization.id,
-            first_name,
-            last_name,
+            first_name: firstName,
+            last_name: lastName,
             email,
-            user_type: 'ADMIN' // Added default user type
+            user_type: 'ADMIN', // Added default user type
+            created_at: date_time
           }
         });
 

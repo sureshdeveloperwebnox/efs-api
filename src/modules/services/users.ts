@@ -207,12 +207,15 @@ export class User {
         },
       });
 
+      console.log("user", user);
+      
+
       if (!user) {
         return ApiResult.error("User not found", 404);
       }
 
       const result = await stringifyBigInts(user);
-      return ApiResult.success(result, "Successfully fetched user");
+      return ApiResult.success(result, "Successfully fetched user", 200);
     } catch (error) {
       return ApiResult.error("Failed to fetch user data", 500);
     }

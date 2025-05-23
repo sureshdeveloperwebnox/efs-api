@@ -1,4 +1,4 @@
-import { Controller, GET, GETALLPayloadDecorator, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, Validate } from "../../decorators";
+import { Controller, GET, GETALLPayloadDecorator, GETPayloadDecorator, POST, POSTPayloadDecorator, PUT, PUTPayloadDecorator, Validate } from "../../decorators";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
@@ -45,6 +45,19 @@ export class CrewController {
     }
   };
 
+  // Update Customer API
+  @PUT("/:id")
+  @AccessTokenGuard()
+  @PUTPayloadDecorator()
+  public async updateCrew(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.crew.updateCrew(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("updateCrew Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 
   // Get All Crew API
   @POST("/getAllCrew")
