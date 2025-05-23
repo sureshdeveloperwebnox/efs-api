@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import 'reflect-metadata';
 import dotenv from 'dotenv';
 import session from 'express-session';
@@ -26,6 +26,10 @@ const corsOptions = {
 
 };
 app.use(cors(corsOptions));
+
+app.get('/', (req: Request, res: Response) => {
+  res.send("server running")
+})
 
 // 🛡️ Setup session (required for passport)
 app.use(session({
