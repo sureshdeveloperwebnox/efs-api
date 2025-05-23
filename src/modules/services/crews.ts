@@ -108,4 +108,53 @@ export class Crew {
       return ApiResult.error("Failed to fetch crew data", 500);
     }
   };
+
+  // Get All Crew By ID
+  public async getAllCrewByID(data?: any): Promise<ApiResult> {
+    const { crew_name, organization_id } = data || {};
+  
+    try {
+      // Return nothing if neither ID is provided
+      if (!crew_name && !organization_id) {
+        return ApiResult.success({}, "No data retrieved", 200);
+      }
+  
+      // Build where clause based on provided IDs
+      const whereClause: any = {};
+      if (crew_name) {
+        whereClause.crew_name = crew_name;
+      }
+      if (organization_id) {
+        whereClause.organization_id = organization_id;
+      }
+  
+      const result = await prisma.crews.findMany({
+        where: whereClause,
+        include: {
+          users: {
+            select: {
+              id: true,
+              job_title: true,
+              user_type: true,
+            },
+          },
+          organizations: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+  
+      if (!result || result.length === 0) {
+        return ApiResult.success({}, "No data retrieved", 409);
+      }
+  
+      const formattedResult = await stringifyBigInts(result);
+      return ApiResult.success(formattedResult, "Successfully fetched customers");
+    } catch (error: any) {
+      console.error("getAllCustomer Error:", error.message);
+      return ApiResult.error(error.message || "Failed to fetch customers", 500);
+    }
+  }
 }

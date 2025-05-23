@@ -45,7 +45,7 @@ export class CrewController {
     }
   };
 
-  // Update Customer API
+  // Update Crew API
   @PUT("/:id")
   @AccessTokenGuard()
   @PUTPayloadDecorator()
@@ -69,6 +69,20 @@ export class CrewController {
       result.send(res);
     } catch (error: any) {
       console.log("getAllCrew Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
+
+    // Get All Crew By ID API
+  @POST("/getAllCrewByID")
+  @AccessTokenGuard()
+  @GETALLPayloadDecorator()
+  public async getAllCrewByID(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.crew.getAllCrewByID(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("getAllCrewByID Controller Error", error);
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };
