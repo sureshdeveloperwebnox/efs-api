@@ -2,7 +2,7 @@ import { Controller, GET, GETALLPayloadDecorator, GETPayloadDecorator, POST, POS
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
 import { AccessTokenGuard } from "../../middlewares/token.guard";
-import {  ValidateParamsID, CreateCrewMemberValidation } from "../rules";
+import { ValidateParamsID, CreateCrewMemberValidation } from "../rules";
 import { CrewMember } from "../services";
 
 // Crew Member Controller
@@ -46,22 +46,22 @@ export class CrewMemberController {
     }
   };
 
-    // Update Crew Member API
-    @PUT("/:id")
-    @AccessTokenGuard()
-    @PUTPayloadDecorator()
-    public async updateCrew(req: RequestX, res: Response, data: any): Promise<void> {
-      try {
-        const result = await this.crewmember.updateCrewMeember(data);
-        result.send(res);
-      } catch (error: any) {
-        console.log("updateCrew Controller Error", error);
-        ApiResult.error(error.message || "Internal server error", 500);
-      }
-    };
-  
+  // Update Crew Member API
+  @PUT("/:id")
+  @AccessTokenGuard()
+  @PUTPayloadDecorator()
+  public async updateCrew(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.crewmember.updateCrewMeember(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("updateCrew Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 
-  
+
+
   // GET Crew Member API
   @POST("/getAllCrewMember")
   @AccessTokenGuard()
@@ -76,7 +76,20 @@ export class CrewMemberController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };
-  
 
-  
+
+  // GET Crew Member All Work Order API
+  @POST("/getCrewMemberAllWorkOrder")
+  @AccessTokenGuard()
+  @GETALLPayloadDecorator()
+  public async getCrewMemberAllWorkOrder(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.crewmember.getCrewMemberAllWorkOrder(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("getCrewMemberAllWorkOrder Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
+
 }

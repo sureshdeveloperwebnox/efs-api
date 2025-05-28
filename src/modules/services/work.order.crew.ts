@@ -7,15 +7,39 @@ export class WorkOrderCrew {
   // Create Work Order Crew Service
   public async createWorkOrderCrew(data: ICreateWorkOrderCrewModel): Promise<ApiResult> {
     const { work_order_id, crew_id, assigned_at, date_time } = data;
+    console.log("crew_data", data);
+
     try {
       await prisma.$transaction(async (trx) => {
+        await trx.work_orders.updateMany({
+          data: {
+            assigned_crew_id: Number(crew_id),
+            updated_at: date_time
+          },
+          where: { id: BigInt(work_order_id) }
+        });
+
+        // First find the existing record to get its id
+        const existingCrew = await trx.work_order_crew.findFirst({
+          where: {
+            work_order_id: BigInt(work_order_id)
+          }
+        });
+
+        if (existingCrew) {
+          await trx.work_order_crew.delete({
+            where: {
+              id: existingCrew.id
+            }
+          });
+        }
+
         return await trx.work_order_crew.create({
           data: {
-            work_order_id,
-            crew_id,
+            work_order_id: BigInt(work_order_id),
+            crew_id: Number(crew_id),
             assigned_at,
             created_at: date_time,
-            updated_at: date_time
           },
         });
       });

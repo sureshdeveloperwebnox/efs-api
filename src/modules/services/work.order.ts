@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
 import { ICreateWorkOrder, IIDModel, IUpdateWorkOrder } from "../model";
@@ -40,7 +41,7 @@ export class WorkOrder {
     } = data;
 
     console.log("organization_id", organization_id);
-    
+
     try {
       // Using the safer $queryRaw with template literals
       const result = await prisma.$queryRaw<{ p_work_order_id: bigint }[]>`
@@ -136,10 +137,10 @@ export class WorkOrder {
     } = data;
     try {
       console.log("data❤️❤️❤️", data);
-      
 
-         // Using the safer $queryRaw with template literals
-         const result = await prisma.$queryRaw`
+
+      // Using the safer $queryRaw with template literals
+      const result = await prisma.$queryRaw`
          CALL update_work_order_procedure(
            ${id}::bigint,
            ${organization_id}::bigint, 
@@ -172,11 +173,11 @@ export class WorkOrder {
            ${assets ? JSON.stringify(assets) : null}::jsonb         
            )
        `;
-   
-         // Extract the work order ID from the result
-    console.log("result", result);
-    
-   
+
+      // Extract the work order ID from the result
+      console.log("result", result);
+
+
       return ApiResult.success({}, "Work order updated successful", 202)
     } catch (error: any) {
       console.error("updateWorkOrder Error:", error.message, error.stack);
@@ -193,15 +194,15 @@ export class WorkOrder {
   // Note: Use Get All Work Order Procedure
   public async getAllWorkOrder(data: any): Promise<ApiResult> {
     const { organization_id } = data;
-        console.log("***** organization_id",organization_id);
+    console.log("***** organization_id", organization_id);
 
     try {
       // For a function that returns JSON:
       const result = await prisma.$queryRaw<{ get_all_work_order_by_id: any }[]>
         `SELECT get_all_work_order_by_id(${organization_id})`;
       console.log("result", result[0].get_all_work_order_by_id);
-      
-  
+
+
       return ApiResult.success(result[0].get_all_work_order_by_id, "Work order data retrieved", 200);
     } catch (error: any) {
       return ApiResult.error(
@@ -222,12 +223,12 @@ export class WorkOrder {
       const result = await prisma.$queryRawUnsafe<{ get_work_order_by_id: any }[]>(
         `SELECT get_work_order_by_id(${id})`
       );
-  
+
       console.log("result", result);
-  
+
       // Handle result
       const workOrderData = result[0]?.get_work_order_by_id ?? null;
-  
+
       return ApiResult.success(workOrderData, "Work order data retrieved", 200);
     } catch (error: any) {
       return ApiResult.error(
@@ -239,6 +240,52 @@ export class WorkOrder {
     }
   }
 
-  
-  
+  // assign Work Order To Technician
+  public async assignWorkOrderToTechnician(data: any): Promise<ApiResult> {
+    const { work_order_id, crew_id, assigned_at } = data;
+    try {
+
+      await prisma.$transaction(async (trx: PrismaClient) => {
+        await trx.work_orders.update({
+          data: {
+            assigned_crew_id: crew_id,
+          },
+          where: {
+            id: work_order_id
+          }
+        })
+      });
+      return ApiResult.success({}, "Work order assigned", 202)
+    } catch (error: any) {
+      console.log("assignWorkOrderToTechnician Error", error);
+      return ApiResult.error(
+        error.message.includes('Error assign work order')
+          ? error.message
+          : "Failed to assign work order",
+        500
+      );
+    }
+  }
+
+  public async workOrderStatus(data: any): Promise<ApiResult> {
+    const { work_order_id } = data;
+    try {
+      const result = await prisma.$transaction(async (trx: PrismaClient) => {
+      const orderstatus = await trx.work_order_tasks.updateMany({
+        data: {
+          status: "IN_PROGRESS"
+        },
+         where: {
+          work_order_id
+      }
+      })
+      return ApiResult.success({}, "Task started successful", 202)
+      })
+    } catch (error: any) {
+      console.log("workOrderStatus Error", error);
+      return ApiResult.error("Failed to start task")
+    }
+  }
+
+
 }

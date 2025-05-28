@@ -66,7 +66,7 @@ export class Auth {
 
     return ApiResult.success(
       {
-        user: userData,
+        // user: userData,
         ...token,
       },
       "Login successful"

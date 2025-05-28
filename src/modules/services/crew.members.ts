@@ -39,7 +39,7 @@ export class CrewMember {
         where: {
           id: Number(id),
         },
-           include: {
+        include: {
           users: true,
           crews: true
         }
@@ -89,39 +89,73 @@ export class CrewMember {
     }
   }
 
-   // Update Crew Member API Service
-    public async updateCrewMeember(data: any): Promise<ApiResult> {
-      const {
-        id,
-        user_id,
-        crew_id,
-        role,
-        date_time,
-      } = data;
-  
-      try {
-        await prisma.$transaction(async (trx) => {
-          await trx.crew_members.update({
-            data: {
-              role,
-              user_id,
-              crew_id,
-              updated_at: date_time,
-            },
-  
-            where: {
-              id: id,
-            },
-          });
-  
-  
+  // Update Crew Member API Service
+  public async updateCrewMeember(data: any): Promise<ApiResult> {
+    const {
+      id,
+      user_id,
+      crew_id,
+      role,
+      date_time,
+    } = data;
+
+    try {
+      await prisma.$transaction(async (trx) => {
+        await trx.crew_members.update({
+          data: {
+            role,
+            user_id,
+            crew_id,
+            updated_at: date_time,
+          },
+
+          where: {
+            id: id,
+          },
         });
-        return ApiResult.success({}, "Customer updated successful", 202);
-      } catch (error: any) {
-        console.log("updateCustomer service Error", error);
-        return ApiResult.error("Failed to update customer", 500);
-      }
+
+
+      });
+      return ApiResult.success({}, "Customer updated successful", 202);
+    } catch (error: any) {
+      console.log("updateCustomer service Error", error);
+      return ApiResult.error("Failed to update customer", 500);
     }
+  }
+
+  // Get Crew Member All Work Order
+  public async getCrewMemberAllWorkOrder(data: any): Promise<ApiResult> {
+    const { crew_id } = data;
+
+    try {
+      const crewWorkOrders = await prisma.work_order_crew.findMany({
+        where: { crew_id },
+        select: {
+          work_orders: {
+            select: {
+              id: true,
+              work_order_tasks: true
+            }
+          }
+        }
+      });
+
+      const result = await stringifyBigInts(crewWorkOrders);
+
+      if (_.isEmpty(crewWorkOrders)) {
+        return ApiResult.success({}, "No crew member found", 202);
+      }
+
+      return ApiResult.success(
+        result,
+        "Crew member work order data retrieved successfully",
+        200
+      );
+    } catch (error: any) {
+      console.log("getAllCrewMember Service Error", error);
+      return ApiResult.error("Failed to fetch crew member data", 500);
+    }
+  }
 
 
 }

@@ -22,7 +22,7 @@ export class Skills {
       }
 
       await prisma.$transaction(async (trx: any) => {
-        return await trx.skills.createMany({
+        return await trx.skills.create({
           data: {
             name,
             description,

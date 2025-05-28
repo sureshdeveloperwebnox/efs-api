@@ -24,6 +24,7 @@ export class Company {
       const checkCompanyName = await prisma.companies.findFirst({
         where: {
           name,
+          organization_id
         },
       })
 

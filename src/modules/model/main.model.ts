@@ -95,12 +95,13 @@ export enum Priority {
 
 // Work Order Status
 export enum WorkOrderStatus {
-  DRAFT = "DRAFT",
-  OPEN = "OPEN",
-  SCHEDULED = "SCHEDULED",
-  IN_PROGRESS = "IN_PROGRESS",
-  ON_HOLD = "ON_HOLD",
+  PENDING = "PENDING",
+  ASSIGNED = "ASSIGNED",
+  CONFIRMED = "CONFIRMED",
+  ACTIVE = "ACTIVE",
   COMPLETED = "COMPLETED",
+  APPROVED = "APPROVED",
+  CLOSED = "CLOSED",
   CANCELLED = "CANCELLED"
 }
 

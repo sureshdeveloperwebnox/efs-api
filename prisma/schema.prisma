@@ -83,12 +83,13 @@ enum Priority {
 }
 
 enum WorkOrderStatus {
-  DRAFT
-  OPEN
-  SCHEDULED
-  IN_PROGRESS
-  ON_HOLD
+  PENDING
+  ASSIGNED
+  CONFIRMED
+  ACTIVE
   COMPLETED
+  APPROVED
+  CLOSED
   CANCELLED
 }
 
@@ -96,7 +97,7 @@ enum WorkOrderTaskStatus {
   NOT_STARTED
   IN_PROGRESS
   COMPLETED
-  ON_HOLD
+  
 }
 
 enum ApprovalStatus {
@@ -535,7 +536,7 @@ model work_orders {
   title                String                 @db.VarChar(255)
   description          String                 @db.Text
   priority             Priority               @default(HIGH)
-  status               WorkOrderStatus        @default(DRAFT)
+  status               WorkOrderStatus        @default(PENDING)
   assigned_to          BigInt                 @default(0)
   assigned_crew_id     Int                    @default(0)
   scheduled_start_date String                 @db.VarChar(50)

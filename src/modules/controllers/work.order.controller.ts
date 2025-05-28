@@ -74,4 +74,17 @@ export class WorkOrderController {
     }
   };
 
+  // Assign Work Order To Technician API
+  @POST("/assignWorkOrderToTechnician")
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async assignWorkOrderToTechnician(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.work_order.assignWorkOrderToTechnician(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("assignWorkOrderToTechnician Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 }
