@@ -29,10 +29,10 @@ CREATE TYPE "FrequencyUnitType" AS ENUM ('DAYS', 'WEEKS', 'MONTHS');
 CREATE TYPE "Priority" AS ENUM ('LOW', 'MEDIUM', 'HIGH', 'URGENT');
 
 -- CreateEnum
-CREATE TYPE "WorkOrderStatus" AS ENUM ('DRAFT', 'OPEN', 'SCHEDULED', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETED', 'CANCELLED');
+CREATE TYPE "WorkOrderStatus" AS ENUM ('PENDING', 'ASSIGNED', 'CONFIRMED', 'ACTIVE', 'COMPLETED', 'APPROVED', 'CLOSED', 'CANCELLED');
 
 -- CreateEnum
-CREATE TYPE "WorkOrderTaskStatus" AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'ON_HOLD');
+CREATE TYPE "WorkOrderTaskStatus" AS ENUM ('NOT_STARTED', 'IN_PROGRESS', 'COMPLETED');
 
 -- CreateEnum
 CREATE TYPE "ApprovalStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
@@ -375,19 +375,19 @@ CREATE TABLE "work_orders" (
     "organization_id" BIGINT NOT NULL DEFAULT 0,
     "customer_id" BIGINT NOT NULL DEFAULT 0,
     "company_id" BIGINT NOT NULL DEFAULT 0,
-    "asset_id" BIGINT NOT NULL DEFAULT 0,
-    "maintenance_plan_id" BIGINT NOT NULL DEFAULT 0,
+    "asset_id" BIGINT DEFAULT 0,
+    "maintenance_plan_id" BIGINT DEFAULT 0,
     "title" VARCHAR(255) NOT NULL,
     "description" TEXT NOT NULL,
     "priority" "Priority" NOT NULL DEFAULT 'HIGH',
-    "status" "WorkOrderStatus" NOT NULL DEFAULT 'DRAFT',
-    "assigned_to" BIGINT NOT NULL DEFAULT 0,
-    "assigned_crew_id" INTEGER NOT NULL DEFAULT 0,
+    "status" "WorkOrderStatus" NOT NULL DEFAULT 'PENDING',
+    "assigned_to" BIGINT DEFAULT 0,
+    "assigned_crew_id" INTEGER DEFAULT 0,
     "scheduled_start_date" VARCHAR(50) NOT NULL,
     "scheduled_end_date" VARCHAR(50) NOT NULL,
     "actual_start_date" VARCHAR(50) NOT NULL,
     "actual_end_date" VARCHAR(50) NOT NULL,
-    "currency_id" INTEGER NOT NULL DEFAULT 0,
+    "currency_id" INTEGER DEFAULT 0,
     "estimated_cost" DECIMAL(10,2) NOT NULL,
     "actual_cost" DECIMAL(10,2) NOT NULL,
     "address" TEXT NOT NULL,
@@ -395,7 +395,7 @@ CREATE TABLE "work_orders" (
     "state" VARCHAR(50) NOT NULL,
     "postal_code" VARCHAR(20) NOT NULL,
     "country" VARCHAR(50) NOT NULL,
-    "is_multi_day" SMALLINT NOT NULL DEFAULT 0,
+    "is_multi_day" SMALLINT DEFAULT 0,
     "created_at" VARCHAR(50) NOT NULL DEFAULT '',
     "updated_at" VARCHAR(50) NOT NULL DEFAULT '',
 
@@ -595,6 +595,12 @@ CREATE INDEX "holidays_organization_idx" ON "holidays"("organization_id");
 CREATE INDEX "time_off_requests_user_idx" ON "time_off_requests"("user_id");
 
 -- CreateIndex
+CREATE INDEX "crew_organization_idx" ON "crews"("organization_id");
+
+-- CreateIndex
+CREATE INDEX "crew_leader_idx" ON "crews"("leader_id");
+
+-- CreateIndex
 CREATE INDEX "crew_members_organization_idx" ON "crew_members"("organization_id");
 
 -- CreateIndex
@@ -679,6 +685,9 @@ CREATE INDEX "work_order_tasks_work_order_idx" ON "work_order_tasks"("work_order
 CREATE INDEX "work_order_assets_work_order_idx" ON "work_order_assets"("work_order_id");
 
 -- CreateIndex
+CREATE INDEX "work_order_assets_asset_idx" ON "work_order_assets"("asset_id");
+
+-- CreateIndex
 CREATE INDEX "work_order_crew_work_order_idx" ON "work_order_crew"("work_order_id");
 
 -- CreateIndex
@@ -736,6 +745,12 @@ ALTER TABLE "holidays" ADD CONSTRAINT "holidays_organization_id_fkey" FOREIGN KE
 ALTER TABLE "time_off_requests" ADD CONSTRAINT "time_off_requests_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "crews" ADD CONSTRAINT "crews_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "crews" ADD CONSTRAINT "crews_leader_id_fkey" FOREIGN KEY ("leader_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "crew_members" ADD CONSTRAINT "crew_members_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -790,10 +805,10 @@ ALTER TABLE "work_orders" ADD CONSTRAINT "work_orders_customer_id_fkey" FOREIGN 
 ALTER TABLE "work_orders" ADD CONSTRAINT "work_orders_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "work_orders" ADD CONSTRAINT "work_orders_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "work_orders" ADD CONSTRAINT "work_orders_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "work_orders" ADD CONSTRAINT "work_orders_maintenance_plan_id_fkey" FOREIGN KEY ("maintenance_plan_id") REFERENCES "maintenance_plans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "work_orders" ADD CONSTRAINT "work_orders_maintenance_plan_id_fkey" FOREIGN KEY ("maintenance_plan_id") REFERENCES "maintenance_plans"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "work_order_services" ADD CONSTRAINT "work_order_services_work_order_id_fkey" FOREIGN KEY ("work_order_id") REFERENCES "work_orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -806,6 +821,9 @@ ALTER TABLE "work_order_tasks" ADD CONSTRAINT "work_order_tasks_work_order_id_fk
 
 -- AddForeignKey
 ALTER TABLE "work_order_assets" ADD CONSTRAINT "work_order_assets_work_order_id_fkey" FOREIGN KEY ("work_order_id") REFERENCES "work_orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "work_order_assets" ADD CONSTRAINT "work_order_assets_asset_id_fkey" FOREIGN KEY ("asset_id") REFERENCES "assets"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "work_order_crew" ADD CONSTRAINT "work_order_crew_work_order_id_fkey" FOREIGN KEY ("work_order_id") REFERENCES "work_orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

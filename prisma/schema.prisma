@@ -537,13 +537,13 @@ model work_orders {
   description          String                 @db.Text
   priority             Priority               @default(HIGH)
   status               WorkOrderStatus        @default(PENDING)
-  assigned_to          BigInt                 @default(0)
-  assigned_crew_id     Int                    @default(0)
+  assigned_to          BigInt?                 @default(0)
+  assigned_crew_id     Int?                    @default(0)
   scheduled_start_date String                 @db.VarChar(50)
   scheduled_end_date   String                 @db.VarChar(50)
   actual_start_date    String                 @db.VarChar(50)
   actual_end_date      String                 @db.VarChar(50)
-  currency_id          Int                    @default(0)
+  currency_id          Int?                    @default(0)
   estimated_cost       Decimal                @db.Decimal(10, 2)
   actual_cost          Decimal                @db.Decimal(10, 2)
   address              String                 @db.Text
@@ -551,7 +551,7 @@ model work_orders {
   state                String                 @db.VarChar(50)
   postal_code          String                 @db.VarChar(20)
   country              String                 @db.VarChar(50)
-  is_multi_day         Int                    @default(0) @db.SmallInt
+  is_multi_day         Int?                    @default(0) @db.SmallInt
   created_at           String                 @default("") @db.VarChar(50)
   updated_at           String                 @default("") @db.VarChar(50)
   organizations        organizations          @relation(fields: [organization_id], references: [id])
