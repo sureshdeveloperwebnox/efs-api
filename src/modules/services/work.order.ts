@@ -268,18 +268,18 @@ export class WorkOrder {
   }
 
   public async workOrderStatus(data: any): Promise<ApiResult> {
-    const { work_order_id } = data;
+    const { work_order_id, status } = data;
     try {
-      const result = await prisma.$transaction(async (trx: PrismaClient) => {
-      const orderstatus = await trx.work_order_tasks.updateMany({
+      await prisma.$transaction(async (trx: PrismaClient) => {
+      await trx.work_order_tasks.updateMany({
         data: {
-          status: "IN_PROGRESS"
+          status,
         },
          where: {
           work_order_id
       }
       })
-      return ApiResult.success({}, "Task started successful", 202)
+      return ApiResult.success({}, `Work order task ${status == "IN_PROGRESS" ? "started" : "completed"}`, 202)
       })
     } catch (error: any) {
       console.log("workOrderStatus Error", error);
