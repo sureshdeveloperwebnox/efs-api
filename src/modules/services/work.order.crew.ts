@@ -11,6 +11,18 @@ export class WorkOrderCrew {
 
     try {
       await prisma.$transaction(async (trx) => {
+
+         // update work order assign status
+        await trx.work_orders.updateMany({
+          data: {
+            status: "ASSIGNED"
+          },
+          where: {
+            id: BigInt(work_order_id)
+          }
+        });
+
+        // assign crew to work order
         await trx.work_orders.updateMany({
           data: {
             assigned_crew_id: Number(crew_id),
@@ -19,6 +31,16 @@ export class WorkOrderCrew {
           where: { id: BigInt(work_order_id) }
         });
 
+        // assign crew to work order task
+        await trx.work_order_tasks.updateMany({
+          data: {
+            assigned_to: crew_id
+          },
+          where: {
+            work_order_id
+          }
+        })
+
         // First find the existing record to get its id
         const existingCrew = await trx.work_order_crew.findFirst({
           where: {
@@ -26,6 +48,7 @@ export class WorkOrderCrew {
           }
         });
 
+        // delete Existing crew
         if (existingCrew) {
           await trx.work_order_crew.delete({
             where: {

@@ -246,12 +246,35 @@ export class WorkOrder {
     try {
 
       await prisma.$transaction(async (trx: PrismaClient) => {
-        await trx.work_orders.update({
+
+        // update work order assign status
+        await trx.work_orders.updateMany({
           data: {
-            assigned_crew_id: crew_id,
+            status: "ASSIGNED"
+          },
+          where: {
+            id: BigInt(work_order_id)
+          }
+        });
+
+        // update work order 
+        await trx.work_orders.updateMany({
+          data: {
+            assigned_to: crew_id,
+            assigned_at
           },
           where: {
             id: work_order_id
+          }
+        });
+
+        // update work order task
+        await trx.work_order_tasks.updateMany({
+          data: {
+            assigned_to: crew_id
+          },
+          where: {
+            work_order_id
           }
         })
       });
@@ -267,19 +290,34 @@ export class WorkOrder {
     }
   }
 
-  public async workOrderStatus(data: any): Promise<ApiResult> {
+  // work Order Task Status 
+  public async workOrderTaskStatus(data: any): Promise<ApiResult> {
     const { work_order_id, status } = data;
     try {
+
       await prisma.$transaction(async (trx: PrismaClient) => {
-      await trx.work_order_tasks.updateMany({
-        data: {
-          status,
-        },
-         where: {
-          work_order_id
-      }
-      })
-      return ApiResult.success({}, `Work order task ${status == "IN_PROGRESS" ? "started" : "completed"}`, 202)
+
+        // update work order confirm
+        await trx.work_orders.updateMany({
+          data: {
+            status: "CONFIRMED"
+          },
+          where: {
+            id: BigInt(work_order_id)
+          }
+        });
+
+        // update work order task 
+        await trx.work_order_tasks.updateMany({
+          data: {
+            status,
+          },
+          where: {
+            work_order_id
+          }
+        });
+
+        return ApiResult.success({}, `Work order task ${status == "IN_PROGRESS" ? "started" : "completed"}`, 202)
       })
     } catch (error: any) {
       console.log("workOrderStatus Error", error);
