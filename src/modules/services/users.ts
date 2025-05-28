@@ -3,11 +3,12 @@ import prisma from "../../config/db";
 import bcrypt from "bcrypt";
 import { stringifyBigInts } from "../../middlewares";
 import { ICreateUser, IEditUser, IIDModel } from "../model";
+import { PrismaClient } from "@prisma/client";
 
 // User API Service
 export class User {
   // User Register API
-  public async register(userData: ICreateUser): Promise<ApiResult> {
+  public async register(userData: any): Promise<ApiResult> {
     const {
       first_name,
       last_name,
@@ -25,60 +26,26 @@ export class User {
     } = userData;
 
     try {
-      // Check if email already exists
-      const existingEmail = await prisma.users.findFirst({
-        where: { email },
-      });
 
-      if (existingEmail) {
-        return ApiResult.error("Email is already registered.", 400);
-      }
-
-      // Check if phone already exists
-      const existingPhone = await prisma.users.findFirst({
-        where: { phone },
-      });
-
-      if (existingPhone) {
-        return ApiResult.error("Phone number is already registered.", 400);
-      }
-
-      //password generation
-      const salt = await bcrypt.genSalt(10);
-      const password = Math.floor(Math.random() * 9000 + 1000).toString();
-
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      const user = await prisma.$transaction(async (trx: any) => {
-        return await trx.users.create({
+      const result = await prisma.$transaction(async (trx: PrismaClient) => {
+        // inserting Users Table
+        const users = await trx.users.create({
           data: {
+            organization_id,
             first_name,
-            organization_id: Number(organization_id),
-            password_hash: hashedPassword,
             last_name,
-            isVerified_Email,
-            isVerified_PhoneNumber,
             email,
             phone,
             job_title,
-            user_type: user_type,
-            is_active,
-            email_verified,
-            created_at,
-            updated_at,
-          },
+            user_type
+          }
         });
-      });
 
+        
+      })
+ 
       return ApiResult.success(
-        {
-          user: {
-            id: Number(user.id),
-            email: user.email,
-            first_name: user.first_name,
-            last_name: user.last_name,
-          },
-        },
+        {},
         "User registration successful"
       );
     } catch (error) {

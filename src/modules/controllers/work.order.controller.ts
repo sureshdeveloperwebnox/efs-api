@@ -87,4 +87,18 @@ export class WorkOrderController {
       ApiResult.error(error.message || "Internal server error", 500);
     }
   };
+
+  // Work Order Task Status API
+  @POST("/workOrderTaskStatus")
+  @AccessTokenGuard()
+  @POSTPayloadDecorator()
+  public async workOrderTaskStatus(req: RequestX, res: Response, data: any): Promise<void> {
+    try {
+      const result = await this.work_order.workOrderTaskStatus(data);
+      result.send(res);
+    } catch (error: any) {
+      console.log("workOrderTaskStatus Controller Error", error);
+      ApiResult.error(error.message || "Internal server error", 500);
+    }
+  };
 }
