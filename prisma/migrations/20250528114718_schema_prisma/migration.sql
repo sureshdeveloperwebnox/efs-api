@@ -2,7 +2,7 @@
 CREATE TYPE "PlanType" AS ENUM ('FREE', 'STANDARD', 'PROFESSIONAL');
 
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'STAFF', 'TECHNICIAN', 'DISPATCHER', 'CUSTOMER');
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'STAFF', 'TECHNICIAN', 'DISPATCHER', 'CUSTOMER', 'EMPLOYEE');
 
 -- CreateEnum
 CREATE TYPE "ProficiencyLevel" AS ENUM ('BEGINNER', 'INTERMEDIATE', 'EXPERT');
@@ -383,6 +383,7 @@ CREATE TABLE "work_orders" (
     "status" "WorkOrderStatus" NOT NULL DEFAULT 'PENDING',
     "assigned_to" BIGINT DEFAULT 0,
     "assigned_crew_id" INTEGER DEFAULT 0,
+    "assigned_at" VARCHAR(50),
     "scheduled_start_date" VARCHAR(50) NOT NULL,
     "scheduled_end_date" VARCHAR(50) NOT NULL,
     "actual_start_date" VARCHAR(50) NOT NULL,
@@ -556,7 +557,8 @@ CREATE TABLE "audit_logs" (
 -- CreateTable
 CREATE TABLE "tokens" (
     "id" SERIAL NOT NULL,
-    "user_id" INTEGER NOT NULL,
+    "organization_id" BIGINT NOT NULL,
+    "user_id" BIGINT NOT NULL,
     "token" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
@@ -565,6 +567,40 @@ CREATE TABLE "tokens" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "employee_role" (
+    "id" BIGSERIAL NOT NULL,
+    "organization_id" BIGINT NOT NULL DEFAULT 0,
+    "name" TEXT NOT NULL,
+    "created_at" VARCHAR(50) DEFAULT '',
+    "updated_at" VARCHAR(50) DEFAULT '',
+
+    CONSTRAINT "employee_role_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "employee" (
+    "id" BIGSERIAL NOT NULL,
+    "user_id" BIGINT NOT NULL,
+    "organization_id" BIGINT NOT NULL,
+    "technician_name" TEXT DEFAULT '',
+    "email" TEXT DEFAULT '',
+    "phone" TEXT DEFAULT '',
+    "gender" TEXT DEFAULT '',
+    "address" TEXT DEFAULT '',
+    "city" TEXT DEFAULT '',
+    "state" TEXT DEFAULT '',
+    "country" TEXT DEFAULT '',
+    "pincode" TEXT DEFAULT '',
+    "skill" JSONB DEFAULT '{}',
+    "experience_years" TEXT DEFAULT '',
+    "employee_role_id" BIGINT NOT NULL,
+    "created_at" VARCHAR(50) DEFAULT '',
+    "updated_at" VARCHAR(50) DEFAULT '',
+
+    CONSTRAINT "employee_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -721,7 +757,22 @@ CREATE INDEX "audit_logs_user_idx" ON "audit_logs"("user_id");
 CREATE UNIQUE INDEX "tokens_token_key" ON "tokens"("token");
 
 -- CreateIndex
-CREATE INDEX "tokens_user_id_idx" ON "tokens"("user_id");
+CREATE INDEX "tokens_user_idx" ON "tokens"("user_id");
+
+-- CreateIndex
+CREATE INDEX "employee_role_organization_idx" ON "employee_role"("organization_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "employee_organization_id_key" ON "employee"("organization_id");
+
+-- CreateIndex
+CREATE INDEX "employee_organization_idx" ON "employee"("organization_id");
+
+-- CreateIndex
+CREATE INDEX "employee_user_idx" ON "employee"("user_id");
+
+-- CreateIndex
+CREATE INDEX "employee_employee_role_idx" ON "employee"("employee_role_id");
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -854,3 +905,18 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tokens" ADD CONSTRAINT "tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "employee_role" ADD CONSTRAINT "employee_role_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "employee" ADD CONSTRAINT "employee_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "employee" ADD CONSTRAINT "employee_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "employee" ADD CONSTRAINT "employee_employee_role_id_fkey" FOREIGN KEY ("employee_role_id") REFERENCES "employee_role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

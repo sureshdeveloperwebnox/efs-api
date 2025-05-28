@@ -1,6 +1,6 @@
 import { Express, Router } from 'express';
 import { attachControllers } from './api.routes';
-import { AssetController, AuthController, BusinessHoursController, CompanyController, CrewController, CrewMemberController, CustomerController, EquipmentController, HelloController, HolidaysController, MaintenancePlanAssetController, MaintenancePlanController, OrganizationController, PartController, ServiceController, ServiceTypeController, SkillController, TimeOffRequestController, UserController, UserSkillController, WorkOrderApprovalController, WorkOrderController, WorkOrderCrewController } from '../modules/controllers';
+import { AssetController, AuthController, BusinessHoursController, CompanyController, CrewController, CrewMemberController, CustomerController, EmployeeController, EmployeeRoleController, EquipmentController, HelloController, HolidaysController, MaintenancePlanAssetController, MaintenancePlanController, OrganizationController, PartController, ServiceController, ServiceTypeController, SkillController, TimeOffRequestController, UserController, UserSkillController, WorkOrderApprovalController, WorkOrderController, WorkOrderCrewController } from '../modules/controllers';
 import { createRoleMiddleware, ValidatorMiddleware } from '../middlewares';
 import passport from 'passport';
 import session from 'express-session';
@@ -36,7 +36,9 @@ export const combineRouters = (app: Express) => {
       MaintenancePlanAssetController,
       WorkOrderController,
       WorkOrderCrewController,
-      WorkOrderApprovalController
+      WorkOrderApprovalController,
+      EmployeeController,
+      EmployeeRoleController
     ],
     {
       middleware: {

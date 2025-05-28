@@ -40,7 +40,8 @@ export enum UserRole {
   STAFF = "STAFF",
   TECHNICIAN = "TECHNICIAN",
   DISPATCHER = "DISPATCHER",
-  CUSTOMER = "CUSTOMER"
+  CUSTOMER = "CUSTOMER",
+  EMPLOYEE = "EMPLOYEE"
 }
 
 // ProficiencyLevel ENUM

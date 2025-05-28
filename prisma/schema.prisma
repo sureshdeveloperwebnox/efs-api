@@ -20,6 +20,7 @@ enum UserRole {
   TECHNICIAN
   DISPATCHER
   CUSTOMER
+  EMPLOYEE
 }
 
 enum ProficiencyLevel {
@@ -183,6 +184,7 @@ model organizations {
   service_types           service_types[]
   crews                   crews[]
   employee_role           employee_role[]
+  employee                employee[]
 }
 
 model users {
@@ -748,15 +750,16 @@ model audit_logs {
 }
 
 model tokens {
-  id          Int      @id @default(autoincrement())
-  user_id     BigInt
-  token       String   @unique
-  type        String
-  expires     DateTime
-  blacklisted Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  users       users    @relation(fields: [user_id], references: [id])
+  id              Int      @id @default(autoincrement())
+  organization_id BigInt
+  user_id         BigInt
+  token           String   @unique
+  type            String
+  expires         DateTime
+  blacklisted     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  users           users    @relation(fields: [user_id], references: [id])
 
   @@index([user_id], map: "tokens_user_idx")
   @@map("tokens")
@@ -765,6 +768,7 @@ model tokens {
 model employee_role {
   id              BigInt        @id @default(autoincrement())
   organization_id BigInt        @default(0)
+  name            String
   created_at      String?       @default("") @db.VarChar(50)
   updated_at      String?       @default("") @db.VarChar(50)
   organizations   organizations @relation(fields: [organization_id], references: [id])
@@ -777,6 +781,7 @@ model employee_role {
 model employee {
   id               BigInt        @id @default(autoincrement())
   user_id          BigInt
+  organization_id  BigInt @unique
   technician_name  String?       @default("")
   email            String?       @default("")
   phone            String?       @default("")
@@ -791,9 +796,10 @@ model employee {
   employee_role_id BigInt
   created_at       String?       @default("") @db.VarChar(50)
   updated_at       String?       @default("") @db.VarChar(50)
+  organizations    organizations @relation(fields: [organization_id], references: [id])
   users            users         @relation(fields: [user_id], references: [id])
   employee_role    employee_role @relation(fields: [employee_role_id], references: [id])
-
+  @@index([organization_id], map: "employee_organization_idx")
   @@index([user_id], map: "employee_user_idx")
   @@index([employee_role_id], map: "employee_employee_role_idx")
   @@map("employee")
