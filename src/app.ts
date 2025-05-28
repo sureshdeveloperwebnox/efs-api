@@ -22,7 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
   origin: ['http://localhost:9875', 'http://localhost:6945', 'http://52.203.25.72:6945', "https://test.easyfieldservices.com" ], //only allow http://localhost:8081 to make requests
-   allowedHeaders: ['Authorization', 'Content-Type', 'date_time'],
+  //  allowedHeaders: ['Authorization', 'Content-Type', 'date_time'],
+    allowedHeaders: '*', // This might not work in all browsers
   credentials: true, // 👈 Important for cookie/session sharing
 
 };
