@@ -20,14 +20,15 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// const corsOptions = {
-//   origin: ['http://localhost:9875', 'http://localhost:6945', 'http://52.203.25.72:6945', "https://test.easyfieldservices.com", "http://54.91.94.46:6945" ], //only allow http://localhost:8081 to make requests
-//   allowedHeaders: '*', // This might not work in all browsers
-//   credentials: true, // 👈 Important for cookie/session sharing
-// };
+const corsOptions = {
+  origin: ['http://localhost:9875', 'http://localhost:6945', 'http://52.203.25.72:6945', "https://test.easyfieldservices.com", "http://54.91.94.46:6945" ], //only allow http://localhost:8081 to make requests
+  allowedHeaders: '*', // This might not work in all browsers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true, // 👈 Important for cookie/session sharing
+};
   //  allowedHeaders: ['Authorization', 'Content-Type', 'date_time'],
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.get('/', (req: Request, res: Response) => {
   res.send("server running")
