@@ -247,21 +247,12 @@ export class WorkOrder {
 
       await prisma.$transaction(async (trx: PrismaClient) => {
 
-        // update work order assign status
-        await trx.work_orders.updateMany({
-          data: {
-            status: "ASSIGNED"
-          },
-          where: {
-            id: BigInt(work_order_id)
-          }
-        });
-
         // update work order 
         await trx.work_orders.updateMany({
           data: {
             assigned_to: crew_id,
-            assigned_at
+            assigned_at,
+            status: "ASSIGNED"
           },
           where: {
             id: work_order_id
