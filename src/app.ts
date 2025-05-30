@@ -20,13 +20,17 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 const corsOptions = {
-  origin: ['http://localhost:9875', 'http://localhost:6945', 'http://34.238.172.179:3000', 'http://34.238.172.179:6945', "https://test.easyfieldservices.com" ], //only allow http://localhost:8081 to make requests
-  credentials: true, // 👈 Important for cookie/session sharing
+  origin: ['http://localhost:9875', 'http://localhost:6945', 'http://34.238.172.179:3000', 'http://34.238.172.179:6945', "https://test.easyfieldservices.com"],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly list methods
+  allowedHeaders: ['Content-Type', 'Authorization'] // Explicitly list allowed headers
 };
 
 
 app.use(cors(corsOptions));
+
 
 app.get('/', (req: Request, res: Response) => {
   res.send("server running")
@@ -36,7 +40,12 @@ app.get('/', (req: Request, res: Response) => {
 app.use(session({
   secret: envConfig.GOOGLE_CLIENT_SECRET || 'your_session_secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+    cookie: {
+    secure: false, // Set to true if using HTTPS
+    sameSite: 'none', // Important for cross-origin
+    httpOnly: true
+  }
 }));
 
 // 🛡️ Initialize passport
