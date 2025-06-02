@@ -169,7 +169,7 @@ export class WorkOrder {
            ${services ? JSON.stringify(services) : null}::jsonb, 
            ${tasks ? JSON.stringify(tasks) : null}::jsonb, 
            ${assets ? JSON.stringify(assets) : null}::jsonb         
-           ))
+           )
        `;
 
       // Extract the work order ID from the result
@@ -197,7 +197,7 @@ export class WorkOrder {
       // For a function that returns JSON:
       const result = await prisma.$queryRaw<{ get_all_work_order_by_id: any }[]>
         `SELECT get_all_work_order_by_id(${organization_id})`;
-      console.log("result", result[0].get_all_work_order_by_id);
+      // console.log("result", result[0].get_all_work_order_by_id);
 
 
       return ApiResult.success(result[0].get_all_work_order_by_id, "Work order data retrieved", 200);
