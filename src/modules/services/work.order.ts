@@ -44,7 +44,7 @@ export class WorkOrder {
 
     try {
       // Using the safer $queryRaw with template literals
-      const result = await prisma.$queryRaw<{ p_work_order_id: bigint }[]>`
+      const result = await prisma.$queryRaw<{ p_work_order_id: bigint }[]>`(
       CALL create_work_order_procedure(
         ${organization_id}::bigint, 
         ${customer_id}::bigint, 
@@ -75,8 +75,7 @@ export class WorkOrder {
         ${tasks ? JSON.stringify(tasks) : null}::jsonb, 
         ${assets ? JSON.stringify(assets) : null}::jsonb,
         NULL -- This will be populated with the work order ID
-      )
-    `;
+      ))`;
 
       // Extract the work order ID from the result
       const workOrderId = result[0]?.p_work_order_id;
@@ -136,12 +135,11 @@ export class WorkOrder {
       tasks
     } = data;
     try {
-      console.log("data❤️❤️❤️", data);
 
 
       // Using the safer $queryRaw with template literals
-      const result = await prisma.$queryRaw`
-         CALL update_work_order_procedure(
+      const result = await prisma.$queryRaw`(
+      CALL update_work_order_procedure(
            ${id}::bigint,
            ${organization_id}::bigint, 
            ${customer_id}::bigint, 
@@ -171,7 +169,7 @@ export class WorkOrder {
            ${services ? JSON.stringify(services) : null}::jsonb, 
            ${tasks ? JSON.stringify(tasks) : null}::jsonb, 
            ${assets ? JSON.stringify(assets) : null}::jsonb         
-           )
+           ))
        `;
 
       // Extract the work order ID from the result
@@ -194,7 +192,6 @@ export class WorkOrder {
   // Note: Use Get All Work Order Procedure
   public async getAllWorkOrder(data: any): Promise<ApiResult> {
     const { organization_id } = data;
-    console.log("***** organization_id", organization_id);
 
     try {
       // For a function that returns JSON:
