@@ -21,8 +21,8 @@ const corsOptions = {
   origin: [
     'http://localhost:9875',
     'http://localhost:6945',
-    'http://13.220.233.59:3000',
-    'http://13.220.233.59:6945',
+    'http://34.201.153.22:3000',
+    'http://34.201.153.22:6945',
     'http://test.easyfieldservices.com',
     'https://test.easyfieldservices.com'
   ],
