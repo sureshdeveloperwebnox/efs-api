@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { ICreateWorkOrder, IIDModel, IUpdateWorkOrder } from "../model";
+import { IIDModel, IUpdateWorkOrder } from "../model";
 
 // Work Order Service
 export class WorkOrder {

@@ -1,6 +1,6 @@
 import { ApiResult } from "../../utils/api-result";
 import prisma from "../../config/db";
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { ICreateUserSkills } from "../model";
 
 // User Skills API Service
@@ -9,7 +9,7 @@ export class UserSkills {
     try {
       const { user_id, skill_id, organization_id, proficiency_level } = data;
 
-      await prisma.$transaction(async (trx) => {
+      await prisma.$transaction(async (trx: PrismaClient) => {
         await trx.user_skills.create({
           data: {
             user_id: Number(user_id),

@@ -1,4 +1,4 @@
-import { Controller, GET, POST } from "../../decorators";
+import { Controller, POST } from "../../decorators";
 import { UserSkills } from "../services/user.skill";
 import { ApiResult } from "../../utils/api-result";
 import { RequestX } from "../../utils/request.interface";
