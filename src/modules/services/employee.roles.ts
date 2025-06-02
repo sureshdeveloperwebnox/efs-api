@@ -9,6 +9,7 @@ export class EmployeeRole {
         const {
             organization_id,
             name,
+            is_active,
             date_time
         } = data;
         try {
@@ -18,6 +19,7 @@ export class EmployeeRole {
                     data: {
                         organization_id,
                         name,
+                        is_active: 1,
                         created_at: date_time
                     }
                 });
@@ -114,4 +116,31 @@ export class EmployeeRole {
 
         }
     };
+
+    public async toggleEmployeeRoleStatus(data: { id: number; organization_id: number }): Promise<ApiResult> {
+        try {
+            const role = await prisma.employee_role.findUnique({
+                where: { id: data.id, organization_id: BigInt(data.organization_id) },
+                select: { is_active: true }
+            });
+
+            if (!role) {
+                return ApiResult.error("Employee role not found", 404);
+            }
+
+            const updatedStatus = role.is_active === 1 ? 0 : 1;
+
+            await prisma.$transaction(async (trx: PrismaClient) => {
+                await trx.employee_role.update({
+                    where: { id: data.id, organization_id: BigInt(data.organization_id) },
+                    data: { is_active: updatedStatus, updated_at : new Date().toDateString() }
+                });
+            });
+
+            return ApiResult.success({ id: data.id, is_active: updatedStatus }, "Employee role status updated successfully", 200);
+        } catch (error: any) {
+            console.log("toggleEmployeeRoleStatus Error", error);
+            return ApiResult.error("Failed to update employee role status", 500);
+        }
+    }
 }

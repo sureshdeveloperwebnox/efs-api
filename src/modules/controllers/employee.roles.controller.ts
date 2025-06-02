@@ -16,6 +16,7 @@ export class EmployeeRoleController {
     @AccessTokenGuard()
     public async createEmployeeRole(req: Request, res: Response, data: any): Promise<void> {
         try {
+            console.log("EMPLOYEE ROLE DATA :\n",data);
             const result = await this.employeerole.createEmployeeRole(data);
             result.send(res);
         } catch (error: any) {

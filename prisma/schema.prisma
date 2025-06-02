@@ -769,6 +769,7 @@ model employee_role {
   id              BigInt        @id @default(autoincrement())
   organization_id BigInt        @default(0)
   name            String
+  is_active       Int           @default(1) @db.SmallInt
   created_at      String?       @default("") @db.VarChar(50)
   updated_at      String?       @default("") @db.VarChar(50)
   organizations   organizations @relation(fields: [organization_id], references: [id])
