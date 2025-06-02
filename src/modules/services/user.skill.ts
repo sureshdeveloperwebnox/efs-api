@@ -22,14 +22,13 @@ export class UserSkills {
       });
       return ApiResult.success({}, "Skill assigned successfully", 201);
     } catch (error: any) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           return ApiResult.error("This skill is already assigned to the user", 400);
         }
         if (error.code === 'P2003') {
           return ApiResult.error("Invalid user, skill, or organization reference", 400);
         }
-      }
+      
       return ApiResult.error("Failed to assign skill: " + error.message, 500);
     }
   }
