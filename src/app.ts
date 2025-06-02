@@ -65,6 +65,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   );
 });
 
+app.get('/', (req: express.Request, res: express.Response) => {
+  res.send('server is running');
+});
+
 // 🚀 Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
