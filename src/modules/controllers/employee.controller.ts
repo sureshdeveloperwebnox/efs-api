@@ -17,7 +17,7 @@ export class EmployeeController {
     public async createEmployee(req: Request, res: Response, data: any): Promise<void> {
         try {
             const result = await this.employee.createEmployee(data);
-            result.send(res);
+            result.send(res); 
         } catch (error: any) {
             console.log("createEmployee Error", error);
             ApiResult.error(error.message || "Internal server error", 500);

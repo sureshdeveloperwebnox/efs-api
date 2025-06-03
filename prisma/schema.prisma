@@ -782,18 +782,18 @@ model employee_role {
 model employee {
   id               BigInt        @id @default(autoincrement())
   user_id          BigInt        
-  organization_id  BigInt  
-  first_name       String?       @default("")
-  last_name        String?       @default("")
-  email            String?       @default("")
-  phone            String?       @default("")
+  organization_id  BigInt        @default(0)
+  // first_name       String?       @default("")
+  // last_name        String?       @default("")
+  // email            String?       @default("")
+  // phone            String?       @default("")
   gender           String?       @default("")
   address          String?       @default("")
   city             String?       @default("")
   state            String?       @default("")
   country          String?       @default("")
   pincode          String?       @default("")
-  skill            Json?         @default("{}")
+  skill            Json?         @default("[]")
   experience_years String?       @default("")
   employee_role_id BigInt
   created_at       String?       @default("") @db.VarChar(50)
