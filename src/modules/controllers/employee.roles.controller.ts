@@ -66,4 +66,18 @@ export class EmployeeRoleController {
             ApiResult.error(error.message || "Internal server error", 500);
         }
     };
+
+    @PUT('/toggleEmployeeRoleStatus/:id')
+    @GETALLPayloadDecorator()
+    @AccessTokenGuard()
+    public async toggleEmployeeRoleStatus(req: Request, res: Response, data: any): Promise<void> {
+        try {
+            const response = await this.employeerole.toggleEmployeeRoleStatus(data);
+            response.send(res);
+        } catch (error: any) {
+            console.log("toggleEmployeeRoleStatus Error", error);
+            ApiResult.error(error.message || "Internal server error", 500);
+        }
+    }
+
 }

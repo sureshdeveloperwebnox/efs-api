@@ -781,9 +781,10 @@ model employee_role {
 
 model employee {
   id               BigInt        @id @default(autoincrement())
-  user_id          BigInt
-  organization_id  BigInt @unique
-  technician_name  String?       @default("")
+  user_id          BigInt        
+  organization_id  BigInt  
+  first_name       String?       @default("")
+  last_name        String?       @default("")
   email            String?       @default("")
   phone            String?       @default("")
   gender           String?       @default("")
@@ -800,6 +801,7 @@ model employee {
   organizations    organizations @relation(fields: [organization_id], references: [id])
   users            users         @relation(fields: [user_id], references: [id])
   employee_role    employee_role @relation(fields: [employee_role_id], references: [id])
+
   @@index([organization_id], map: "employee_organization_idx")
   @@index([user_id], map: "employee_user_idx")
   @@index([employee_role_id], map: "employee_employee_role_idx")

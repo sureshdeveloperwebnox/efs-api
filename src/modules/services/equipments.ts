@@ -137,7 +137,7 @@ export class Equipments {
     });
 
     if (!result || result.length === 0) {
-      return ApiResult.success({}, "No data retrieved", 409);
+      return ApiResult.success([], "No data retrieved", 409);
     }
 
     const formattedResult = await stringifyBigInts(result);
