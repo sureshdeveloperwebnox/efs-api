@@ -17,22 +17,22 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // CORS Configuration - Must come first
-const corsOptions = {
-  origin: [
-    'http://localhost:9875',
-    'http://localhost:6945',
-    'http://34.201.153.22:3000',
-    'http://34.201.153.22:6945',
-    'http://test.easyfieldservices.com',
-    'https://test.easyfieldservices.com'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Accept']
-};
+// const corsOptions = {
+//   origin: [
+//     'http://localhost:9875',
+//     'http://localhost:6945',
+//     'http://34.201.153.22:3000',
+//     'http://34.201.153.22:6945',
+//     'http://test.easyfieldservices.com',
+//     'https://test.easyfieldservices.com'
+//   ],
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   // allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Accept']
+// };
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
+// // Apply CORS middleware
+// app.use(cors(corsOptions));
 
 
 // Middleware
