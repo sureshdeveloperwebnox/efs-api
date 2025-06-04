@@ -793,7 +793,7 @@ model employee {
   state            String?       @default("")
   country          String?       @default("")
   pincode          String?       @default("")
-  skill            Json?         @default("[]")
+  skill            String[]      @default([])
   experience_years String?       @default("")
   employee_role_id BigInt
   created_at       String?       @default("") @db.VarChar(50)
