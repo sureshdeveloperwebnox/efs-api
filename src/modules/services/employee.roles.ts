@@ -12,7 +12,6 @@ export class EmployeeRole {
             date_time
         } = data;
         try {
-
             const response = await prisma.$transaction(async (trx: PrismaClient) => {
                 return await trx.employee_role.create({
                     data: {
@@ -25,14 +24,16 @@ export class EmployeeRole {
             });
 
             const formattedResult = await stringifyBigInts(response);
+            console.log("CreateRole>>>",formattedResult);
 
-            return ApiResult.success( response, "Employee role created successful", 201)
+            return ApiResult.success(formattedResult, "Employee role created successfully", 201);
 
         } catch (error: any) {
             console.log("createEmployeeRole Error", error);
-            return ApiResult.error("Failed to create employee role", 500)
+            return ApiResult.error("Failed to create employee role", 500);
         }
-    };
+    }
+
 
     public async updateEmployeeRole(data: any): Promise<ApiResult> {
         const {
@@ -129,15 +130,15 @@ export class EmployeeRole {
         try {
             const result = await prisma.employee_role.update({
                 where: { id },
-                data: {is_active, updated_at: date_time}
+                data: { is_active, updated_at: date_time }
             }
-        );
+            );
 
             if (!result) {
                 return ApiResult.error("Employee role not update", 401);
             }
             const formattedResult = await stringifyBigInts(result);
-            return ApiResult.success( formattedResult, "Employee role status updated successfully", 200);
+            return ApiResult.success(formattedResult, "Employee role status updated successfully", 200);
 
         } catch (error: any) {
             console.log("toggleEmployeeRoleStatus Error", error);
