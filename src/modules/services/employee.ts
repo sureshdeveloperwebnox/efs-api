@@ -34,12 +34,12 @@ export class Employee {
                 });
 
                 const response = {
-                    id: stringifyBigInts(employee.id),
-                    user_id: stringifyBigInts(users.id),
-                    organization_id: stringifyBigInts(users.organization_id),
+                    id: employee.id,
+                    user_id: users.id,
+                    organization_id: users.organization_id,
                     is_active: users.is_active, first_name: users.first_name,
                     last_name: users.last_name, email: users.email, phone: users.phone,
-                    job_title: users.job_title, employee_role_id: stringifyBigInts(employee.employee_role_id),
+                    job_title: users.job_title, employee_role_id: employee.employee_role_id,
                     gender: employee.gender, address: employee.address, city: employee.city,
                     state: employee.state, country: employee.country, pincode: employee.pincode,
                     experience_years: employee.experience_years, skill: employee.skill,
@@ -49,7 +49,9 @@ export class Employee {
                 return response;
             });
 
-            return ApiResult.success(result, "Employee created successfully", 201);
+            const formattedResult = await stringifyBigInts(result)
+
+            return ApiResult.success(formattedResult, "Employee created successfully", 201);
         } catch (error: any) {
             console.error("createEmployee Error", error);
             return ApiResult.error("Failed to create employee", 500);
@@ -65,7 +67,7 @@ export class Employee {
 
         try {
             await prisma.$transaction(async (trx) => {
-                await trx.users.updateMany({
+                const userResponse = await trx.users.updateMany({
                     data: {
                         first_name, last_name, email, phone, job_title,
                         user_type: "EMPLOYEE", updated_at: date_time
@@ -73,7 +75,7 @@ export class Employee {
                     where: { id: user_id, organization_id }
                 });
 
-                await trx.employee.updateMany({
+                const employeeResponse = await trx.employee.updateMany({
                     data: {
                         user_id, organization_id, employee_role_id, gender,
                         address, city, state, country, pincode, skill,
@@ -81,17 +83,25 @@ export class Employee {
                     },
                     where: { id }
                 });
+
+                if (!userResponse || !employeeResponse) {
+                    return ApiResult.success({}, "No data retrieved", 409)
+                }
             });
 
-            return ApiResult.success({
-                id: stringifyBigInts(id),
-                user_id: stringifyBigInts(user_id),
-                organization_id: stringifyBigInts(organization_id),
+            const structuredResult = {
+                id,
+                user_id: user_id,
+                organization_id: organization_id,
                 first_name, last_name, email, phone,
-                job_title, employee_role_id: stringifyBigInts(employee_role_id),
+                job_title, employee_role_id: employee_role_id,
                 gender, address, city, state, country,
                 pincode, skill, experience_years, updated_at: date_time
-            }, "Employee updated successfully", 202);
+            }
+
+            const formattedResult = await stringifyBigInts(structuredResult);
+
+            return ApiResult.success(formattedResult, "Employee updated successfully", 202);
         } catch (error: any) {
             console.error("updateEmployee Error", error);
             return ApiResult.error("Failed to update employee", 500);
@@ -107,20 +117,22 @@ export class Employee {
 
             if (!response) return ApiResult.success({}, "No data retrieved", 409);
 
-            const formattedResponse = {
-                id: stringifyBigInts(response.id),
-                user_id: stringifyBigInts(response.users.id),
-                organization_id: stringifyBigInts(response.organization_id),
+            const structuredResult = {
+                id: response.id,
+                user_id: response.users.id,
+                organization_id: response.organization_id,
                 is_active: response.users.is_active, first_name: response.users.first_name,
                 last_name: response.users.last_name, email: response.users.email, phone: response.users.phone,
-                job_title: response.users.job_title, employee_role_id: stringifyBigInts(response.employee_role.id),
+                job_title: response.users.job_title, employee_role_id: response.employee_role.id,
                 gender: response.gender, address: response.address, city: response.city,
                 state: response.state, country: response.country, pincode: response.pincode,
                 experience_years: response.experience_years, skill: response.skill,
                 created_at: response.created_at, updated_at: response.updated_at
             };
 
-            return ApiResult.success(formattedResponse, "Successfully fetched employee", 200);
+            const formattedResult = await stringifyBigInts(structuredResult)
+
+            return ApiResult.success(formattedResult, "Successfully fetched employee", 200);
         } catch (error: any) {
             console.error("getEmployee Error", error);
             return ApiResult.error("Failed to fetch employee data", 500);
@@ -136,23 +148,51 @@ export class Employee {
 
             if (!result.length) return ApiResult.success({}, "No data retrieved", 409);
 
-            const formattedResult = result.map(response => ({
-                id: stringifyBigInts(response.id),
-                user_id: stringifyBigInts(response.users.id),
-                organization_id: stringifyBigInts(response.organization_id),
+
+            const structuredResult = result.map(response => ({
+                id: response.id,
+                user_id: response.users.id,
+                organization_id: response.organization_id,
                 is_active: response.users.is_active, first_name: response.users.first_name,
                 last_name: response.users.last_name, email: response.users.email, phone: response.users.phone,
-                job_title: response.users.job_title, employee_role_id: stringifyBigInts(response.employee_role.id),
+                job_title: response.users.job_title, employee_role_id: response.employee_role.id,
                 gender: response.gender, address: response.address, city: response.city,
                 state: response.state, country: response.country, pincode: response.pincode,
                 experience_years: response.experience_years, skill: response.skill,
                 created_at: response.created_at, updated_at: response.updated_at
             }));
 
+            const formattedResult = await stringifyBigInts(structuredResult)
+
             return ApiResult.success(formattedResult, "Successfully fetched employees", 200);
         } catch (error: any) {
             console.error("getAllEmployee Error", error);
             return ApiResult.error("Failed to fetch employee data", 500);
+        }
+    }
+
+    public async toggleEmployeeStatus(data: any): Promise<ApiResult> {
+        const {
+            id,
+            is_active,
+            date_time
+        } = data;
+        try {
+            const result = await prisma.users.updateMany({
+                where: { id },
+                data: { is_active, updated_at: date_time }
+            }
+            );
+
+            if (!result) {
+                return ApiResult.error("Employee role not update", 401);
+            }
+            const formattedResult = await stringifyBigInts(result);
+            return ApiResult.success(formattedResult, "Employee status updated successfully", 200);
+
+        } catch (error: any) {
+            console.log("toggleEmployeeStatus Error", error);
+            return ApiResult.error("Failed to update employee status", 500);
         }
     }
 }
