@@ -27,6 +27,10 @@ export interface ICreateWorkOrder {
   organization_id: bigint;
   customer_id: bigint;
   company_id: bigint;
+  asset_id: bigint,
+  maintenance_plan_id: bigint,
+  assigned_to: bigint,
+  assigned_crew_id: bigint,
   title: string;
   description: string;
   priority: Priority;
@@ -47,12 +51,17 @@ export interface ICreateWorkOrder {
   services: IService[];
   tasks: ITask[];
   assets: IWorkOrderAsset[];
+  is_multi_day: number;
 }
 
 export class CreateWorkOrder implements ICreateWorkOrder {
   organization_id: bigint;
   customer_id: bigint;
   company_id: bigint;
+  asset_id: bigint;
+  maintenance_plan_id: bigint;
+  assigned_to: bigint;
+  assigned_crew_id: bigint;
   title: string;
   description: string;
   priority: Priority;
@@ -73,17 +82,22 @@ export class CreateWorkOrder implements ICreateWorkOrder {
   services: IService[];
   tasks: ITask[];
   assets: IWorkOrderAsset[];
+  is_multi_day: number;
 
   constructor(data: ICreateWorkOrder) {
     this.organization_id = data.organization_id;
     this.customer_id = data.customer_id;
     this.company_id = data.company_id;
+    this.asset_id = data.asset_id;
+    this.maintenance_plan_id = data.maintenance_plan_id;
+    this.assigned_to = data.assigned_to;
+    this.assigned_crew_id = data.assigned_crew_id;
     this.title = data.title;
     this.description = data.description;
     this.priority = data.priority;
-    this.status = data.status;
-    this.scheduled_start_date = data.scheduled_start_date;
-    this.scheduled_end_date = data.scheduled_end_date;
+    this.status = data.status;ate;
+    this.scheduled_end_date = data.scheduled_end_dat
+    this.scheduled_start_date = data.scheduled_start_de;
     this.actual_start_date = data.actual_start_date;
     this.actual_end_date = data.actual_end_date;
     this.currency_id = data.currency_id;
@@ -98,6 +112,7 @@ export class CreateWorkOrder implements ICreateWorkOrder {
     this.services = data.services || [];
     this.tasks = data.tasks || [];
     this.assets = data.assets || [];
+    this.is_multi_day = data.is_multi_day
   }
 }
 
@@ -114,7 +129,7 @@ export interface IUpdateWorkOrder {
   priority: Priority;
   status: WorkOrderStatus;
   assigned_to: bigint;
-  assigned_crew_id: number;
+  assigned_crew_id: bigint;
   scheduled_start_date: string;
   scheduled_end_date: string;
   actual_start_date: string;
@@ -146,7 +161,7 @@ export class UpdateWorkOrder implements IUpdateWorkOrder {
   priority: Priority;
   status: WorkOrderStatus;
   assigned_to: bigint;
-  assigned_crew_id: number;
+  assigned_crew_id: bigint;
   scheduled_start_date: string;
   scheduled_end_date: string;
   actual_start_date: string;

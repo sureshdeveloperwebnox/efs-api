@@ -542,7 +542,7 @@ model work_orders {
   priority             Priority               @default(HIGH)
   status               WorkOrderStatus        @default(PENDING)
   assigned_to          BigInt?                @default(0)
-  assigned_crew_id     Int?                   @default(0)
+  assigned_crew_id     BigInt?                @default(0)
   assigned_at          String?                @db.VarChar(50)
   scheduled_start_date String                 @db.VarChar(50)
   scheduled_end_date   String                 @db.VarChar(50)
@@ -778,10 +778,10 @@ model employee_role {
   @@index([organization_id], map: "employee_role_organization_idx")
   @@map("employee_role")
 }
- 
+
 model employee {
   id               BigInt        @id @default(autoincrement())
-  user_id          BigInt        
+  user_id          BigInt
   organization_id  BigInt        @default(0)
   // first_name       String?       @default("")
   // last_name        String?       @default("")

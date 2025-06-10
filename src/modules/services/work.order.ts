@@ -1,12 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { stringifyBigInts } from "../../middlewares";
 import prisma from "../../config/db";
 import { ApiResult } from "../../utils/api-result";
-import { IIDModel, IUpdateWorkOrder } from "../model";
-
+import { ICreateMaintenancePlanAsset, ICreateWorkOrder, IIDModel, IUpdateMaintenancePlanAsset } from "../model";
 // Work Order Service
 export class WorkOrder {
-  // Create Work Order
-  public async createWorkOrder(data: any): Promise<ApiResult> {
+  // Create Work Order Service
+  public async createWorkOrder(data: ICreateWorkOrder): Promise<ApiResult> {
     const {
       organization_id,
       customer_id,
@@ -32,213 +31,134 @@ export class WorkOrder {
       postal_code,
       country,
       is_multi_day,
-      date_time,
-      assets,
-      services,
-      tasks
+      date_time
     } = data;
-
     try {
-      const result = await prisma.$queryRaw<{ p_work_order_id: bigint }[]>`
-        CALL create_work_order_procedure(
-          ${organization_id},
-          ${customer_id},
-          ${company_id},
-          ${asset_id},
-          ${maintenance_plan_id},
-          ${title},
-          ${description},
-          ${priority},
-          ${status},
-          ${assigned_to},
-          ${assigned_crew_id},
-          ${scheduled_start_date},
-          ${scheduled_end_date},
-          ${actual_start_date},
-          ${actual_end_date},
-          ${currency_id},
-          ${estimated_cost},
-          ${actual_cost},
-          ${address},
-          ${city},
-          ${state},
-          ${postal_code},
-          ${country},
-          ${is_multi_day},
-          ${date_time},
-          ${services ? JSON.stringify(services) : null},
-          ${tasks ? JSON.stringify(tasks) : null},
-          ${assets ? JSON.stringify(assets) : null},
-          NULL
-        )
-      `;
+      await prisma.$transaction(async (trx) => {
+        return await trx.work_orders.create({
+          data: {
+            organization_id,
+            customer_id,
+            company_id,
+            asset_id,
+            maintenance_plan_id,
+            title,
+            description,
+            priority,
+            status,
+            assigned_to,
+            assigned_crew_id,
+            scheduled_start_date,
+            scheduled_end_date,
+            actual_start_date,
+            actual_end_date,
+            currency_id,
+            estimated_cost,
+            actual_cost,
+            address,
+            city,
+            state,
+            postal_code,
+            country,
+            is_multi_day,
+            created_at: date_time,
+          },
+        });
+      });
+      return ApiResult.success({}, "Work order created successful", 201);
+    } catch (error: any) {
+      console.log("createWorkOrder Error", error);
+      return ApiResult.error("Failed to create maintenance plan asset", 500);
+    }
+  };
 
-      const workOrderId = result[0]?.p_work_order_id;
 
-      if (!workOrderId) throw new Error("Work order creation failed - no ID returned");
+  public async getAllWorkOrder(data: IIDModel): Promise<ApiResult> {
+    try {
+      const result = await prisma.work_orders.findMany({
+        where: { organization_id: BigInt(data.id) }
+      })
+      if (!result) {
+        return ApiResult.success({}, "No data retrieved", 202);
+      }
 
+      const formattedResult = await stringifyBigInts(result);
       return ApiResult.success(
-        { workOrderId: Number(workOrderId) },
-        "Work order created successfully",
-        201
+        formattedResult,
+        "Successfully fetched work orders",
+        200
+      );
+
+    } catch (error: any) {
+      console.error("getWorkOrder", error);
+      return ApiResult.error(
+        error.message || "Failed to fetch work orders",
+        500
+      );
+    }
+  }
+
+  // Get Work Order Service
+  public async getWorkOrder(data: IIDModel): Promise<ApiResult> {
+    try {
+      // Only select required fields instead of entire row (better performance)
+      const result = await prisma.work_orders.findFirst({
+        where: { id: BigInt(data.id) },
+      });
+      if (!result) {
+        return ApiResult.success({}, "No data retrieved", 202);
+      }
+      // Convert BigInt values to string (if needed) without deep clone
+      const formattedResult = await stringifyBigInts(result);
+      return ApiResult.success(
+        formattedResult,
+        "Successfully fetched work orders",
+        200
       );
     } catch (error: any) {
-      console.error("createWorkOrder Error:", error.message);
-      return ApiResult.error("Failed to create work order", 500);
+      console.error("getWorkOrder", error);
+      return ApiResult.error(
+        error.message || "Failed to fetch work orders",
+        500
+      );
     }
-  }
-
-  // Update Work Order
-  public async updateWorkOrder(data: IUpdateWorkOrder): Promise<ApiResult> {
+  };
+  // Update Work Order Service
+  public async updateWorkOrder(data: IUpdateMaintenancePlanAsset): Promise<ApiResult> {
     const {
       id,
-      organization_id,
-      customer_id,
-      company_id,
-      asset_id,
       maintenance_plan_id,
-      title,
-      description,
-      priority,
-      status,
-      assigned_to,
-      assigned_crew_id,
-      scheduled_start_date,
-      scheduled_end_date,
-      actual_start_date,
-      actual_end_date,
-      currency_id,
-      estimated_cost,
-      actual_cost,
-      address,
-      city,
-      state,
-      postal_code,
-      country,
-      is_multi_day,
+      asset_id,
+      assigned_at,
       date_time,
-      assets,
-      services,
-      tasks
     } = data;
-
     try {
-      await prisma.$executeRaw`
-        CALL update_work_order_procedure(
-          ${id},
-          ${organization_id},
-          ${customer_id},
-          ${company_id},
-          ${asset_id},
-          ${maintenance_plan_id},
-          ${title},
-          ${description},
-          ${priority},
-          ${status},
-          ${assigned_to},
-          ${assigned_crew_id},
-          ${scheduled_start_date},
-          ${scheduled_end_date},
-          ${actual_start_date},
-          ${actual_end_date},
-          ${currency_id},
-          ${estimated_cost},
-          ${actual_cost},
-          ${address},
-          ${city},
-          ${state},
-          ${postal_code},
-          ${country},
-          ${is_multi_day},
-          ${date_time},
-          ${services ? JSON.stringify(services) : null},
-          ${tasks ? JSON.stringify(tasks) : null},
-          ${assets ? JSON.stringify(assets) : null}
-        )
-      `;
-
-      return ApiResult.success({}, "Work order updated successfully", 202);
+      await prisma.$transaction(async (trx) => {
+        return await trx.maintenance_plan_assets.update({
+          data: {
+            maintenance_plan_id,
+            asset_id,
+            assigned_at,
+            created_at: date_time,
+          },
+          where: {
+            id: id
+          }
+        });
+      });
+      return ApiResult.success({}, "Maintenance plan asset updated successful", 201);
     } catch (error: any) {
-      console.error("updateWorkOrder Error:", error.message);
-      return ApiResult.error("Failed to update work order", 500);
+      console.log("updateMaintancePlan Error", error);
+      return ApiResult.error("Failed to update maintenance plan", 500);
     }
-  }
+  };
 
-  // Get All Work Orders
-  public async getAllWorkOrder(data: any): Promise<ApiResult> {
-    const { organization_id } = data;
-
-    try {
-      const result = await prisma.$queryRaw<{ get_all_work_order_by_id: any }[]>`
-        SELECT get_all_work_order_by_id(${organization_id})
-      `;
-
-      return ApiResult.success(result[0].get_all_work_order_by_id, "Work orders retrieved", 200);
-    } catch (error: any) {
-      return ApiResult.error("Failed to fetch work orders", 500);
-    }
-  }
-
-  // Get Single Work Order
-  public async getWorkOrder(data: IIDModel): Promise<ApiResult> {
-    const { id } = data;
-
-    try {
-      const result = await prisma.$queryRaw<{ get_work_order_by_id: any }[]>`
-        SELECT get_work_order_by_id(${id})
-      `;
-
-      return ApiResult.success(result[0].get_work_order_by_id, "Work order retrieved", 200);
-    } catch (error: any) {
-      return ApiResult.error("Failed to fetch work order", 500);
-    }
-  }
-
-  // Assign Work Order to Technician
   public async assignWorkOrderToTechnician(data: any): Promise<ApiResult> {
-    const { work_order_id, crew_id, assigned_at } = data;
+    return ApiResult.error("Work will be on future", 500);
+  };
 
-    try {
-      await prisma.$transaction(async (trx) => {
-        await trx.work_orders.updateMany({
-          data: { assigned_to: crew_id, assigned_at, status: "ASSIGNED" },
-          where: { id: work_order_id }
-        });
-
-        await trx.work_order_tasks.updateMany({
-          data: { assigned_to: crew_id },
-          where: { work_order_id }
-        });
-      });
-
-      return ApiResult.success({}, "Work order assigned", 202);
-    } catch (error: any) {
-      console.error("assignWorkOrderToTechnician Error", error);
-      return ApiResult.error("Failed to assign work order", 500);
-    }
-  }
-
-  // Update Work Order Task Status
   public async workOrderTaskStatus(data: any): Promise<ApiResult> {
-    const { work_order_id, status } = data;
-
-    try {
-      await prisma.$transaction(async (trx) => {
-        await trx.work_orders.updateMany({
-          data: { status: "CONFIRMED" },
-          where: { id: BigInt(work_order_id) }
-        });
-
-        await trx.work_order_tasks.updateMany({
-          data: { status },
-          where: { work_order_id }
-        });
-      });
-
-      return ApiResult.success({}, `Work order task ${status === "IN_PROGRESS" ? "started" : "completed"}`, 202);
-    } catch (error: any) {
-      console.error("workOrderTaskStatus Error", error);
-      return ApiResult.error("Failed to update task status", 500);
-    }
+    return ApiResult.error("Work will be on future", 500);
   }
+
 }
