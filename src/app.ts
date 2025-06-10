@@ -19,8 +19,8 @@ const PORT = process.env.PORT || 3000;
 // CORS Configuration - Must come first
 const corsOptions = {
   origin: [
-    'http://localhost:9875',
     'http://localhost:6945',
+    'http://localhost:9875',
     'http://34.201.153.22:3000',
     'http://34.201.153.22:6945',
     'http://test.easyfieldservices.com',

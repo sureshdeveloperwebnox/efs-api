@@ -123,6 +123,7 @@ export class WorkOrder {
       );
     }
   };
+  
   // Update Work Order Service
   public async updateWorkOrder(data: IUpdateMaintenancePlanAsset): Promise<ApiResult> {
     const {
