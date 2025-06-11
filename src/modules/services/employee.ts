@@ -15,46 +15,53 @@ export class Employee {
 
         try {
             const { hashedPassword } = await getHashPassword(password);
+            const IsUserExists = await prisma.users.findUnique({
+                where: { email }
+            })
 
-            const result = await prisma.$transaction(async (trx) => {
-                const users = await trx.users.create({
-                    data: {
-                        organization_id, first_name, last_name, email, phone,
-                        password_hash: hashedPassword, job_title, user_type: "EMPLOYEE",
-                        created_at: date_time, is_active: 1
-                    }
+            if (IsUserExists === null) {
+                const result = await prisma.$transaction(async (trx) => {
+
+                    const users = await trx.users.create({
+                        data: {
+                            organization_id, first_name, last_name, email, phone,
+                            password_hash: hashedPassword, job_title, user_type: "EMPLOYEE",
+                            created_at: date_time, is_active: 1
+                        }
+                    });
+
+                    const employee = await trx.employee.create({
+                        data: {
+                            user_id: users.id, organization_id, employee_role_id, gender,
+                            address, city, state, country, pincode, skill,
+                            experience_years, created_at: date_time
+                        }
+                    });
+
+                    const response = {
+                        id: employee.id,
+                        user_id: users.id,
+                        organization_id: users.organization_id,
+                        is_active: users.is_active, first_name: users.first_name,
+                        last_name: users.last_name, email: users.email, phone: users.phone,
+                        job_title: users.job_title, employee_role_id: employee.employee_role_id,
+                        gender: employee.gender, address: employee.address, city: employee.city,
+                        state: employee.state, country: employee.country, pincode: employee.pincode,
+                        experience_years: employee.experience_years, skill: employee.skill,
+                        created_at: employee.created_at, updated_at: employee.updated_at
+                    };
+
+                    return response;
                 });
+                const formattedResult = await stringifyBigInts(result);
+                return ApiResult.success(formattedResult, "Employee created successfully", 201);
+            } else {
+                return ApiResult.error("User Already Found : ",400);
+            }
 
-                const employee = await trx.employee.create({
-                    data: {
-                        user_id: users.id, organization_id, employee_role_id, gender,
-                        address, city, state, country, pincode, skill,
-                        experience_years, created_at: date_time
-                    }
-                });
-
-                const response = {
-                    id: employee.id,
-                    user_id: users.id,
-                    organization_id: users.organization_id,
-                    is_active: users.is_active, first_name: users.first_name,
-                    last_name: users.last_name, email: users.email, phone: users.phone,
-                    job_title: users.job_title, employee_role_id: employee.employee_role_id,
-                    gender: employee.gender, address: employee.address, city: employee.city,
-                    state: employee.state, country: employee.country, pincode: employee.pincode,
-                    experience_years: employee.experience_years, skill: employee.skill,
-                    created_at: employee.created_at, updated_at: employee.updated_at
-                };
-
-                return response;
-            });
-
-            const formattedResult = await stringifyBigInts(result)
-
-            return ApiResult.success(formattedResult, "Employee created successfully", 201);
         } catch (error: any) {
             console.error("createEmployee Error", error);
-            return ApiResult.error("Failed to create employee", 500);
+            return ApiResult.error("Failed to create employee>>>>" + error, 500);
         }
     }
 
