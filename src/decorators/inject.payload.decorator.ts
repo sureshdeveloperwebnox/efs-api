@@ -1,4 +1,4 @@
-import { getDateTime } from "../utils/get.date.time"; // adjust import as needed
+// import { getDateTime } from "../utils/get.date.time"; // adjust import as needed
 import { Request, Response, NextFunction } from "express";
 
 // POST Create Payload Decorator
@@ -21,7 +21,7 @@ export function POSTPayloadDecorator() {
     ) {
       try {
         const body = req.body;
-        const date = await getDateTime(req);
+        // const date = await getDateTime(req);
         const data = { ...body, date_time: new Date().toISOString().slice(0, 19).replace('T', ' ') };
 
         // Call the original method with injected `data`
@@ -86,7 +86,7 @@ export function PUTPayloadDecorator() {
       try {
         const id = req.params.id;
         const body = req.body;
-        const date = await getDateTime(req);
+        // const date = await getDateTime(req);
         const data = { ...body, id, date_time: new Date().toISOString().slice(0, 19).replace('T', ' ')};
 
         // Call the original method with injected `data`
