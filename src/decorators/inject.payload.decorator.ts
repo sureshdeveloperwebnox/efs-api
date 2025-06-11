@@ -3,6 +3,10 @@ import { Request, Response, NextFunction } from "express";
 
 // POST Create Payload Decorator
 export function POSTPayloadDecorator() {
+
+  const now = new Date();
+  const formatted = now.toISOString().slice(0, 19).replace('T', ' ');
+
   return function (
     target: any,
     propertyKey: string,
@@ -18,7 +22,7 @@ export function POSTPayloadDecorator() {
       try {
         const body = req.body;
         const date = await getDateTime(req);
-        const data = { ...body, date_time: date.date_time };
+        const data = { ...body, date_time: new Date().toISOString().slice(0, 19).replace('T', ' ') };
 
         // Call the original method with injected `data`
         return await originalMethod.call(this, req, res, data);
@@ -83,7 +87,7 @@ export function PUTPayloadDecorator() {
         const id = req.params.id;
         const body = req.body;
         const date = await getDateTime(req);
-        const data = { ...body, id, date_time: date.date_time };
+        const data = { ...body, id, date_time: new Date().toISOString().slice(0, 19).replace('T', ' ')};
 
         // Call the original method with injected `data`
         return await originalMethod.call(this, req, res, data);
