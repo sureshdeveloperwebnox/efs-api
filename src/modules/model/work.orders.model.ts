@@ -95,9 +95,9 @@ export class CreateWorkOrder implements ICreateWorkOrder {
     this.title = data.title;
     this.description = data.description;
     this.priority = data.priority;
-    this.status = data.status;ate;
-    this.scheduled_end_date = data.scheduled_end_dat
-    this.scheduled_start_date = data.scheduled_start_de;
+    this.status = data.status;;
+    this.scheduled_end_date = data.scheduled_end_date
+    this.scheduled_start_date = data.scheduled_start_date;
     this.actual_start_date = data.actual_start_date;
     this.actual_end_date = data.actual_end_date;
     this.currency_id = data.currency_id;
