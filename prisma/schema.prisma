@@ -385,8 +385,8 @@ model companies {
   industry        String        @db.VarChar(100)
   tax_id          String        @db.VarChar(50)
   address         String        @db.Text
-  phone           String        @unique @db.VarChar(20)
-  email           String        @unique @db.VarChar(100)
+  phone           String        @db.VarChar(20)
+  email           String        @db.VarChar(100)
   website         String        @db.VarChar(100)
   created_at      String        @default("") @db.VarChar(50)
   updated_at      String        @default("") @db.VarChar(50)

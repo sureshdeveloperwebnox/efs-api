@@ -17,7 +17,6 @@ import {
   CreateCustomerValidation,
   UpdateCompanyValidation,
   UpdateCustomerValidation,
-  ValidateDateTime,
   ValidateParamsID,
 } from "../rules";
 
@@ -31,7 +30,7 @@ export class CustomerController {
 
   // Create Customer API Endpoint
   @POST("")
-  @Validate([CreateCustomerValidation, ValidateDateTime])
+  @Validate([CreateCustomerValidation])
   @AccessTokenGuard()
   @POSTPayloadDecorator()
   public async createCustomer(

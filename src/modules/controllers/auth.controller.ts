@@ -108,13 +108,13 @@ export class AuthController {
           res.cookie('accessToken', tokens?.accessToken, {
             path: '/',
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
           });
 
           res.cookie('refreshToken', tokens?.refreshToken, {
             path: '/',
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
           });
 
           // Handle redirect
@@ -133,10 +133,29 @@ export class AuthController {
   // POST User Login API
   @POST("/login")
   @Validate([Login]) // Validation Schema
-  public async login(req: RequestX, res: Response): Promise<void> {
+  public async login(req: RequestX, res: Response) {
     try {
-      const result = await this.auth.login(req.body);
-      result.send(res);
+      const result: any = await this.auth.login(req.body);
+
+      // Set secure cookies
+      res.cookie('accessToken', result?.accessToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+      });
+
+      res.cookie('refreshToken', result?.refreshToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+      });
+
+      return res.send({
+        status: true,
+        message: "Login Successful",
+        data: result
+      })
+
     } catch (error: any) {
       console.log('login error', error);
       ApiResult.error(error.message || "Internal server error", 400);

@@ -34,7 +34,7 @@ const GOOGLE_CALLBACK_URL = envConfig.GOOGLE_CALLBACK_URL;
 
 export class Auth {
 
-   public async login(data: IUserLogin): Promise<ApiResult> {
+   public async login(data: IUserLogin) {
     const { email, password } = data;
 
     const user = await prisma.users.findFirst({
@@ -42,14 +42,20 @@ export class Auth {
     });
 
     if (!user) {
-      return ApiResult.error("Invalid credentials", 401);
+      return {
+        status: false,
+        message: "Invalid credentials"
+      }
     }
 
     const hashFromDB = String(user.password_hash).replace(/^\$2y\$/, "$2a$");
     const isMatch = await bcrypt.compare(password, hashFromDB);
 
     if (!isMatch) {
-      return ApiResult.error("Invalid credentials", 401);
+       return {
+        status: false,
+        message: "Password not matched"
+      }
     }
 
     // Generate JWT token
@@ -64,13 +70,7 @@ export class Auth {
       provider: "jwt",
     };
 
-    return ApiResult.success(
-      {
-        // user: userData,
-        ...token,
-      },
-      "Login successful"
-    );
+    return token
   }
   
 
