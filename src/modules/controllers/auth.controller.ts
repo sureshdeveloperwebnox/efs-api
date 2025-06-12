@@ -107,14 +107,16 @@ export class AuthController {
           // Set secure cookies
           res.cookie('accessToken', tokens?.accessToken, {
             path: '/',
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            httpOnly: process.env.NODE_ENV === "production"
           });
 
           res.cookie('refreshToken', tokens?.refreshToken, {
             path: '/',
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            httpOnly: process.env.NODE_ENV === "production"
           });
 
           // Handle redirect
@@ -140,14 +142,16 @@ export class AuthController {
       // Set secure cookies
       res.cookie('accessToken', result?.accessToken, {
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: process.env.NODE_ENV === "production"
       });
 
       res.cookie('refreshToken', result?.refreshToken, {
         path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === "production"? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: process.env.NODE_ENV === "production"
       });
 
       return res.send({
