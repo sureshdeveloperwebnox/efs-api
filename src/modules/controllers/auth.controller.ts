@@ -62,16 +62,6 @@ export class AuthController {
     ApiResult.error(message, status).send(res);
   }
 
-  // @POST('/register')
-  // @Validate([OrganizationUserRegisterValidation])
-  // public async register(req: RequestX, res: Response): Promise<void> {
-  //   try {
-  //     const result = await this.auth.register(req.body);
-  //     result.send(res);
-  //   } catch (error) {
-  //     this.handleError(error, res, "Registration failed", 400);
-  //   }
-  // }
 
   @GET("/google")
   public initiateGoogleAuth(req: RequestX, res: Response, next: NextFunction): void {
@@ -97,7 +87,7 @@ export class AuthController {
         try {
           if (err || !user) {
             console.error("Google auth failed:", err || info);
-            return res.redirect(`${envConfig.FRONTEND_LOGIN_URL}?error=authentication_failed`);
+            return res.redirect(`${envConfig.FRONTEND_DASHBOARD_URL}?error=authentication_failed`);
           }
 
           // Process user registration/login
@@ -109,25 +99,35 @@ export class AuthController {
             path: '/',
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            httpOnly: process.env.NODE_ENV === "production"
+            httpOnly: process.env.NODE_ENV === "production",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            domain: process.env.NODE_ENV === "production" ? ".easyfieldservices.com" : undefined
           });
 
           res.cookie('refreshToken', tokens?.refreshToken, {
             path: '/',
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            httpOnly: process.env.NODE_ENV === "production"
+            httpOnly: process.env.NODE_ENV === "production",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            domain: process.env.NODE_ENV === "production" ? ".easyfieldservices.com" : undefined
           });
 
           // Handle redirect
           const state = req.query.state ? JSON.parse(Buffer.from(req.query.state as string, 'base64').toString()) : {};
-          const redirectUrl = envConfig.FRONTEND_DASHBOARD_URL;
+          const redirectUrl = state?.redirectUrl || envConfig.FRONTEND_REDIRECT_URL;
+        
+        // For cross-domain security, add tokens to URL fragment
+        const finalUrl = new URL(redirectUrl);
+        finalUrl.hash = `#accessToken=${tokens.accessToken}&refreshToken=${tokens.refreshToken}`;
+        console.log("finalUrl", finalUrl.toString());
+        return res.redirect(finalUrl.toString());
           return res.redirect(redirectUrl);
 
         } catch (error) {
           console.error("Google callback error:", error);
-          return res.redirect(`${envConfig.FRONTEND_LOGIN_URL}?error=server_error`);
-        }
+          return res.redirect(`${envConfig.FRONTEND_REDIRECT_URL}?error=server_error`);
+        } 
       }
     )(req, res, next);
   }
@@ -140,23 +140,28 @@ export class AuthController {
       const result: any = await this.auth.login(req.body);
 
       // Set secure cookies
-      res.cookie('accessToken', result?.accessToken, {
-        path: '/',
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        httpOnly: process.env.NODE_ENV === "production"
-      });
+      // res.cookie('accessToken', result?.accessToken, {
+      //   path: '/',
+      //   secure: process.env.NODE_ENV === "production",
+      //   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      //   httpOnly: process.env.NODE_ENV === "production",
+      //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      //   domain: process.env.NODE_ENV === "production" ? ".easyfieldservices.com" : undefined
+      // });
 
-      res.cookie('refreshToken', result?.refreshToken, {
-        path: '/',
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        httpOnly: process.env.NODE_ENV === "production"
-      });
+      // res.cookie('refreshToken', result?.refreshToken, {
+      //   path: '/',
+      //   secure: process.env.NODE_ENV === "production",
+      //   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      //   httpOnly: process.env.NODE_ENV === "production",
+      //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      //   domain: process.env.NODE_ENV === "production" ? ".easyfieldservices.com" : undefined
+      // });
 
       return res.send({
         status: true,
         message: "Login Successful",
+        redirectUrl: envConfig.DASHBOARD_URL,
         data: result
       })
 
@@ -166,6 +171,36 @@ export class AuthController {
     }
   }
 
+  @POST("/logout")
+  public async logout(req: RequestX, res:Response) {
+    try {
+      res.cookie("accessToken", "", {
+        path: '/',
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: process.env.NODE_ENV === "production",
+        expires: new Date(0)
+      });
+
+      res.cookie("refreshToken", "", {
+        path: '/',
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: process.env.NODE_ENV === "production",
+        expires: new Date(0)
+      });
+
+      return res.send({
+        status: true,
+        message: "Logout Successful",
+        data: {}
+      })
+
+    } catch(error: any) {
+      console.log("Logout Error", error);
+      ApiResult.error(error.message || "Internal server error", 400);
+    }
+  }
 
   @GET('/me')
   public async me(req: RequestX, res: Response): Promise<void> {

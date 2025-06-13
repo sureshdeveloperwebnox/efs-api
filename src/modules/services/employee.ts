@@ -92,7 +92,7 @@ export class Employee {
                 });
 
                 if (!userResponse || !employeeResponse) {
-                    return ApiResult.success({}, "No data retrieved", 409)
+                    return ApiResult.success({}, "Failed to update Employee", 409)
                 }
             });
 
@@ -122,7 +122,7 @@ export class Employee {
                 include: { employee_role: true, users: true }
             });
 
-            if (!response) return ApiResult.success({}, "No data retrieved", 409);
+            if (!response) return ApiResult.success({}, "No data retrieved", 200);
 
             const structuredResult = {
                 id: response.id,
@@ -153,7 +153,7 @@ export class Employee {
                 include: { employee_role: true, users: true }
             });
 
-            if (!result.length) return ApiResult.success({}, "No data retrieved", 409);
+            // if (!result.length) return ApiResult.success({}, "No data retrieved", 200);
 
 
             const structuredResult = result.map(response => ({
@@ -169,7 +169,7 @@ export class Employee {
                 created_at: response.created_at, updated_at: response.updated_at
             }));
 
-            const formattedResult = await stringifyBigInts(structuredResult)
+            const formattedResult = await stringifyBigInts(structuredResult);
 
             return ApiResult.success(formattedResult, "Successfully fetched employees", 200);
         } catch (error: any) {

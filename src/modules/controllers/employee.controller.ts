@@ -59,6 +59,7 @@ export class EmployeeController {
     public async getAllEmployee(req: Request, res: Response, data: any): Promise<void> {
         try {
             const result = await this.employee.getAllEmployee(data);
+            console.log("GetAllEmployees>>>>", result);
             result.send(res);
         } catch (error: any) {
             console.log("getAllEmployee Error", error);
